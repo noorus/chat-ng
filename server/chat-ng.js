@@ -10,13 +10,19 @@ var moment   = require( "moment" );
 var argv = optimist
 .options( "port", { alias: "p", default: 3000 } )
 .options( "host", { default: "localhost" } )
-.options( "sock", { default: null } )
+.options( "sock", { default: "/var/run/mysqld/mysqld.sock" } )
 .options( "user", { default: "root" } )
 .options( "pass", { default: "" } )
 .options( "db",   { default: "chat" } )
 .options( "origin", { default: "*" } )
 .options( "debug", { boolean: true, default: false } )
+.options( "nosock", { boolean: true, default: false } )
 .argv;
+
+if ( ( typeof argv.sock != "string"
+  && !( argv.sock instanceof String ) )
+  || argv.sock.length < 1 || argv.nosock )
+  argv.sock = null;
 
 var ClientState =
 {
