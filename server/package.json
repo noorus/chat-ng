@@ -1,0 +1,12 @@
+{
+  "name": "chat-ng",
+  "description": "next-generation chat",
+  "version": "0.0.1",
+  "dependencies":
+  {
+    "optimist": "0.6.0",
+    "express": "3.4.0",
+    "socket.io": "0.9.16",
+    "mysql": "2.0.0-alpha9"
+  }
+}
