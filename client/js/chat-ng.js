@@ -6,7 +6,9 @@ require.config(
     handlebars: "handlebars-1.0.0",
     ember: "ember-1.0.0",
     socketio: "socket.io",
-    hashes: "hashes.min"
+    hashes: "hashes.min",
+    modernizr: "custom.modernizr",
+    foundation: "foundation.min"
   },
   shim: {
     "ember": {
@@ -15,11 +17,20 @@ require.config(
     },
     "socketio": {
       exports: "io"
+    },
+    "modernizr": {
+      exports: "Modernizr"
+    },
+    "foundation": {
+      exports: "Foundation",
+      deps: ["jquery","modernizr"]
     }
   }
 });
 
-require( ["ember","socketio","hashes"], function( Em, io, hashes )
+require(
+["jquery","ember","socketio","hashes","modernizr","foundation"],
+function( $, Em, io, hashes, Modernizr, Foundation )
 {
   App = Em.Application.create({
     rootElement: "#chat",
@@ -40,4 +51,11 @@ require( ["ember","socketio","hashes"], function( Em, io, hashes )
       return ["tomster@emberjs.com",""];
     }
   });
+  require(
+    ["domReady!","jquery","modernizr","foundation"],
+    function( document, $, Modernizr, Foundation )
+    {
+      $( document ).foundation();
+    }
+  );
 });
