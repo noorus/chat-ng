@@ -1,0 +1,105 @@
+@import "settings";
+@import "normalize";
+@import "foundation/components/global";
+@import "foundation/components/grid";
+@import "foundation/components/visibility";
+@import "foundation/components/block-grid";
+@import "foundation/components/type";
+@import "foundation/components/buttons";
+@import "foundation/components/forms";
+@import "foundation/components/custom-forms";
+@import "foundation/components/button-groups";
+@import "foundation/components/dropdown-buttons";
+@import "foundation/components/split-buttons";
+@import "foundation/components/flex-video";
+@import "foundation/components/section";
+@import "foundation/components/top-bar";
+@import "foundation/components/reveal";
+@import "foundation/components/alert-boxes";
+@import "foundation/components/breadcrumbs";
+@import "foundation/components/keystrokes";
+@import "foundation/components/labels";
+@import "foundation/components/inline-lists";
+@import "foundation/components/pagination";
+@import "foundation/components/panels";
+@import "foundation/components/progress-bars";
+@import "foundation/components/side-nav";
+@import "foundation/components/sub-nav";
+@import "foundation/components/switch";
+@import "foundation/components/tables";
+@import "foundation/components/thumbs";
+@import "foundation/components/dropdown";
+
+@import "compass/css3/box-shadow";
+
+html, body, .ember-application > .ember-view {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.collapse-left {
+  padding-left: 0 !important;
+}
+
+.ngc-midsection {
+  height: calc(100% - 200px);
+}
+
+.fullheight {
+  height: 100%;
+}
+
+.ngc-grid-row {
+  @include grid-row(false);
+  max-width: none;
+}
+
+.ngc-listbox {
+  @include panel($secondary-color,0);
+  @include single-box-shadow(rgba(0,0,0,0.25),0,2px,4px,0,true);
+  overflow: auto;
+  height: 100%;
+  list-style-type: none;
+}
+
+ul.ngc-listbox > li {
+}
+
+ul.ngc-listbox > li:nth-child(odd) {
+  background: rgba(255,255,255,0.1);
+}
+
+ul.ngc-listbox > li:nth-child(even) {
+  background: rgba(0,0,0,0.05);
+}
+
+.ngc-chat {
+  height: calc(100% - 4em);
+}
+
+.ngc-chat-message {
+  color: #333333;
+  padding: 0.7em 3em 0.7em 3em;
+}
+
+.ngc-chat-message > .author {
+  float: left;
+  font-weight: 600;
+  margin-right: 1em;
+  overflow: hidden;
+  text-align: right;
+  white-space: nowrap;
+  width: 6em;
+}
+
+.ngc-chat-message > .content {
+  text-align: justify;
+}
+
+.ngc-members {
+}
+
+.ngc-members-member {
+  padding: 0.1em 0.6em;
+}

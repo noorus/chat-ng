@@ -4,28 +4,25 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Chat</title>
+    <title>Chat-NG</title>
     <meta name="robots" content="noindex">
     <meta name="viewport" content="width=device-width">
     <meta name="format-detection" content="telephone=no">
-    <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="css/chat-ng.css">
     <script data-main="js/chat-ng.js" src="js/lib/require.js"></script>
   </head>
   <body id="chat">
     <script type="text/x-handlebars">
- <nav class="top-bar">
+  <nav class="top-bar">
     <ul class="title-area">
       <li class="name">
-        <h1>
-          <a href="#">
-            Top Bar Title
-          </a>
-        </h1>
+        <h1><a href="#">Chat-NG</a></h1>
       </li>
       <li class="toggle-topbar menu-icon"><a href="#"><span>menu</span></a></li>
     </ul>
     <section class="top-bar-section">
       <ul class="right">
+        <li class="has-form"><a>Tila: Ei yhteyttä</a></li>
         <li class="divider"></li>
         <li class="has-dropdown">
           <a href="#">Main Item 1</a>
@@ -54,103 +51,70 @@
           </ul>
         </li>
         <li class="divider"></li>
-        <li><a href="#">Main Item 2</a></li>
-        <li class="divider"></li>
-        <li class="has-dropdown">
-          <a href="#">Main Item 3</a>
-          <ul class="dropdown">
-            <li><a href="#">Dropdown Option</a></li>
-            <li><a href="#">Dropdown Option</a></li>
-            <li><a href="#">Dropdown Option</a></li>
-            <li class="divider"></li>
-            <li><a href="#">See all &rarr;</a></li>
-          </ul>
-        </li>
+        <li><a href="#">Kirjaudu ulos</a></li>
       </ul>
     </section>
   </nav>
-  <div class="row">
-    <div class="large-9 columns">
-      <h3>Get in Touch!</h3>
-      <p>We'd love to hear from you. You can either reach out to us as a whole and one of our awesome team members will get back to you, or if you have a specific question reach out to one of our staff. We love getting email all day <em>all day</em>.</p>
-      <div class="section-container auto" data-section>
-        <section class="section">
-          <h5 class="title"><a href="#panel1">Contact Our Company</a></h5>
-          <div class="content" data-slug="panel1">
-            <form>
-              <div class="row collapse">
-                <div class="large-2 columns">
-                  <label class="inline">Your Name</label>
-                </div>
-                <div class="large-10 columns">
-                  <input type="text" id="yourName" placeholder="Jane Smith">
-                </div>
-              </div>
-              <div class="row collapse">
-                <div class="large-2 columns">
-                  <label class="inline"> Your Email</label>
-                </div>
-                <div class="large-10 columns">
-                  <input type="text" id="yourEmail" placeholder="jane@smithco.com">
-                </div>
-              </div>
-              <label>What's up?</label>
-              <textarea rows="4"></textarea>
-              <button type="submit" class="radius button">Submit</button>
-            </form>
-          </div>
-        </section>
-        <section class="section">
-          <h5 class="title"><a href="#panel2">Specific Person</a></h5>
-          <div class="content" data-slug="panel2">
-            <ul class="large-block-grid-5 small-block-grid-3">
-              <li><a href="mailto:mal@serenity.bc.reb"><img src="http://placehold.it/200x200&amp;text=[person]">Mal Reynolds</a></li>
-              <li><a href="mailto:zoe@serenity.bc.reb"><img src="http://placehold.it/200x200&amp;text=[person]">Zoe Washburne</a></li>
-              <li><a href="mailto:jayne@serenity.bc.reb"><img src="http://placehold.it/200x200&amp;text=[person]">Jayne Cobb</a></li>
-              <li><a href="mailto:doc@serenity.bc.reb"><img src="http://placehold.it/200x200&amp;text=[person]">Simon Tam</a></li>
-              <li><a href="mailto:killyouwithmymind@serenity.bc.reb"><img src="http://placehold.it/200x200&amp;text=[person]">River Tam</a></li>
-              <li><a href="mailto:leafonthewind@serenity.bc.reb"><img src="http://placehold.it/200x200&amp;text=[person]">Hoban Washburne</a></li>
-              <li><a href="mailto:book@serenity.bc.reb"><img src="http://placehold.it/200x200&amp;text=[person]">Shepherd Book</a></li>
-              <li><a href="mailto:klee@serenity.bc.reb"><img src="http://placehold.it/200x200&amp;text=[person]">Kaywinnet Lee Fry</a></li>
-              <li><a href="mailto:inara@guild.comp.all"><img src="http://placehold.it/200x200&amp;text=[person]">Inarra Serra</a></li>
-            </ul>
-          </div>
-        </section>
-      </div>
-    </div>
-    <div class="large-3 columns">
-      <h5>Map</h5>
-      <p>
-        <a href="" data-reveal-id="mapModal"><img src="http://placehold.it/400x280"></a><br />
-        <a href="" data-reveal-id="mapModal">View Map</a>
-      </p>
-      <p>
-        Dörpeti dörp
-      </p>
+  <div class="ngc-grid-row" style="padding-bottom: 10px;">
+    <div class="large-12 columns">
+      <h4>Otsikko</h4>
+      <nav class="breadcrumbs">
+        <a href="#">Sijainti</a>
+        <a href="#">Jossa</a>
+        <a class="current" href="#">Ollaan?</a>
+      </nav>
     </div>
   </div>
-  <footer class="row">
-    <div class="large-12 columns">
-      <hr />
-      <div class="row">
-        <div class="large-6 columns">
-          <p>&copy; Copyright no one at all. Go to town.</p>
+  <div class="ngc-grid-row ngc-midsection">
+    <div class="large-9 columns fullheight">
+      <ul class="ngc-listbox ngc-chat">
+        <li class="ngc-chat-message">
+          <div class="author"><a href="#">Nimi</a></div>
+          <div class="content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce vitae condimentum leo. In et eleifend eros. Etiam accumsan elit ac ligula sodales, eu facilisis sem ultrices.</div>
+        </li>
+        <li class="ngc-chat-message">
+          <div class="author"><a href="#">Nimi</a></div>
+          <div class="content">Vivamus eget hendrerit purus, ac sagittis tortor. Nam dapibus ultricies erat, a volutpat sem. Curabitur nec consequat neque.</div>
+        </li>
+        <li class="ngc-chat-message">
+          <div class="author"><a href="#">Nimi</a></div>
+          <div class="content">Etiam auctor, lectus ut mattis faucibus, lacus arcu auctor est, ac dictum est sem ac sapien. Sed eleifend porttitor orci et luctus. Phasellus pretium congue elit, at rutrum velit hendrerit ac. Phasellus at congue felis, in iaculis velit.</div>
+        </li>
+        <li class="ngc-chat-message">
+          <div class="author"><a href="#">Nimi</a></div>
+          <div class="content">Cras dictum feugiat metus et venenatis. Sed ac porttitor tortor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed accumsan tellus turpis, pretium tempor ante convallis eu. Praesent in posuere lectus. In vitae volutpat felis. Nulla nisi augue, gravida ut elit et, eleifend tempus purus.</div>
+        </li>
+        <li class="ngc-chat-message">
+          <div class="author"><a href="#">Nimi</a></div>
+          <div class="content">Fusce pharetra ligula neque, pellentesque malesuada leo blandit quis. Ut aliquam condimentum orci quis mollis.</div>
+        </li>
+        <li class="ngc-chat-message">
+          <div class="author"><a href="#">Nimi</a></div>
+          <div class="content">Etiam id sollicitudin tellus, sed tincidunt mi. Aenean ac lacus egestas, elementum magna sed, mattis est. Sed lacinia, odio ac dictum rhoncus, orci libero consequat tellus, pharetra volutpat justo purus eu nulla.</div>
+        </li>
+        <li class="ngc-chat-message">
+          <div class="author"><a href="#">Nimi</a></div>
+          <div class="content">Fusce nec urna id magna sodales feugiat. Aenean ut magna dui. Duis ac rutrum massa.</div>
+        </li>
+      </ul>
+      <div class="row collapse">
+        <div class="small-10 columns">
+          <input type="text" placeholder="Tekstikenttä">
         </div>
-        <div class="large-6 columns">
-          <ul class="inline-list right">
-            <li><a href="#">Link 1</a></li>
-            <li><a href="#">Link 2</a></li>
-            <li><a href="#">Link 3</a></li>
-            <li><a href="#">Link 4</a></li>
-          </ul>
+        <div class="small-2 columns">
+          <button class="button prefix">Lähetä</button>
         </div>
       </div>
     </div>
-  </footer>
-  <div class="reveal-modal" id="mapModal">
-    <h4>Where We Are</h4>
-    <p><img src="http://placehold.it/800x600" /></p>
-    <a href="#" class="close-reveal-modal">&times;</a>
+    <div class="large-3 columns collapse-left fullheight">
+      <ul class="ngc-listbox ngc-members fullheight">
+        <li class="ngc-members-member"><a href="#">Nimi</a></li>
+        <li class="ngc-members-member"><a href="#">Nimi</a></li>
+        <li class="ngc-members-member"><a href="#">Nimi</a></li>
+        <li class="ngc-members-member"><a href="#">Nimi</a></li>
+        <li class="ngc-members-member"><a href="#">Nimi</a></li>
+      </ul>
+    </div>
   </div>
     </script>
     <script type="text/x-handlebars" data-template-name="components/gravatar-image">

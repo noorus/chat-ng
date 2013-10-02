@@ -8,7 +8,8 @@ require.config(
     socketio: "//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min",
     hashes: "hashes.min",
     modernizr: "//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min",
-    foundation: "//cdnjs.cloudflare.com/ajax/libs/foundation/4.3.1/js/foundation.min"
+//    foundation: "//cdnjs.cloudflare.com/ajax/libs/foundation/4.3.1/js/foundation.min"
+    foundation: "foundation.min"
   },
   shim: {
     "ember": {
