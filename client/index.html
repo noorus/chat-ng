@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Chat</title>
+    <meta name="robots" content="noindex">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script data-main="js/chat-ng.js" src="js/lib/require.js"></script>
+  </head>
+  <body id="chat">
+    <script type="text/x-handlebars">
+      <h2>Welcome to Ember.js</h2>
+      {{outlet}}
+    </script>
+    <script type="text/x-handlebars" data-template-name="components/gravatar-image">
+      <img {{bind-attr src=gravatarUrl}}>
+      <div class="email-input">
+        {{input type="email" value=email placeholder="Enter your Gravatar e-mail"}}
+      </div>
+    </script>
+    <script type="text/x-handlebars" data-template-name="index">
+      <ul>
+      {{#each item in model}}
+      <li>{{gravatar-image email=item size="200"}}</li>
+      {{/each}}
+      </ul>
+    </script>
+  </body>
+</html>
