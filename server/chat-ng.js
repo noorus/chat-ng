@@ -1,11 +1,16 @@
 #!/usr/bin/env node
 
+var util     = require( "util" );
+
 var optimist = require( "optimist" );
 var express  = require( "express" );
 var mysql    = require( "mysql" );
 var sio      = require( "socket.io" );
 var crypto   = require( "crypto" );
 var moment   = require( "moment" );
+
+var logger   = require( "./log-ng" );
+var log      = new logger;
 
 var argv = optimist
 .options( "port", { alias: "p", default: 3000 } )
@@ -30,31 +35,48 @@ var ClientState =
   idle: 1
 };
 
-function Client( id )
+function Client( socket )
 {
-  this.id = id;
+  this.id = socket.id;
+  this.socket = socket;
   this.state = ClientState.out;
   this.loginAttempts = 0;
   this.lastLoginTime = moment();
   this.name = null;
+  this.address = {
+    address: socket.handshake.address.address,
+    port: socket.handshake.address.port
+  };
+  this.token = socket.handshake.randomToken;
 }
 
 Client.prototype.toJSON = function()
 {
-  return { state: this.state };
+  return {
+    id: this.id,
+    state: this.state,
+    address: this.address,
+    name: this.name
+  };
+};
+
+Client.prototype.onConnect = function()
+{
+  log.info( "chat: client connected " + this.id );
+  this.socket.emit( "ngc_welcome",
+  {
+    version: ChatNg.version,
+    protocol: ChatNg.protocolVersion,
+    token: this.token
+  });
+};
+
+Client.prototype.onDisconnect = function()
+{
+  log.info( "chat: client disconnected " + this.id );
 };
 
 var DataBackend =
-{
-  loginHash: function( username, password )
-  {
-    var hash = crypto.createHash( "sha1" );
-    hash.update( username + password )
-    return hash.digest( "hex" );
-  }
-};
-
-var ChatNg =
 {
   dbPool: null,
   init: function()
@@ -72,22 +94,13 @@ var ChatNg =
       bigNumberStrings: true
     } );
   },
-  getIndex: function( req, res )
+  loginHash: function( username, password )
   {
-    res.send( "chat-ng index" );
-  },
-  getStatus: function( req, res )
-  {
-    res.send( "chat-ng status" );
-  },
-  onAuthorization: function( handshakeData, callback )
-  {
-    console.log( "ChatNg.onAuthorization" );
-    callback( null, true );
-  },
-  onConnection: function( socket )
-  {
-    console.log( "ChatNg.onConnection" );
+    var hash = crypto.createHash( "sha1" );
+    hash.update( username + password );
+    return hash.digest( "hex" );
+  }
+/*
     dbPool.getConnection( function( err, connection ) {
       if ( err ) {
         socket.emit( "test", "Database error: " + err );
@@ -100,6 +113,58 @@ var ChatNg =
         connection.release();
       }
     } );
+*/
+};
+
+var ChatNg =
+{
+  backend: null,
+  version: [ 0, 0, 1 ],
+  protocolVersion: 0,
+  options: {
+    tokenBytes: 16
+  },
+  init: function()
+  {
+    log.info( "chat-ng daemon v" + this.version.join( "." ) );
+    this.backend = DataBackend;
+  },
+  getIndex: function( req, res )
+  {
+    res.send( "chat-ng index" );
+  },
+  getStatus: function( req, res )
+  {
+    var body = [];
+    io.sockets.clients().forEach( function( socket )
+    {
+      socket.get( "client", function( dummy, client )
+      {
+        if ( client )
+          body.push( client.toJSON() );
+      } );
+    } );
+    res.json( body );
+  },
+  onAuthorization: function( handshake, callback )
+  {
+    var bytes = crypto.randomBytes( ChatNg.options.tokenBytes );
+    handshake.randomToken = bytes.toString( "base64" );
+    callback( null, true );
+  },
+  onConnection: function( socket )
+  {
+    var client = new Client( socket );
+    socket.set( "client", client );
+    socket.on( "disconnect", function(){
+      client.onDisconnect.call( client );
+    });
+    client.onConnect();
+  },
+  onHeartbeat: function()
+  {
+    // var clients = io.sockets.clients();
+    // ...
   }
 };
 
@@ -115,7 +180,7 @@ var server = app.listen( argv.p );
 var io = sio.listen( server );
 io.set( "origins", argv.origin + ":*" );
 io.set( "log level", argv.debug ? 3 : 2 );
-io.set( "transports", ["websocket","htmlfile","xhr-polling","jsonp-polling"] );
+io.set( "transports", ["websocket"] );
 io.set( "heartbeats", true );
 io.set( "destroy upgrade", true );
 io.set( "browser client", true );
@@ -132,8 +197,5 @@ if ( !argv.debug )
 }
 io.of( "/chat" ).authorization( ChatNg.onAuthorization ).on( "connection", ChatNg.onConnection );
 
-console.info( "Listening on http://%s:%d",
-  server.address().address,
-  server.address().port
-);
-console.info( "Debug: " + argv.debug );
+log.info( "listening on " + server.address().address + ":" + server.address().port );
+log.info( "debug: " + argv.debug );
