@@ -8,7 +8,6 @@ require.config(
     socketio: "//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min",
     hashes: "hashes.min",
     modernizr: "//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min",
-//    foundation: "//cdnjs.cloudflare.com/ajax/libs/foundation/4.3.1/js/foundation.min"
     foundation: "foundation.min"
   },
   shim: {
@@ -37,19 +36,45 @@ function( $, Em, io, hashes, Modernizr, Foundation )
     rootElement: "#chat",
     LOG_TRANSITIONS: true
   });
-  App.GravatarImageComponent = Em.Component.extend({
-    size: 200,
-    email: '',
-    gravatarUrl: function() {
-      var email = this.get('email'), size = this.get('size');
-      var hash = new hashes.MD5;
-      return 'http://www.gravatar.com/avatar/' + hash.hex(email) + '?s=' + size;
-    }.property('email', 'size')
+
+  App.ChatMessageComponent = Em.Component.extend({
+    tagName: "li",
+    classNames: ["ngc-chat-message"],
+    templateName: "components/chat-message",
+    name: "unknown",
+    content: "unknown"
   });
+
+  App.ChatMemberComponent = Em.Component.extend({
+    tagName: "li",
+    classNames: ["ngc-members-member"],
+    templateName: "components/chat-member",
+    name: "unknown"
+  });
+
   App.Router.map(function(){});
+  App.ApplicationRoute = Em.Route.extend({
+    setupController: function( controller )
+    {
+      controller.set( "title", "Tsättihomman otsikko" );
+    }
+  });
   App.IndexRoute = Em.Route.extend({
-    model: function() {
-      return ["tomster@emberjs.com",""];
+    setupController: function( controller )
+    {
+      controller.set( "title", "Keskustelun aihe (topic?)" );
+    }
+  });
+  App.IndexController = Em.Controller.extend({
+    commandLine: "",
+    execute: function() {
+      var line = App.ChatMessageComponent.create({
+        name: "Nimi",
+        content: this.get( "commandLine" )
+      });
+      line.appendTo( ".ngc-chat" );
+      line.rerender();
+      this.set( "commandLine", "" );
     }
   });
   require(
@@ -57,6 +82,14 @@ function( $, Em, io, hashes, Modernizr, Foundation )
     function( document, $, Modernizr, Foundation )
     {
       $( document ).foundation();
+      for ( i = 0; i < 5; i++ )
+      {
+        var member = App.ChatMemberComponent.create({
+          name: "Käyttäjä " + i
+        });
+        member.appendTo( ".ngc-members" );
+        member.rerender();
+      }
     }
   );
 });

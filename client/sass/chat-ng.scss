@@ -1,5 +1,6 @@
 @import "settings";
 @import "normalize";
+
 @import "foundation/components/global";
 @import "foundation/components/grid";
 @import "foundation/components/visibility";
@@ -35,7 +36,7 @@
 html, body, .ember-application > .ember-view {
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  min-height: 480px;
 }
 
 .collapse-left {
@@ -57,20 +58,20 @@ html, body, .ember-application > .ember-view {
 
 .ngc-listbox {
   @include panel($secondary-color,0);
-  @include single-box-shadow(rgba(0,0,0,0.25),0,2px,4px,0,true);
+  @include single-box-shadow(rgba(0,0,0,0.4),0,2px,4px,0,true);
   overflow: auto;
   height: 100%;
   list-style-type: none;
 }
 
-ul.ngc-listbox > li {
+ul.ngc-listbox li {
 }
 
-ul.ngc-listbox > li:nth-child(odd) {
+ul.ngc-listbox > *:nth-child(odd) {
   background: rgba(255,255,255,0.1);
 }
 
-ul.ngc-listbox > li:nth-child(even) {
+ul.ngc-listbox > *:nth-child(even) {
   background: rgba(0,0,0,0.05);
 }
 
@@ -83,7 +84,7 @@ ul.ngc-listbox > li:nth-child(even) {
   padding: 0.7em 3em 0.7em 3em;
 }
 
-.ngc-chat-message > .author {
+.ngc-chat-message .author {
   float: left;
   font-weight: 600;
   margin-right: 1em;
@@ -93,13 +94,40 @@ ul.ngc-listbox > li:nth-child(even) {
   width: 6em;
 }
 
-.ngc-chat-message > .content {
+.ngc-chat-message .content {
   text-align: justify;
 }
 
-.ngc-members {
+@media only screen and (max-width:"#{$small-screen}") {
+  .ngc-members {
+    display: none;
+  }
 }
 
 .ngc-members-member {
-  padding: 0.1em 0.6em;
+  padding: 3px 0.6em;
+  height: 36px;
+  width: 100%;
+  font-family: Tahoma, Verdana, sans-serif;
+  font-size: 13px;
+  line-height: 15px;
+  > img, > div {
+    height: 30px;
+    display: block;
+    float: left;
+    clear: none;
+    margin: 0;
+    padding: 0;
+  }
+  > img {
+    @include radius(3px);
+    width: 30px;
+    margin-right: 10px;
+  }
+  > div > .name {
+    font-weight: bold;
+  }
+  > div > .status {
+    color: inherit;
+  }
 }

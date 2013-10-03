@@ -12,123 +12,91 @@
     <script data-main="js/chat-ng.js" src="js/lib/require.js"></script>
   </head>
   <body id="chat">
+    <script type="text/x-handlebars" data-template-name="components/chat-message">
+      <div class="author"><a href="#">{{ name }}</a></div>
+      <div class="content">{{ content }}</div>
+    </script>
+    <script type="text/x-handlebars" data-template-name="components/chat-member">
+      <img src="http://placehold.it/30x30">
+      <div>
+        <span class="name">{{ name }}</span><br>
+        <span class="status">Statusteksti</span>
+      </div>
+    </script>
     <script type="text/x-handlebars">
-  <nav class="top-bar">
-    <ul class="title-area">
-      <li class="name">
-        <h1><a href="#">Chat-NG</a></h1>
-      </li>
-      <li class="toggle-topbar menu-icon"><a href="#"><span>menu</span></a></li>
-    </ul>
-    <section class="top-bar-section">
-      <ul class="right">
-        <li class="has-form"><a>Tila: Ei yhteyttä</a></li>
-        <li class="divider"></li>
-        <li class="has-dropdown">
-          <a href="#">Main Item 1</a>
-          <ul class="dropdown">
-            <li><label>Section Name</label></li>
+      <nav class="top-bar">
+        <ul class="title-area">
+          <li class="name">
+            <h1><a href="#">{{ controller.title }}</a></h1>
+          </li>
+          <li class="toggle-topbar menu-icon"><a href="#"><span>menu</span></a></li>
+        </ul>
+        <section class="top-bar-section">
+          <ul class="right">
+            <li class="has-form"><a>Tila: Ei yhteyttä</a></li>
+            <li class="divider"></li>
             <li class="has-dropdown">
-              <a href="#" class="">Has Dropdown, Level 1</a>
+              <a href="#">Main Item 1</a>
               <ul class="dropdown">
-                <li><a href="#">Dropdown Options</a></li>
-                <li><a href="#">Dropdown Options</a></li>
-                <li><a href="#">Level 2</a></li>
-                <li><a href="#">Subdropdown Option</a></li>
-                <li><a href="#">Subdropdown Option</a></li>
-                <li><a href="#">Subdropdown Option</a></li>
+                <li><label>Section Name</label></li>
+                <li class="has-dropdown">
+                  <a href="#" class="">Has Dropdown, Level 1</a>
+                  <ul class="dropdown">
+                    <li><a href="#">Dropdown Options</a></li>
+                    <li><a href="#">Dropdown Options</a></li>
+                    <li><a href="#">Level 2</a></li>
+                    <li><a href="#">Subdropdown Option</a></li>
+                    <li><a href="#">Subdropdown Option</a></li>
+                    <li><a href="#">Subdropdown Option</a></li>
+                  </ul>
+                </li>
+                <li><a href="#">Dropdown Option</a></li>
+                <li><a href="#">Dropdown Option</a></li>
+                <li class="divider"></li>
+                <li><label>Section Name</label></li>
+                <li><a href="#">Dropdown Option</a></li>
+                <li><a href="#">Dropdown Option</a></li>
+                <li><a href="#">Dropdown Option</a></li>
+                <li class="divider"></li>
+                <li><a href="#">See all &rarr;</a></li>
               </ul>
             </li>
-            <li><a href="#">Dropdown Option</a></li>
-            <li><a href="#">Dropdown Option</a></li>
             <li class="divider"></li>
-            <li><label>Section Name</label></li>
-            <li><a href="#">Dropdown Option</a></li>
-            <li><a href="#">Dropdown Option</a></li>
-            <li><a href="#">Dropdown Option</a></li>
-            <li class="divider"></li>
-            <li><a href="#">See all &rarr;</a></li>
+            <li><a href="#">Kirjaudu ulos</a></li>
           </ul>
-        </li>
-        <li class="divider"></li>
-        <li><a href="#">Kirjaudu ulos</a></li>
-      </ul>
-    </section>
-  </nav>
-  <div class="ngc-grid-row" style="padding-bottom: 10px;">
-    <div class="large-12 columns">
-      <h4>Otsikko</h4>
-      <nav class="breadcrumbs">
-        <a href="#">Sijainti</a>
-        <a href="#">Jossa</a>
-        <a class="current" href="#">Ollaan?</a>
+        </section>
       </nav>
-    </div>
-  </div>
-  <div class="ngc-grid-row ngc-midsection">
-    <div class="large-9 columns fullheight">
-      <ul class="ngc-listbox ngc-chat">
-        <li class="ngc-chat-message">
-          <div class="author"><a href="#">Nimi</a></div>
-          <div class="content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce vitae condimentum leo. In et eleifend eros. Etiam accumsan elit ac ligula sodales, eu facilisis sem ultrices.</div>
-        </li>
-        <li class="ngc-chat-message">
-          <div class="author"><a href="#">Nimi</a></div>
-          <div class="content">Vivamus eget hendrerit purus, ac sagittis tortor. Nam dapibus ultricies erat, a volutpat sem. Curabitur nec consequat neque.</div>
-        </li>
-        <li class="ngc-chat-message">
-          <div class="author"><a href="#">Nimi</a></div>
-          <div class="content">Etiam auctor, lectus ut mattis faucibus, lacus arcu auctor est, ac dictum est sem ac sapien. Sed eleifend porttitor orci et luctus. Phasellus pretium congue elit, at rutrum velit hendrerit ac. Phasellus at congue felis, in iaculis velit.</div>
-        </li>
-        <li class="ngc-chat-message">
-          <div class="author"><a href="#">Nimi</a></div>
-          <div class="content">Cras dictum feugiat metus et venenatis. Sed ac porttitor tortor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed accumsan tellus turpis, pretium tempor ante convallis eu. Praesent in posuere lectus. In vitae volutpat felis. Nulla nisi augue, gravida ut elit et, eleifend tempus purus.</div>
-        </li>
-        <li class="ngc-chat-message">
-          <div class="author"><a href="#">Nimi</a></div>
-          <div class="content">Fusce pharetra ligula neque, pellentesque malesuada leo blandit quis. Ut aliquam condimentum orci quis mollis.</div>
-        </li>
-        <li class="ngc-chat-message">
-          <div class="author"><a href="#">Nimi</a></div>
-          <div class="content">Etiam id sollicitudin tellus, sed tincidunt mi. Aenean ac lacus egestas, elementum magna sed, mattis est. Sed lacinia, odio ac dictum rhoncus, orci libero consequat tellus, pharetra volutpat justo purus eu nulla.</div>
-        </li>
-        <li class="ngc-chat-message">
-          <div class="author"><a href="#">Nimi</a></div>
-          <div class="content">Fusce nec urna id magna sodales feugiat. Aenean ut magna dui. Duis ac rutrum massa.</div>
-        </li>
-      </ul>
-      <div class="row collapse">
-        <div class="small-10 columns">
-          <input type="text" placeholder="Tekstikenttä">
-        </div>
-        <div class="small-2 columns">
-          <button class="button prefix">Lähetä</button>
-        </div>
-      </div>
-    </div>
-    <div class="large-3 columns collapse-left fullheight">
-      <ul class="ngc-listbox ngc-members fullheight">
-        <li class="ngc-members-member"><a href="#">Nimi</a></li>
-        <li class="ngc-members-member"><a href="#">Nimi</a></li>
-        <li class="ngc-members-member"><a href="#">Nimi</a></li>
-        <li class="ngc-members-member"><a href="#">Nimi</a></li>
-        <li class="ngc-members-member"><a href="#">Nimi</a></li>
-      </ul>
-    </div>
-  </div>
-    </script>
-    <script type="text/x-handlebars" data-template-name="components/gravatar-image">
-      <img {{bind-attr src=gravatarUrl}}>
-      <div class="email-input">
-        {{input type="email" value=email placeholder="Enter your Gravatar e-mail"}}
-      </div>
+      {{ outlet }}
     </script>
     <script type="text/x-handlebars" data-template-name="index">
-      <ul>
-      {{#each item in model}}
-      <li>{{gravatar-image email=item size="200"}}</li>
-      {{/each}}
-      </ul>
+      <div class="ngc-grid-row" style="padding-bottom: 10px;">
+        <div class="large-12 columns">
+          <h4>{{ controller.title }}</h4>
+          <nav class="breadcrumbs">
+            <a href="#">Sijainti</a>
+            <a href="#">Jossa</a>
+            <a class="current" href="#">Ollaan?</a>
+          </nav>
+        </div>
+      </div>
+      <div class="ngc-grid-row ngc-midsection">
+        <div class="large-9 columns fullheight">
+          <ul class="ngc-listbox ngc-chat">
+          </ul>
+          <div class="row collapse">
+            <div class="small-10 columns">
+              {{ input type="text" value=commandLine action="execute" }}
+            </div>
+            <div class="small-2 columns">
+              <button {{ action "execute" }} class="button prefix">Lähetä</button>
+            </div>
+          </div>
+        </div>
+        <div class="large-3 columns collapse-left fullheight">
+          <ul class="ngc-listbox ngc-members fullheight">
+          </ul>
+        </div>
+      </div>
     </script>
   </body>
 </html>
