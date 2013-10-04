@@ -8,7 +8,7 @@ var sio         = require( "socket.io" );
 var crypto      = require( "crypto" );
 
 var logger      = require( "./chat.logger" );
-var log         = new logger;
+var log         = logger.create();
 
 var backend     = require( "./chat.backend.smf" );
 var chatclient  = require( "./chat.client" );

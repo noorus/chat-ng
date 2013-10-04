@@ -17,7 +17,7 @@ function pad( str )
   return ( str.length < max ? str + new Array( max - str.length + 1 ).join( " " ) : str );
 }
 
-var LoggerNg = module.exports = function( options )
+function LoggerNg( options )
 {
   options = options || {};
   this.colors = false !== options.colors;
@@ -31,7 +31,7 @@ LoggerNg.prototype.log = function( type )
   if ( index > this.level || !this.enabled )
     return this;
   console.log.apply( console,
-    [this.colors ? '   \033[' + colors[index] + 'm' + pad( type ) + ' -\033[39m' : type + ':'].concat(toArray(arguments).slice(1))
+    [this.colors ? '   \033[' + colors[index] + 'm' + pad( type ) + ' -\033[39m' : type + ':'].concat( toArray( arguments ).slice( 1 ) )
   );
   return this;
 };
@@ -43,3 +43,11 @@ levels.forEach( function( name )
     this.log.apply( this, [name].concat( toArray( arguments ) ) );
   };
 } );
+
+module.exports =
+{
+  create: function( options )
+  {
+    return new LoggerNg( options );
+  }
+};
