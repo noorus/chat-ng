@@ -1,18 +1,6 @@
 var crypto = require( "crypto" );
 var moment = require( "moment" );
-
-function User( id, name )
-{
-  this.id = id;
-  this.name = name;
-}
-User.prototype.toJSON = function()
-{
-  return {
-    id: this.id,
-    name: this.name
-  }
-}
+var chatuser = require( "./chat.user" );
 
 var ClientExceptionCode =
 {
@@ -148,7 +136,7 @@ Client.prototype.onAuth = function( data )
     hash = hash.digest( "hex" );
     if ( data.hash === hash ) {
       this.log( "Authenticated as \"" + data.user + "\"" );
-      this.user = new User( user.id, user.name );
+      this.user = chatuser.create( user.id, user.name );
       this.changeState( ClientState.idle );
       this.sendAuth( AuthResult.ok, this.user );
       this.sendWho();
