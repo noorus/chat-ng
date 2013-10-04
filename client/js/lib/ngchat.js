@@ -98,20 +98,22 @@ define(
     {
       console.log( "iO: Packet NGC_Welcome" );
       if ( this.state != ChatState.connected )
-        throw new ChatException( ChatExceptionCode.protocolError, "ngc_welcome out of state" );
+        throw new ChatException( ChatExceptionCode.protocolError, "NGC_Welcome out of state" );
       if ( this.protocolVersion != data.protocol )
         throw new ChatException( ChatExceptionCode.protocolError,
-          "protocol version mismatch, c: " + this.protocolVersion + " s: " + data.protocol );
+          "Protocol version mismatch, c: " + this.protocolVersion + " s: " + data.protocol );
       this.session.serverVersion = data.version;
       this.session.token = data.token;
       console.log( "Chat: Server version is " + this.session.serverVersion.join( "." ) );
       console.log( "Chat: Server token is " + this.session.token );
-      this.sendAuth( "noora", "abcd1234" );
+      var u = prompt( "Käyttäjätunnus" );
+      var p = prompt( "Salasana" );
+      this.sendAuth( u, p );
     };
     Chat.prototype.sendAuth = function( username, password )
     {
       if ( this.state != ChatState.connected )
-        throw new ChatException( ChatExceptionCode.applicationError, "auth call out of state" );
+        throw new ChatException( ChatExceptionCode.applicationError, "Auth call out of state" );
       if ( !this.changeState( ChatState.authing ) )
         return;
       var sha1 = new Hashes.SHA1();
@@ -127,8 +129,20 @@ define(
     {
       console.log( "iO: Packet NGC_Auth" );
       if ( this.state != ChatState.authing )
-        throw new ChatException( ChatExceptionCode.protocolError, "ngc_auth out of state" );
-      console.log( data );
+        throw new ChatException( ChatExceptionCode.protocolError, "NGC_Auth out of state" );
+      if ( data.code != 0 ) {
+        switch ( data.code ) {
+          case 1: alert( "Tietokantavirhe" ); break;
+          case 2: alert( "Tuntematon käyttäjätunnus" ); break;
+          case 3: alert( "Virheellinen salasana" ); break;
+        }
+        this.changeState( ChatState.connected );
+        var u = prompt( "Käyttäjätunnus" );
+        var p = prompt( "Salasana" );
+        this.sendAuth( u, p );
+      } else {
+        this.changeState( ChatState.idle );
+      }
     };
     Chat.prototype.onDisconnected = function()
     {

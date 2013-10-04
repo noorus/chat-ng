@@ -62,6 +62,19 @@ function ClientException( code, message )
   };
 }
 
+function User( id, name )
+{
+  this.id = id;
+  this.name = name;
+}
+User.prototype.toJSON = function()
+{
+  return {
+    id: this.id,
+    name: this.name
+  }
+}
+
 function Client( owner, socket )
 {
   this._owner = owner;
@@ -69,15 +82,11 @@ function Client( owner, socket )
   this.socket = socket;
   this.state = ClientState.disconnected;
   this.loginAttempts = 0;
-  this.name = null;
   this.address = {
     address: socket.handshake.address.address,
     port: socket.handshake.address.port
   };
-  this.user = {
-    id: null,
-    name: null
-  }
+  this.user = null;
   this.token = socket.handshake.randomToken;
 }
 Client.prototype.toJSON = function()
@@ -86,7 +95,7 @@ Client.prototype.toJSON = function()
     id: this.id,
     state: this.state,
     address: this.address,
-    name: this.name
+    user: this.user
   };
 };
 Client.prototype.changeState = function( newState )
@@ -133,8 +142,7 @@ Client.prototype.onAuth = function( data )
         hash = hash.digest( "hex" );
         if ( data.hash === hash ) {
           log.info( "Chat: User auth ok: " + user.name );
-          this.user.id = user.id;
-          this.user.name = user.name;
+          this.user = new User( user.id, user.name );
           this.changeState( ClientState.idle );
           this.sendAuth( AuthResult.ok, this.user );
         } else {
@@ -150,7 +158,7 @@ Client.prototype.sendAuth = function( result, data )
   this.socket.emit( "ngc_auth",
   {
     code: result,
-    user: data
+    user: data ? data.toJSON() : null
   });
 };
 Client.prototype.onDisconnect = function()
@@ -158,6 +166,7 @@ Client.prototype.onDisconnect = function()
   if ( !this.changeState( ClientState.disconnected ) )
     return;
   log.info( "Chat: Client disconnected " + this.id );
+  this.user = null;
 };
 
 var ChatNg =
