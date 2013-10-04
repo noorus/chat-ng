@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 
-var util     = require( "util" );
+var util        = require( "util" );
 
-var optimist = require( "optimist" );
-var express  = require( "express" );
-var sio      = require( "socket.io" );
-var crypto   = require( "crypto" );
-var moment   = require( "moment" );
+var optimist    = require( "optimist" );
+var express     = require( "express" );
+var sio         = require( "socket.io" );
+var crypto      = require( "crypto" );
 
-var logger   = require( "./chat.logger" );
-var log      = new logger;
+var logger      = require( "./chat.logger" );
+var log         = new logger;
 
-var backend  = require( "./chat.backend.smf" );
+var backend     = require( "./chat.backend.smf" );
+var chatclient  = require( "./chat.client" );
 
 var argv = optimist
 .options( "port", { alias: "p", default: 3000 } )
@@ -30,178 +30,9 @@ if ( ( typeof argv.sock != "string"
   || argv.sock.length < 1 || argv.nosock )
   argv.sock = null;
 
-var ClientState =
-{
-  disconnected: 0,
-  connected: 1,
-  idle: 2
-};
-
-var AuthResult =
-{
-  ok: 0,
-  error: 1,
-  badUser: 2,
-  badPassword: 3
-};
-
-var ClientExceptionCode =
-{
-  transportError: 0,
-  protocolError: 1,
-  applicationError: 2
-}
-
-function ClientException( code, message )
-{
-  this.code     = code;
-  this.message  = message;
-  this.toString = function()
-  {
-    return "ClientException(" + this.code + "): " + this.message;
-  };
-}
-
-function User( id, name )
-{
-  this.id = id;
-  this.name = name;
-}
-User.prototype.toJSON = function()
-{
-  return {
-    id: this.id,
-    name: this.name
-  }
-}
-
-function Client( owner, socket )
-{
-  this._owner = owner;
-  this.id = socket.id;
-  this.socket = socket;
-  this.state = ClientState.disconnected;
-  this.connectTime = null;
-  this.loginAttempts = 0;
-  this.lastLoginTime = null;
-  this.address = {
-    address: socket.handshake.address.address,
-    port: socket.handshake.address.port
-  };
-  this.user = null;
-  this.token = socket.handshake.randomToken;
-}
-Client.prototype.toJSON = function()
-{
-  return {
-    id: this.id,
-    state: this.state,
-    address: this.address,
-    user: this.user.toJSON()
-  };
-};
-Client.prototype.isVisible = function()
-{
-  return this.state == ClientState.idle;
-};
-Client.prototype.log = function( message )
-{
-  log.info( "[" + this.id + "] " + message );
-};
-Client.prototype.changeState = function( newState )
-{
-  if ( this.state == newState )
-    return false;
-  this.state = newState;
-  return true;
-};
-Client.prototype.onConnect = function()
-{
-  if ( !this.changeState( ClientState.connected ) )
-    return;
-  this.log( "Connected from " + this.address.address + ":" + this.address.port );
-  this.connectTime = moment().utc();
-  this.loginAttempts = 0;
-  this.lastLoginTime = null;
-  this.sendWelcome();
-};
-Client.prototype.sendWelcome = function()
-{
-  this.socket.emit( "ngc_welcome",
-  {
-    version: this._owner.version,
-    protocol: this._owner.protocolVersion,
-    token: this.token
-  });
-};
-Client.prototype.onAuth = function( data )
-{
-  if ( this.state != ClientState.connected )
-    throw new ClientException( ClientExceptionCode.protocolError, "ngc_auth out of state" );
-  this.loginAttempts++;
-  this.lastLoginTime = moment().utc();
-  this._owner.backend.userQuery( this, data.user, function( error, user )
-  {
-    if ( error ) {
-      this.log( "Authentication as \"" + data.user + "\" failed, database error!" );
-      this.sendAuth( AuthResult.error, null );
-      return;
-    }
-    if ( user === null ) {
-      this.log( "Authentication as \"" + data.user + "\" failed, bad account" );
-      this.sendAuth( AuthResult.badUser, null );
-      return;
-    }
-    var hash = crypto.createHash( "sha1" );
-    hash.update( user.hash + this.token );
-    hash = hash.digest( "hex" );
-    if ( data.hash === hash ) {
-      this.log( "Authenticated as \"" + data.user + "\"" );
-      this.user = new User( user.id, user.name );
-      this.changeState( ClientState.idle );
-      this.sendAuth( AuthResult.ok, this.user );
-      this.sendWho();
-    } else {
-      this.log( "Authentication as \"" + data.user + "\" failed, bad password" );
-      this.sendAuth( AuthResult.badPassword, null );
-    }
-  });
-};
-Client.prototype.sendAuth = function( result, data )
-{
-  this.socket.emit( "ngc_auth",
-  {
-    code: result,
-    user: data ? data.toJSON() : null
-  });
-};
-Client.prototype.sendWho = function()
-{
-  var who = [];
-  var clients = io.sockets.clients();
-  clients.forEach( function( socket )
-  {
-    socket.get( "client", function( dummy, client )
-    {
-      if ( client && client.isVisible && client.user )
-        who.push( client.user.toJSON() );
-    } );
-  } );
-  this.socket.emit( "ngc_who",
-  {
-    users: who
-  });
-};
-Client.prototype.onDisconnect = function()
-{
-  if ( !this.changeState( ClientState.disconnected ) )
-    return;
-  this.log( "Disconnected" );
-  this.user = null;
-};
-
 var ChatNg =
 {
+  "log": log,
   backend: null,
   version: [ 0, 0, 1 ],
   protocolVersion: 0,
@@ -244,14 +75,7 @@ var ChatNg =
   },
   onConnection: function( socket )
   {
-    var client = new Client( ChatNg, socket );
-    socket.set( "client", client );
-    socket.on( "disconnect", function(){
-      client.onDisconnect.call( client );
-    });
-    socket.on( "ngc_auth", function( data ){
-      client.onAuth.call( client, data );
-    });
+    var client = chatclient.create( ChatNg, socket );
     client.onConnect();
   },
   onHeartbeat: function()
