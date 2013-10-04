@@ -35,6 +35,12 @@ var ClientState =
   idle: 1
 };
 
+var QueryResult =
+{
+  ok: 0,
+  error: 1
+};
+
 function Client( socket )
 {
   this.id = socket.id;
@@ -49,7 +55,6 @@ function Client( socket )
   };
   this.token = socket.handshake.randomToken;
 }
-
 Client.prototype.toJSON = function()
 {
   return {
@@ -59,7 +64,6 @@ Client.prototype.toJSON = function()
     name: this.name
   };
 };
-
 Client.prototype.onConnect = function()
 {
   log.info( "chat: client connected " + this.id );
@@ -70,7 +74,19 @@ Client.prototype.onConnect = function()
     token: this.token
   });
 };
-
+Client.prototype.onAuth = function( data )
+{
+  log.info( "chat: got ngc_auth" );
+  /*var hash = crypto.createHash( "sha1" );
+  hash.update( stuff + token );
+  return hash.digest( "hex" );
+  ChatNg.backend.queryUser( this, data.user,
+  function( result, error, rows )
+  {
+    if ( result == QueryResult.ok )
+      this.socket.emit( "ngc_auth", { back: rows } );
+  });*/
+};
 Client.prototype.onDisconnect = function()
 {
   log.info( "chat: client disconnected " + this.id );
@@ -81,7 +97,7 @@ var DataBackend =
   dbPool: null,
   init: function()
   {
-    dbPool = mysql.createPool(
+    DataBackend.dbPool = mysql.createPool(
     {
       host: argv.host,
       user: argv.user,
@@ -94,26 +110,38 @@ var DataBackend =
       bigNumberStrings: true
     } );
   },
-  loginHash: function( username, password )
+  queryUser: function( context, username, callback )
   {
-    var hash = crypto.createHash( "sha1" );
-    hash.update( username + password );
-    return hash.digest( "hex" );
-  }
-/*
-    dbPool.getConnection( function( err, connection ) {
+    DataBackend.dbPool.getConnection( function( err, connection )
+    {
       if ( err ) {
-        socket.emit( "test", "Database error: " + err );
+        log.error( "DB: Database error on authenticate(1): " + err );
+        callback.call( context, QueryResult.error, err, null );
       } else {
-        connection.query( "SELECT member_name,passwd,password_salt FROM smf_members", function( err, rows )
+        connection.query(
+        "SELECT id_member,member_name,passwd FROM smf_members WHERE member_name = " + connection.escape( username ),
+        function( err, rows )
         {
-          if ( !err )
-            socket.emit( "test", rows );
-        } );
+          if ( err ) {
+            log.error( "DB: Database error on authenticate(2): " + err );
+            callback.call( context, QueryResult.error, err, null );
+          } else {
+            if ( rows.length != 1 )
+              callback.call( context, QueryResult.ok, null, null );
+            else {
+              var user = {
+                id: rows[0].id_member,
+                name: rows[0].member_name,
+                hash: rows[0].passwd
+              };
+              callback.call( context, QueryResult.ok, null, user );
+            }
+          }
+        });
         connection.release();
       }
-    } );
-*/
+    });
+  }
 };
 
 var ChatNg =
@@ -128,6 +156,7 @@ var ChatNg =
   {
     log.info( "chat-ng daemon v" + this.version.join( "." ) );
     this.backend = DataBackend;
+    this.backend.init();
   },
   getIndex: function( req, res )
   {
@@ -159,6 +188,9 @@ var ChatNg =
     socket.on( "disconnect", function(){
       client.onDisconnect.call( client );
     });
+    socket.on( "ngc_auth", function( data ){
+      client.onAuth.call( client, data );
+    });
     client.onConnect();
   },
   onHeartbeat: function()
@@ -180,14 +212,15 @@ var server = app.listen( argv.p );
 var io = sio.listen( server );
 io.set( "origins", argv.origin + ":*" );
 io.set( "log level", argv.debug ? 3 : 2 );
+io.set( "logger", log );
 io.set( "transports", ["websocket"] );
 io.set( "heartbeats", true );
 io.set( "destroy upgrade", true );
 io.set( "browser client", true );
 io.set( "browser client cache", true );
-io.set( "close timeout", 30 );
+io.set( "close timeout", 60 );
 io.set( "heartbeat timeout", 60 );
-io.set( "heartbeat interval", 30 );
+io.set( "heartbeat interval", 25 );
 io.set( "polling duration", 20 );
 if ( !argv.debug )
 {
