@@ -46,3 +46,11 @@ var settings = {
 };
 
 var ng = chatserver.create( app, server, "", settings, backend, log );
+app.get( "/", function( request, response )
+{
+  ng.getIndex.call( ng, request, response );
+});
+app.get( "/status", function( request, response )
+{
+  ng.getStatus.call( ng, request, response );
+});

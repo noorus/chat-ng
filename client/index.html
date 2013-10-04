@@ -20,7 +20,7 @@
       <img src="http://placehold.it/30x30">
       <div>
         <span class="name">{{ name }}</span><br>
-        <span class="status">Statusteksti</span>
+        <span class="status">Käyttäjä</span>
       </div>
     </script>
     <script type="text/x-handlebars">
@@ -81,8 +81,10 @@
       </div>
       <div class="ngc-grid-row ngc-midsection">
         <div class="large-9 columns fullheight">
-          <ul class="ngc-listbox ngc-chat">
-          </ul>
+          <div class="row collapse">
+            <div id="messageList">
+            </div>
+          </div>
           <div class="row collapse">
             <div class="small-10 columns">
               {{ input type="text" value=commandLine action="execute" }}
@@ -92,9 +94,7 @@
             </div>
           </div>
         </div>
-        <div class="large-3 columns collapse-left fullheight">
-          <ul class="ngc-listbox ngc-members fullheight">
-          </ul>
+        <div class="large-3 columns collapse-left fullheight" id="memberList">
         </div>
       </div>
     </script>

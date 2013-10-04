@@ -11,8 +11,6 @@ function Server( app, server, prefix, settings, backend, log )
   this.options = {
     tokenBytes: 16
   };
-  app.get( prefix + "/", this.getIndex );
-  app.get( prefix + "/status", this.getStatus );
   this.io = socketio.listen( server );
   this.io._owner = this;
   this.io.set( "origins", settings.origin + ":*" );
@@ -33,18 +31,68 @@ function Server( app, server, prefix, settings, backend, log )
     this.io.enable( "browser client etag" );
     this.io.enable( "browser client gzip" );
   }
-  this.io.of( prefix + "/chat" ).authorization(
+  this.io.set( "authorization",
     function( handshake, callback )
     {
-      this.manager._owner.onAuthorization.call( this.manager._owner, handshake, callback );
+      this._owner.onAuthorization.call( this._owner, handshake, callback );
     }
-  ).on( "connection",
+  );
+  this.io.on( "connection",
     function( socket )
     {
-      this.manager._owner.onConnection.call( this.manager._owner, socket );
+      this._owner.onConnection.call( this._owner, socket );
     }
   );
 }
+
+Server.prototype.onClientMessage = function( client, message )
+{
+  this.io.sockets.in( "authed" ).emit( "ngc_msg", { user: client.user.toJSON(), "message": message } );
+};
+
+Server.prototype.onClientAuthed = function( client )
+{
+  this.sendWhoTo( client );
+  this.io.sockets.in( "authed" ).emit( "ngc_join", { user: client.user.toJSON() } );
+  client.socket.join( "authed" );
+};
+
+Server.prototype.onClientDisconnected = function( client )
+{
+  if ( client.user )
+    this.io.sockets.in( "authed" ).emit( "ngc_leave", { user: client.user.toJSON() } );
+};
+
+Server.prototype.broadcastJoin = function( client )
+{
+  var clients = this.io.sockets.clients();
+  clients.forEach( function( socket )
+  {
+    socket.get( "client", function( dummy, client )
+    {
+      if ( client && client.isVisible && client.user )
+        who.push( client.user.toJSON() );
+    });
+  });
+};
+
+Server.prototype.sendWhoTo = function( sclient )
+{
+  var who = [];
+  var clients = this.io.sockets.clients();
+  clients.forEach( function( socket )
+  {
+    socket.get( "client", function( dummy, client )
+    {
+      if ( client && client.isVisible && client.user && client.id != sclient.id )
+        who.push( client.user.toJSON() );
+    });
+  });
+  sclient.socket.emit( "ngc_who",
+  {
+    users: who
+  });
+};
 
 Server.prototype.onAuthorization = function( handshake, callback )
 {

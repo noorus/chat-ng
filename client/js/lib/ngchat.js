@@ -35,6 +35,8 @@ define(
     }
     function Chat( settings )
     {
+      this.memberList = null;
+      this.messageList = null;
       this.settings = settings;
       this.version = [0, 0, 1];
       this.protocolVersion = 0;
@@ -60,6 +62,9 @@ define(
       this.socket.on( "ngc_welcome",      function( data ){ this._owner.onWelcome.call( this._owner, data ); } );
       this.socket.on( "ngc_auth",         function( data ){ this._owner.onAuth.call( this._owner, data ); } );
       this.socket.on( "ngc_who",          function( data ){ this._owner.onWho.call( this._owner, data ); } );
+      this.socket.on( "ngc_join",         function( data ){ this._owner.onJoin.call( this._owner, data ); } );
+      this.socket.on( "ngc_leave",        function( data ){ this._owner.onLeave.call( this._owner, data ); } );
+      this.socket.on( "ngc_msg",          function( data ){ this._owner.onMsg.call( this._owner, data ); } );
     }
     Chat.prototype.changeState = function( newState )
     {
@@ -143,14 +148,41 @@ define(
         this.sendAuth( u, p );
       } else {
         this.changeState( ChatState.idle );
+        this.memberList.addMember( data.user );
       }
+    };
+    Chat.prototype.execute = function( commandLine )
+    {
+      if ( !commandLine || !commandLine.length )
+        return;
+      if ( this.state != ChatState.idle )
+        return;
+      this.socket.emit( "ngc_msg",{
+        msg: commandLine
+      });
     };
     Chat.prototype.onWho = function( data )
     {
       console.log( "iO: Packet NGC_Who" );
       if ( this.state != ChatState.idle )
         throw new ChatException( ChatExceptionCode.protocolError, "NGC_Who out of state" );
-      console.log( data );
+      for ( var i = 0; i < data.users.length; i++ )
+        this.memberList.addMember( data.users[i] );
+    };
+    Chat.prototype.onMsg = function( data )
+    {
+      console.log( "iO: Packet NGC_Msg" );
+      this.messageList.addMessage( data.user, data.message );
+    };
+    Chat.prototype.onJoin = function( data )
+    {
+      console.log( "iO: Packet NGC_Join" );
+      this.memberList.addMember( data.user );
+    };
+    Chat.prototype.onLeave = function( data )
+    {
+      console.log( "iO: Packet NGC_Leave" );
+      this.memberList.removeMember( data.user );
     };
     Chat.prototype.onDisconnected = function()
     {
@@ -173,9 +205,11 @@ define(
     {
       this.socket.socket.disconnect();
     };
-    Chat.prototype.initialize = function()
+    Chat.prototype.initialize = function( memberList, messageList )
     {
       console.log( "Chat: Initialize, version " + this.version.join( "." ) );
+      this.memberList = memberList;
+      this.messageList = messageList;
       this.connect();
     };
     function ChatModule()

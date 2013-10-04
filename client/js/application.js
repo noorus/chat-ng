@@ -70,13 +70,48 @@ function( $, Em, io, hashes, Modernizr, Foundation )
   App.IndexController = Em.Controller.extend({
     commandLine: "",
     execute: function() {
-      var line = App.ChatMessageComponent.create({
-        name: "Nimi",
-        content: this.get( "commandLine" )
-      });
-      line.appendTo( ".ngc-chat" );
-      line.rerender();
+      var chat = App.get( "chat" );
+      chat.execute( this.get( "commandLine" ) );
       this.set( "commandLine", "" );
+    }
+  });
+  App.MessageListView = Em.ContainerView.create(
+  {
+    tagName: "ul",
+    classNames: ["ngc-listbox", "ngc-chat"],
+    addMessage: function( user, message )
+    {
+      var childViews = this.get( "childViews" );
+      var component = App.ChatMessageComponent.create({
+        name: user.name,
+        content: message
+      });
+      childViews.pushObject( component );
+      component.rerender();
+    }
+  });
+  App.MemberListView = Em.ContainerView.create(
+  {
+    tagName: "ul",
+    classNames: ["ngc-listbox", "ngc-members", "fullheight"],
+    addMember: function( user )
+    {
+      var childViews = this.get( "childViews" );
+      var component = App.ChatMemberComponent.create({
+        id: user.id,
+        name: user.name
+      });
+      childViews.pushObject( component );
+      component.rerender();
+    },
+    removeMember: function( user )
+    {
+      var childViews = this.get( "childViews" );
+      childViews.forEach( function( item, index, enumerable )
+      {
+        if ( item.get( "id" ) == user.id )
+          childViews.removeObject( item );
+      });
     }
   });
   require(
@@ -84,18 +119,13 @@ function( $, Em, io, hashes, Modernizr, Foundation )
     function( document, $, Modernizr, Foundation, Chat )
     {
       var c = Chat.create({
-        endpoint: "http://chat.synkea.net:3000/chat"
+        endpoint: "http://chat.synkea.net:3000/"
       });
+      App.set( "chat", c );
       $( document ).foundation();
-      for ( i = 0; i < 5; i++ )
-      {
-        var member = App.ChatMemberComponent.create({
-          name: "Käyttäjä " + i
-        });
-        member.appendTo( ".ngc-members" );
-        member.rerender();
-      }
-      c.initialize();
+      App.MemberListView.appendTo( "#memberList" );
+      App.MessageListView.appendTo( "#messageList" );
+      c.initialize( App.MemberListView, App.MessageListView );
     }
   );
 });

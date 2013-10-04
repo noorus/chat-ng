@@ -49,6 +49,11 @@ function Client( owner, socket )
       client.onAuth.call( client, data );
     });
   });
+  socket.on( "ngc_msg", function( data ) {
+    this.get( "client", function( dummy, client ) {
+      client.onMsg.call( client, data );
+    });
+  });
 
   this.id = socket.id;
   this.socket = socket;
@@ -139,12 +144,19 @@ Client.prototype.onAuth = function( data )
       this.user = chatuser.create( user.id, user.name );
       this.changeState( ClientState.idle );
       this.sendAuth( AuthResult.ok, this.user );
-      this.sendWho();
+      this._owner.onClientAuthed( this );
     } else {
       this.log( "Authentication as \"" + data.user + "\" failed, bad password" );
       this.sendAuth( AuthResult.badPassword, null );
     }
   });
+};
+
+Client.prototype.onMsg = function( data )
+{
+  if ( this.state != ClientState.idle )
+    throw new ClientException( ClientExceptionCode.protocolError, "NGC_Msg out of state" );
+  this._owner.onClientMessage( this, data.msg );
 };
 
 Client.prototype.sendAuth = function( result, data )
@@ -156,22 +168,20 @@ Client.prototype.sendAuth = function( result, data )
   });
 };
 
-Client.prototype.sendWho = function()
+Client.prototype.sendJoin = function( user )
 {
-  /*var who = [];
-  var clients = io.sockets.clients();
-  clients.forEach( function( socket )
+  this.socket.emit( "ngc_join",
   {
-    socket.get( "client", function( dummy, client )
-    {
-      if ( client && client.isVisible && client.user )
-        who.push( client.user.toJSON() );
-    } );
-  } );
-  this.socket.emit( "ngc_who",
+    "user": user.toJSON()
+  });
+};
+
+Client.prototype.sendLeave = function( user )
+{
+  this.socket.emit( "ngc_leave",
   {
-    users: who
-  });*/
+    "user": user.toJSON()
+  });
 };
 
 Client.prototype.onDisconnect = function()
@@ -179,6 +189,7 @@ Client.prototype.onDisconnect = function()
   if ( !this.changeState( ClientState.disconnected ) )
     return;
   this.log( "Disconnected" );
+  this._owner.onClientDisconnected( this );
   this.user = null;
 };
 
