@@ -16,7 +16,8 @@ define(
       authing: 3,
       idle: 4
     };
-    var ChatStateName = [
+    var ChatStateName =
+    [
       "disconnected",
       "connecting",
       "connected",
@@ -29,7 +30,7 @@ define(
       this.message = message;
       this.toString = function()
       {
-        return this.code + ": " + this.message;
+        return "ChatException(" + this.code + "): " + this.message;
       };
     }
     function Chat( settings )
@@ -105,7 +106,7 @@ define(
       this.session.token = data.token;
       console.log( "Chat: Server version is " + this.session.serverVersion.join( "." ) );
       console.log( "Chat: Server token is " + this.session.token );
-      this.sendAuth( "test", "abcd1234" );
+      this.sendAuth( "noora", "abcd1234" );
     };
     Chat.prototype.sendAuth = function( username, password )
     {

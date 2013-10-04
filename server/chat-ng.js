@@ -4,13 +4,14 @@ var util     = require( "util" );
 
 var optimist = require( "optimist" );
 var express  = require( "express" );
-var mysql    = require( "mysql" );
 var sio      = require( "socket.io" );
 var crypto   = require( "crypto" );
 var moment   = require( "moment" );
 
 var logger   = require( "./log-ng" );
 var log      = new logger;
+
+var backend  = require( "./chat.backend.smf" );
 
 var argv = optimist
 .options( "port", { alias: "p", default: 3000 } )
@@ -31,28 +32,52 @@ if ( ( typeof argv.sock != "string"
 
 var ClientState =
 {
-  out: 0,
-  idle: 1
+  disconnected: 0,
+  connected: 1,
+  idle: 2
 };
 
-var QueryResult =
+var AuthResult =
 {
   ok: 0,
-  error: 1
+  error: 1,
+  badUser: 2,
+  badPassword: 3
 };
 
-function Client( socket )
+var ClientExceptionCode =
 {
+  transportError: 0,
+  protocolError: 1,
+  applicationError: 2
+}
+
+function ClientException( code, message )
+{
+  this.code     = code;
+  this.message  = message;
+  this.toString = function()
+  {
+    return "ClientException(" + this.code + "): " + this.message;
+  };
+}
+
+function Client( owner, socket )
+{
+  this._owner = owner;
   this.id = socket.id;
   this.socket = socket;
-  this.state = ClientState.out;
+  this.state = ClientState.disconnected;
   this.loginAttempts = 0;
-  this.lastLoginTime = moment();
   this.name = null;
   this.address = {
     address: socket.handshake.address.address,
     port: socket.handshake.address.port
   };
+  this.user = {
+    id: null,
+    name: null
+  }
   this.token = socket.handshake.randomToken;
 }
 Client.prototype.toJSON = function()
@@ -64,84 +89,75 @@ Client.prototype.toJSON = function()
     name: this.name
   };
 };
+Client.prototype.changeState = function( newState )
+{
+  if ( this.state == newState )
+    return false;
+  this.state = newState;
+  return true;
+};
 Client.prototype.onConnect = function()
 {
-  log.info( "chat: client connected " + this.id );
+  if ( !this.changeState( ClientState.connected ) )
+    return;
+  log.info( "Chat: Client connected " + this.id );
+  this.loginAttempts = 0;
+  this.sendWelcome();
+};
+Client.prototype.sendWelcome = function()
+{
   this.socket.emit( "ngc_welcome",
   {
-    version: ChatNg.version,
-    protocol: ChatNg.protocolVersion,
+    version: this._owner.version,
+    protocol: this._owner.protocolVersion,
     token: this.token
   });
 };
 Client.prototype.onAuth = function( data )
 {
-  log.info( "chat: got ngc_auth" );
-  /*var hash = crypto.createHash( "sha1" );
-  hash.update( stuff + token );
-  return hash.digest( "hex" );
-  ChatNg.backend.queryUser( this, data.user,
-  function( result, error, rows )
+  if ( this.state != ClientState.connected )
+    throw new ClientException( ClientExceptionCode.protocolError, "ngc_auth out of state" );
+  this.loginAttempts++;
+  this._owner.backend.userQuery( this, data.user, function( error, user )
   {
-    if ( result == QueryResult.ok )
-      this.socket.emit( "ngc_auth", { back: rows } );
-  });*/
+    if ( error ) {
+      log.info( "Chat: User auth failed, db error" );
+      this.sendAuth( AuthResult.error, null );
+    } else {
+      if ( user === null ) {
+        log.info( "Chat: User auth failed, bad user" );
+        this.sendAuth( AuthResult.badUser, null );
+      } else {
+        var hash = crypto.createHash( "sha1" );
+        hash.update( user.hash + this.token );
+        hash = hash.digest( "hex" );
+        if ( data.hash === hash ) {
+          log.info( "Chat: User auth ok: " + user.name );
+          this.user.id = user.id;
+          this.user.name = user.name;
+          this.changeState( ClientState.idle );
+          this.sendAuth( AuthResult.ok, this.user );
+        } else {
+          log.info( "Chat: User auth failed, bad password" );
+          this.sendAuth( AuthResult.badPassword, null );
+        }
+      }
+    }
+  });
+};
+Client.prototype.sendAuth = function( result, data )
+{
+  this.socket.emit( "ngc_auth",
+  {
+    code: result,
+    user: data
+  });
 };
 Client.prototype.onDisconnect = function()
 {
-  log.info( "chat: client disconnected " + this.id );
-};
-
-var DataBackend =
-{
-  dbPool: null,
-  init: function()
-  {
-    DataBackend.dbPool = mysql.createPool(
-    {
-      host: argv.host,
-      user: argv.user,
-      password: argv.pass,
-      database: argv.db,
-      socketPath: argv.sock,
-      charset: "UTF8_GENERAL_CI",
-      timezone: "local",
-      supportBigNumbers: true,
-      bigNumberStrings: true
-    } );
-  },
-  queryUser: function( context, username, callback )
-  {
-    DataBackend.dbPool.getConnection( function( err, connection )
-    {
-      if ( err ) {
-        log.error( "DB: Database error on authenticate(1): " + err );
-        callback.call( context, QueryResult.error, err, null );
-      } else {
-        connection.query(
-        "SELECT id_member,member_name,passwd FROM smf_members WHERE member_name = " + connection.escape( username ),
-        function( err, rows )
-        {
-          if ( err ) {
-            log.error( "DB: Database error on authenticate(2): " + err );
-            callback.call( context, QueryResult.error, err, null );
-          } else {
-            if ( rows.length != 1 )
-              callback.call( context, QueryResult.ok, null, null );
-            else {
-              var user = {
-                id: rows[0].id_member,
-                name: rows[0].member_name,
-                hash: rows[0].passwd
-              };
-              callback.call( context, QueryResult.ok, null, user );
-            }
-          }
-        });
-        connection.release();
-      }
-    });
-  }
+  if ( !this.changeState( ClientState.disconnected ) )
+    return;
+  log.info( "Chat: Client disconnected " + this.id );
 };
 
 var ChatNg =
@@ -155,8 +171,13 @@ var ChatNg =
   init: function()
   {
     log.info( "chat-ng daemon v" + this.version.join( "." ) );
-    this.backend = DataBackend;
-    this.backend.init();
+    this.backend = backend.create({
+      host: argv.host,
+      user: argv.user,
+      password: argv.pass,
+      socket: argv.sock,
+      db: argv.db
+    }, log );
   },
   getIndex: function( req, res )
   {
@@ -183,7 +204,7 @@ var ChatNg =
   },
   onConnection: function( socket )
   {
-    var client = new Client( socket );
+    var client = new Client( ChatNg, socket );
     socket.set( "client", client );
     socket.on( "disconnect", function(){
       client.onDisconnect.call( client );
