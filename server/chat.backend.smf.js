@@ -46,18 +46,18 @@ SMFBackend.prototype.userQuery = function( context, username, callback )
         if ( error ) {
           this.log.error( "SMFBackend: Database error(2) on userQuery: " + error );
           callback.call( context, error, null );
-        } else {
-          if ( rows.length != 1 )
-            callback.call( context, null, null );
-          else {
-            var user = {
-              id: rows[0].id_member,
-              name: rows[0].member_name,
-              hash: rows[0].passwd
-            };
-            callback.call( context, null, user );
-          }
+          return;
         }
+        if ( rows.length != 1 ) {
+          callback.call( context, null, null );
+          return;
+        }
+        var user = {
+          id: rows[0].id_member,
+          name: rows[0].member_name,
+          hash: rows[0].passwd
+        };
+        callback.call( context, null, user );
       });
       connection.release();
     }

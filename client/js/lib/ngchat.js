@@ -59,6 +59,7 @@ define(
       this.socket.on( "message",          function( data ){ this._owner.onMessage.call( this._owner, data ); } );
       this.socket.on( "ngc_welcome",      function( data ){ this._owner.onWelcome.call( this._owner, data ); } );
       this.socket.on( "ngc_auth",         function( data ){ this._owner.onAuth.call( this._owner, data ); } );
+      this.socket.on( "ngc_who",          function( data ){ this._owner.onWho.call( this._owner, data ); } );
     }
     Chat.prototype.changeState = function( newState )
     {
@@ -143,6 +144,13 @@ define(
       } else {
         this.changeState( ChatState.idle );
       }
+    };
+    Chat.prototype.onWho = function( data )
+    {
+      console.log( "iO: Packet NGC_Who" );
+      if ( this.state != ChatState.idle )
+        throw new ChatException( ChatExceptionCode.protocolError, "NGC_Who out of state" );
+      console.log( data );
     };
     Chat.prototype.onDisconnected = function()
     {
