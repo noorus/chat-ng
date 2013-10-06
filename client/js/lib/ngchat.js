@@ -42,7 +42,7 @@ define(
       this.sm.onLeaveState = this.onLeaveState;
       this.sm.changeState( ChatState.disconnected );
       this.memberList = null;
-      this.messageList = null;
+      this.chatBox = null;
       this.settings = settings;
       this.version = [0, 0, 1];
       this.protocolVersion = 0;
@@ -93,12 +93,14 @@ define(
       if ( !this.sm.changeState( ChatState.connecting ) )
         return;
       console.log( "iO: Connecting" );
+      this.chatBox.addEvent( "Connecting..." );
     };
     Chat.prototype.onConnected = function()
     {
       if ( !this.sm.changeState( ChatState.connected ) )
         return;
       console.log( "iO: Connected" );
+      this.chatBox.addEvent( "Connected" );
     };
     Chat.prototype.onMessage = function( data )
     {
@@ -193,25 +195,27 @@ define(
     {
       console.log( "iO: Packet NGC_Join" );
       this.memberList.addMember( data.user );
-      this.messageList.addEvent( data.user.name + " liittyi chattiin" );
+      this.chatBox.addEvent( data.user.name + " joined the chat" );
     };
     Chat.prototype.onLeave = function( data )
     {
       console.log( "iO: Packet NGC_Leave" );
       this.memberList.removeMember( data.user );
-      this.messageList.addEvent( data.user.name + " poistui chatista" );
+      this.chatBox.addEvent( data.user.name + " left the chat" );
     };
     Chat.prototype.onDisconnected = function()
     {
       if ( !this.sm.changeState( ChatState.disconnected ) )
         return;
       console.log( "iO: Disconnected" );
+      this.chatBox.addEvent( "Disconnected" );
     };
     Chat.prototype.onConnectFailed = function()
     {
       if ( !this.sm.changeState( ChatState.disconnected ) )
         return;
       console.log( "iO: Connection failed" );
+      this.chatBox.addEvent( "Connectiong failed" );
     };
     Chat.prototype.connect = function()
     {
@@ -222,11 +226,11 @@ define(
     {
       this.socket.socket.disconnect();
     };
-    Chat.prototype.initialize = function( memberList, messageList )
+    Chat.prototype.initialize = function( memberList, chatBox )
     {
       console.log( "Chat: Initialize, version " + this.version.join( "." ) );
       this.memberList = memberList;
-      this.messageList = messageList;
+      this.chatBox = chatBox;
       this.connect();
     };
     function ChatModule()
