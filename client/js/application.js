@@ -88,9 +88,26 @@ function( $, Em, io, hashes, Modernizr, Foundation )
     }
   });
 
-  App.ChatMember = Em.Object.extend({
+  App.Member = Em.Object.extend({
     id: null,
     name: null
+  });
+
+  App.MemberView = Em.View.extend({
+    tagName: "li",
+    classNames: ["ngc-members-member"],
+    templateName: "member"
+  });
+
+  App.MemberController = Em.ObjectController.extend({
+    actions:{
+      memberClick: function(){
+        alert( "Clicked1" );
+      }
+    },
+    memberClick: function(){
+      alert("Clicked2");
+    }
   });
 
   App.MemberListController = Em.ArrayController.create(
@@ -100,10 +117,9 @@ function( $, Em, io, hashes, Modernizr, Foundation )
     sortAscending: true,
     addMember: function( user )
     {
-      var component = App.ChatMember.create({
+      var component = App.Member.create({
         id: user.id,
-        name: user.name,
-        click: function(){ alert("click!"); }
+        name: user.name
       });
       this.pushObject( component );
     },
@@ -111,8 +127,10 @@ function( $, Em, io, hashes, Modernizr, Foundation )
     {
       this.forEach( function( item, index, enumerable )
       {
-        if ( item.get( "id" ) == user.id )
-          this.removeObject( item );
+        if ( item && item.get( "id" ) == user.id ) {
+          enumerable.removeObject( item );
+          return;
+        }
       });
     }
   });
