@@ -193,11 +193,13 @@ define(
     {
       console.log( "iO: Packet NGC_Join" );
       this.memberList.addMember( data.user );
+      this.messageList.addEvent( data.user.name + " liittyi chattiin" );
     };
     Chat.prototype.onLeave = function( data )
     {
       console.log( "iO: Packet NGC_Leave" );
       this.memberList.removeMember( data.user );
+      this.messageList.addEvent( data.user.name + " poistui chatista" );
     };
     Chat.prototype.onDisconnected = function()
     {

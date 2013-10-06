@@ -34,36 +34,32 @@ require(
 ["jquery","ember","socketio","hashes","modernizr","foundation"],
 function( $, Em, io, hashes, Modernizr, Foundation )
 {
-  App = Em.Application.create({
+  App = Em.Application.create(
+  {
     rootElement: "#chat",
     LOG_TRANSITIONS: true
   });
 
-  App.ChatMessageComponent = Em.Component.extend({
-    tagName: "li",
-    classNames: ["ngc-chat-message"],
-    templateName: "components/chat-message",
-    name: "unknown",
-    content: "unknown"
-  });
-
   App.Router.map(function(){});
 
-  App.ApplicationRoute = Em.Route.extend({
+  App.ApplicationRoute = Em.Route.extend(
+  {
     setupController: function( controller )
     {
       controller.set( "title", "Tsättihomman otsikko" );
     }
   });
 
-  App.IndexRoute = Em.Route.extend({
+  App.IndexRoute = Em.Route.extend(
+  {
     setupController: function( controller )
     {
       controller.set( "title", "Keskustelun aihe (topic?)" );
     }
   });
 
-  App.IndexController = Em.Controller.extend({
+  App.IndexController = Em.Controller.extend(
+  {
     commandLine: "",
     execute: function() {
       var chat = App.get( "chat" );
@@ -72,7 +68,9 @@ function( $, Em, io, hashes, Modernizr, Foundation )
     }
   });
 
-  App.MessageListView = Em.ContainerView.create(
+  //-- Chat Box ---------------------------------------------------------------
+
+  App.ChatBoxView = Em.ContainerView.create(
   {
     tagName: "ul",
     classNames: ["ngc-listbox", "ngc-chat"],
@@ -85,28 +83,66 @@ function( $, Em, io, hashes, Modernizr, Foundation )
       });
       childViews.pushObject( component );
       component.rerender();
+      var height = this.$()[0].scrollHeight;
+      this.$().animate({scrollTop: height}, 1000);
+    },
+    addEvent: function( message )
+    {
+      var childViews = this.get( "childViews" );
+      var component = App.ChatEventComponent.create({
+        content: message
+      });
+      childViews.pushObject( component );
+      component.rerender();
+      var height = this.$()[0].scrollHeight;
+      this.$().animate({scrollTop: height}, 400);
     }
   });
 
-  App.Member = Em.Object.extend({
+  App.ChatEventComponent = Em.Component.extend(
+  {
+    tagName: "li",
+    classNames: ["ngc-chat-message"],
+    templateName: "components/chat-event",
+    content: ""
+  });
+
+  App.ChatMessageComponent = Em.Component.extend(
+  {
+    tagName: "li",
+    classNames: ["ngc-chat-message"],
+    templateName: "components/chat-message",
+    name: "unknown",
+    content: "unknown"
+  });
+
+  //-- Member List ------------------------------------------------------------
+
+  App.Member = Em.Object.extend(
+  {
     id: null,
     name: null
   });
 
-  App.MemberView = Em.View.extend({
+  App.MemberView = Em.View.extend(
+  {
     tagName: "li",
     classNames: ["ngc-members-member"],
-    templateName: "member"
+    templateName: "member",
+    click: function( event )
+    {
+      this.get( "controller" ).send( "memberClick" );
+    }
   });
 
-  App.MemberController = Em.ObjectController.extend({
-    actions:{
-      memberClick: function(){
-        alert( "Clicked1" );
+  App.MemberController = Em.ObjectController.extend(
+  {
+    actions:
+    {
+      memberClick: function()
+      {
+        alert( "Clicked member " + this.get( "id" ) );
       }
-    },
-    memberClick: function(){
-      alert("Clicked2");
     }
   });
 
@@ -117,7 +153,8 @@ function( $, Em, io, hashes, Modernizr, Foundation )
     sortAscending: true,
     addMember: function( user )
     {
-      var component = App.Member.create({
+      var component = App.Member.create(
+      {
         id: user.id,
         name: user.name
       });
@@ -127,7 +164,8 @@ function( $, Em, io, hashes, Modernizr, Foundation )
     {
       this.forEach( function( item, index, enumerable )
       {
-        if ( item && item.get( "id" ) == user.id ) {
+        if ( item && item.get( "id" ) == user.id )
+        {
           enumerable.removeObject( item );
           return;
         }
@@ -139,13 +177,13 @@ function( $, Em, io, hashes, Modernizr, Foundation )
     ["domReady!","jquery","modernizr","foundation","ngchat"],
     function( document, $, Modernizr, Foundation, Chat )
     {
-      var c = Chat.create({
+      var c = Chat.create(
+      {
         endpoint: "http://chat.synkea.net:3000/"
       });
       App.set( "chat", c );
       $( document ).foundation();
-      App.MessageListView.appendTo( "#messageList" );
-      c.initialize( App.MemberListController, App.MessageListView );
+      c.initialize( App.MemberListController, App.ChatBoxView );
     }
   );
 });

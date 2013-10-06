@@ -12,6 +12,10 @@
     <script data-main="js/application.js" src="js/lib/require.js"></script>
   </head>
   <body id="chat">
+    <script type="text/x-handlebars" data-template-name="components/chat-event">
+      <div class="author">ChatBot</div>
+      <div class="content"><b>{{ content }}</b></div>
+    </script>
     <script type="text/x-handlebars" data-template-name="components/chat-message">
       <div class="author"><a href="#">{{ name }}</a></div>
       <div class="content">{{ content }}</div>
@@ -81,10 +85,7 @@
       </div>
       <div class="ngc-grid-row ngc-midsection">
         <div class="large-9 columns fullheight">
-          <div class="row collapse">
-            <div id="messageList">
-            </div>
-          </div>
+          {{ view "App.ChatBoxView" }}
           <div class="row collapse">
             <div class="small-10 columns">
               {{ input type="text" value=commandLine action="execute" }}
@@ -96,8 +97,8 @@
         </div>
         <div class="large-3 columns collapse-left fullheight">
           <ul class="ngc-listbox ngc-members fullheight">
-            {{#each App.MemberListController itemController="Member"}}
-              {{view "App.MemberView"}}
+            {{# each App.MemberListController itemController="Member" }}
+              {{ view "App.MemberView" }}
             {{/each}}
           </ul>
         </div>
