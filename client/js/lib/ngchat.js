@@ -1,6 +1,6 @@
 define(
-  ["socketio","hashes"],
-  function( sIO, Hashes )
+  ["socketio","hashes","statemachine"],
+  function( sIO, Hashes, StateMachine )
   {
     var ChatExceptionCode =
     {
@@ -14,7 +14,8 @@ define(
       connecting: 1,
       connected: 2,
       authing: 3,
-      idle: 4
+      idle: 4,
+      who: 5
     };
     var ChatStateName =
     [
@@ -22,7 +23,8 @@ define(
       "connecting",
       "connected",
       "authing",
-      "idle"
+      "idle",
+      "who"
     ];
     function ChatException( code, message )
     {
@@ -35,12 +37,15 @@ define(
     }
     function Chat( settings )
     {
+      this.sm = StateMachine.create();
+      this.sm.onEnterState = this.onEnterState;
+      this.sm.onLeaveState = this.onLeaveState;
+      this.sm.changeState( ChatState.disconnected );
       this.memberList = null;
       this.messageList = null;
       this.settings = settings;
       this.version = [0, 0, 1];
       this.protocolVersion = 0;
-      this.state = ChatState.disconnected;
       this.session = {
         token: null,
         serverVersion: null
@@ -66,32 +71,32 @@ define(
       this.socket.on( "ngc_leave",        function( data ){ this._owner.onLeave.call( this._owner, data ); } );
       this.socket.on( "ngc_msg",          function( data ){ this._owner.onMsg.call( this._owner, data ); } );
     }
-    Chat.prototype.changeState = function( newState )
+    Chat.prototype.onEnterState = function( state )
     {
-      if ( this.state == newState )
-        return false;
-      this.state = newState;
-      console.log( "Chat: State is " + ChatStateName[newState] );
-      return true;
+      console.log( "Chat: Entering state " + ChatStateName[state] );
+    };
+    Chat.prototype.onLeaveState = function( state )
+    {
+      console.log( "Chat: Leaving state " + ChatStateName[state] );
     };
     Chat.prototype.onError = function( error )
     {
       console.log( "iO: Error!" );
       console.log( error );
-      if ( this.state == ChatState.disconnected )
+      if ( this.sm.getState() == ChatState.disconnected )
       {
         console.log( "Server down or transport unavailable!" );
       }
     };
     Chat.prototype.onConnecting = function()
     {
-      if ( !this.changeState( ChatState.connecting ) )
+      if ( !this.sm.changeState( ChatState.connecting ) )
         return;
       console.log( "iO: Connecting" );
     };
     Chat.prototype.onConnected = function()
     {
-      if ( !this.changeState( ChatState.connected ) )
+      if ( !this.sm.changeState( ChatState.connected ) )
         return;
       console.log( "iO: Connected" );
     };
@@ -103,7 +108,7 @@ define(
     Chat.prototype.onWelcome = function( data )
     {
       console.log( "iO: Packet NGC_Welcome" );
-      if ( this.state != ChatState.connected )
+      if ( this.sm.getState() != ChatState.connected )
         throw new ChatException( ChatExceptionCode.protocolError, "NGC_Welcome out of state" );
       if ( this.protocolVersion != data.protocol )
         throw new ChatException( ChatExceptionCode.protocolError,
@@ -118,9 +123,9 @@ define(
     };
     Chat.prototype.sendAuth = function( username, password )
     {
-      if ( this.state != ChatState.connected )
+      if ( this.sm.getState() != ChatState.connected )
         throw new ChatException( ChatExceptionCode.applicationError, "Auth call out of state" );
-      if ( !this.changeState( ChatState.authing ) )
+      if ( !this.sm.changeState( ChatState.authing ) )
         return;
       var sha1 = new Hashes.SHA1();
       var userHash = sha1.hex( username + password );
@@ -134,7 +139,7 @@ define(
     Chat.prototype.onAuth = function( data )
     {
       console.log( "iO: Packet NGC_Auth" );
-      if ( this.state != ChatState.authing )
+      if ( this.sm.getState() != ChatState.authing )
         throw new ChatException( ChatExceptionCode.protocolError, "NGC_Auth out of state" );
       if ( data.code != 0 ) {
         switch ( data.code ) {
@@ -142,20 +147,29 @@ define(
           case 2: alert( "Tuntematon käyttäjätunnus" ); break;
           case 3: alert( "Virheellinen salasana" ); break;
         }
-        this.changeState( ChatState.connected );
+        this.sm.changeState( ChatState.connected );
         var u = prompt( "Käyttäjätunnus" );
+        if ( !u ) {
+          this.disconnect();
+          return;
+        }
         var p = prompt( "Salasana" );
+        if ( !p ) {
+          this.disconnect();
+          return;
+        }
         this.sendAuth( u, p );
       } else {
-        this.changeState( ChatState.idle );
+        this.sm.changeState( ChatState.idle );
+        this.sm.pushState( ChatState.who );
         this.memberList.addMember( data.user );
       }
     };
     Chat.prototype.execute = function( commandLine )
     {
-      if ( !commandLine || !commandLine.length )
-        return;
-      if ( this.state != ChatState.idle )
+      if ( commandLine ) // String.trim does not exist in IE8
+        commandLine = commandLine.replace(/^\s+|\s+$/g, "");
+      if ( this.sm.getState() != ChatState.idle || !commandLine || !commandLine.length )
         return;
       this.socket.emit( "ngc_msg",{
         msg: commandLine
@@ -164,10 +178,11 @@ define(
     Chat.prototype.onWho = function( data )
     {
       console.log( "iO: Packet NGC_Who" );
-      if ( this.state != ChatState.idle )
+      if ( this.sm.getState() != ChatState.who )
         throw new ChatException( ChatExceptionCode.protocolError, "NGC_Who out of state" );
       for ( var i = 0; i < data.users.length; i++ )
         this.memberList.addMember( data.users[i] );
+      this.sm.popState();
     };
     Chat.prototype.onMsg = function( data )
     {
@@ -186,13 +201,13 @@ define(
     };
     Chat.prototype.onDisconnected = function()
     {
-      if ( !this.changeState( ChatState.disconnected ) )
+      if ( !this.sm.changeState( ChatState.disconnected ) )
         return;
       console.log( "iO: Disconnected" );
     };
     Chat.prototype.onConnectFailed = function()
     {
-      if ( !this.changeState( ChatState.disconnected ) )
+      if ( !this.sm.changeState( ChatState.disconnected ) )
         return;
       console.log( "iO: Connection failed" );
     };

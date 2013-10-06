@@ -9,7 +9,8 @@ require.config(
     hashes: "hashes.min",
     modernizr: "//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min",
     foundation: "foundation.min",
-    ngchat: "ngchat"
+    ngchat: "ngchat",
+    statemachine: "statemachine"
   },
   shim: {
     "ember": {
