@@ -47,27 +47,22 @@ function( $, Em, io, hashes, Modernizr, Foundation )
     content: "unknown"
   });
 
-  App.ChatMemberComponent = Em.Component.extend({
-    tagName: "li",
-    classNames: ["ngc-members-member"],
-    templateName: "components/chat-member",
-    name: "unknown",
-    click: function(){ console.log( "click" ); }
-  });
-
   App.Router.map(function(){});
+
   App.ApplicationRoute = Em.Route.extend({
     setupController: function( controller )
     {
       controller.set( "title", "Tsättihomman otsikko" );
     }
   });
+
   App.IndexRoute = Em.Route.extend({
     setupController: function( controller )
     {
       controller.set( "title", "Keskustelun aihe (topic?)" );
     }
   });
+
   App.IndexController = Em.Controller.extend({
     commandLine: "",
     execute: function() {
@@ -76,6 +71,7 @@ function( $, Em, io, hashes, Modernizr, Foundation )
       this.set( "commandLine", "" );
     }
   });
+
   App.MessageListView = Em.ContainerView.create(
   {
     tagName: "ul",
@@ -91,30 +87,36 @@ function( $, Em, io, hashes, Modernizr, Foundation )
       component.rerender();
     }
   });
-  App.MemberListView = Em.ContainerView.create(
+
+  App.ChatMember = Em.Object.extend({
+    id: null,
+    name: null
+  });
+
+  App.MemberListController = Em.ArrayController.create(
   {
-    tagName: "ul",
-    classNames: ["ngc-listbox", "ngc-members", "fullheight"],
+    content: [],
+    sortProperties: ["name"],
+    sortAscending: true,
     addMember: function( user )
     {
-      var childViews = this.get( "childViews" );
-      var component = App.ChatMemberComponent.create({
+      var component = App.ChatMember.create({
         id: user.id,
-        name: user.name
+        name: user.name,
+        click: function(){ alert("click!"); }
       });
-      childViews.pushObject( component );
-      component.rerender();
+      this.pushObject( component );
     },
     removeMember: function( user )
     {
-      var childViews = this.get( "childViews" );
-      childViews.forEach( function( item, index, enumerable )
+      this.forEach( function( item, index, enumerable )
       {
         if ( item.get( "id" ) == user.id )
-          childViews.removeObject( item );
+          this.removeObject( item );
       });
     }
   });
+
   require(
     ["domReady!","jquery","modernizr","foundation","ngchat"],
     function( document, $, Modernizr, Foundation, Chat )
@@ -124,9 +126,8 @@ function( $, Em, io, hashes, Modernizr, Foundation )
       });
       App.set( "chat", c );
       $( document ).foundation();
-      App.MemberListView.appendTo( "#memberList" );
       App.MessageListView.appendTo( "#messageList" );
-      c.initialize( App.MemberListView, App.MessageListView );
+      c.initialize( App.MemberListController, App.MessageListView );
     }
   );
 });

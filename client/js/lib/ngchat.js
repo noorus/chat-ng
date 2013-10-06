@@ -168,10 +168,10 @@ define(
     Chat.prototype.execute = function( commandLine )
     {
       if ( commandLine ) // String.trim does not exist in IE8
-        commandLine = commandLine.replace(/^\s+|\s+$/g, "");
+        commandLine = commandLine.replace( /^\s+|\s+$/g, "" );
       if ( this.sm.getState() != ChatState.idle || !commandLine || !commandLine.length )
         return;
-      this.socket.emit( "ngc_msg",{
+      this.socket.emit( "ngc_msg", {
         msg: commandLine
       });
     };

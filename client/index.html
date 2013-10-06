@@ -16,13 +16,6 @@
       <div class="author"><a href="#">{{ name }}</a></div>
       <div class="content">{{ content }}</div>
     </script>
-    <script type="text/x-handlebars" data-template-name="components/chat-member">
-      <img src="http://placehold.it/30x30">
-      <div>
-        <span class="name">{{ name }}</span><br>
-        <span class="status">Käyttäjä</span>
-      </div>
-    </script>
     <script type="text/x-handlebars">
       <nav class="top-bar">
         <ul class="title-area">
@@ -94,7 +87,18 @@
             </div>
           </div>
         </div>
-        <div class="large-3 columns collapse-left fullheight" id="memberList">
+        <div class="large-3 columns collapse-left fullheight">
+          <ul class="ngc-listbox ngc-members fullheight">
+            {{#each App.MemberListController}}
+              <li class="ngc-members-member">
+                <img src="http://placehold.it/30x30">
+                <div>
+                  <span class="name">{{ name }}</span><br>
+                  <span class="status">Käyttäjä</span>
+                </div>
+              </li>
+            {{/each}}
+          </ul>
         </div>
       </div>
     </script>
