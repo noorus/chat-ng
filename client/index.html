@@ -12,13 +12,16 @@
     <script data-main="js/application.js" src="js/lib/require.js"></script>
   </head>
   <body id="chat">
+    <script type="text/x-handlebars" data-template-name="components/chat-message">
+      <div class="author"><a href="#">{{ name }}</a></div>
+      <div class="content">{{ content }}</div>
+    </script>
     <script type="text/x-handlebars" data-template-name="components/chat-event">
       <div class="author">&nbsp;</div>
       <div class="content"><b>{{ content }}</b></div>
     </script>
-    <script type="text/x-handlebars" data-template-name="components/chat-message">
-      <div class="author"><a href="#">{{ name }}</a></div>
-      <div class="content">{{ content }}</div>
+    <script type="text/x-handlebars" data-template-name="components/chat-data">
+      <div class="content">{{unbound content }}</div>
     </script>
     <script type="text/x-handlebars" data-template-name="member">
       <img {{bind-attr src=avatar}} {{bind-attr alt=name}}>
@@ -26,6 +29,24 @@
         <span class="name">{{ name }}</span><br>
         <span class="status">Käyttäjä</span>
       </div>
+    </script>
+    <script type="text/x-handlebars" data-template-name="login-dialog">
+      <form>
+        <fieldset>
+          <label>Account</label>
+          {{ input type="text" value=account }}
+          <label>Password</label>
+          {{ input type="password" value=password }}
+          <div class="row collapse">
+            <div class="small-6 columns">
+              <button {{ action "loginClick" }} class="button prefix">Login</button>
+            </div>
+            <div class="small-6 columns">
+              <button {{ action "cancelClick" }} class="button postfix">Cancel</button>
+            </div>
+          </div>
+        </fieldset>
+      </form>
     </script>
     <script type="text/x-handlebars">
       <nav class="top-bar">
@@ -103,6 +124,7 @@
           </ul>
         </div>
       </div>
+      {{ view "App.LoginDialogView" }}
     </script>
   </body>
 </html>

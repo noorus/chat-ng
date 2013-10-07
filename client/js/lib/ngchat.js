@@ -41,6 +41,7 @@ define(
       this.sm.onEnterState = this.onEnterState;
       this.sm.onLeaveState = this.onLeaveState;
       this.sm.changeState( ChatState.disconnected );
+      this.application = null;
       this.memberList = null;
       this.chatBox = null;
       this.settings = settings;
@@ -114,16 +115,18 @@ define(
       this.session.token = data.token;
       console.log( "Chat: Server version is " + this.session.serverVersion.join( "." ) );
       console.log( "Chat: Server token is " + this.session.token );
-      var u = prompt( "Käyttäjätunnus" );
-      var p = prompt( "Salasana" );
-      this.sendAuth( u, p );
+      this.application.chatRequestAuth( this, this.doAuth );
     };
-    Chat.prototype.sendAuth = function( username, password )
+    Chat.prototype.doAuth = function( _do, username, password )
     {
+      if ( !_do ) {
+        this.disconnect();
+        return true;
+      }
       if ( this.sm.getState() != ChatState.connected )
         throw new ChatException( ChatExceptionCode.applicationError, "Auth call out of state" );
       if ( !this.sm.changeState( ChatState.authing ) )
-        return;
+        return false;
       var sha1 = new Hashes.SHA1();
       var userHash = sha1.hex( username + password );
       var authHash = sha1.hex( userHash + this.session.token );
@@ -132,6 +135,7 @@ define(
         user: username,
         hash: authHash
       });
+      return true;
     };
     Chat.prototype.onAuth = function( data )
     {
@@ -145,20 +149,11 @@ define(
           case 3: alert( "Virheellinen salasana" ); break;
         }
         this.sm.changeState( ChatState.connected );
-        var u = prompt( "Käyttäjätunnus" );
-        if ( !u ) {
-          this.disconnect();
-          return;
-        }
-        var p = prompt( "Salasana" );
-        if ( !p ) {
-          this.disconnect();
-          return;
-        }
-        this.sendAuth( u, p );
+        this.application.chatRequestAuth( this, this.doAuth );
       } else {
         this.sm.changeState( ChatState.idle );
         this.sm.pushState( ChatState.who );
+        this.application.chatAuthed();
         this.memberList.addMember( data.user );
       }
     };
@@ -204,6 +199,7 @@ define(
         return;
       console.log( "iO: Disconnected" );
       this.chatBox.addEvent( "Disconnected" );
+      this.application.chatDisconnected();
     };
     Chat.prototype.onConnectFailed = function()
     {
@@ -221,9 +217,10 @@ define(
     {
       this.socket.socket.disconnect();
     };
-    Chat.prototype.initialize = function( memberList, chatBox )
+    Chat.prototype.initialize = function( application, memberList, chatBox )
     {
       console.log( "Chat: Initialize, version " + this.version.join( "." ) );
+      this.application = application;
       this.memberList = memberList;
       this.chatBox = chatBox;
       this.connect();

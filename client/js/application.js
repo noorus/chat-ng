@@ -10,7 +10,8 @@ require.config(
     modernizr: "//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min",
     foundation: "foundation.min",
     ngchat: "ngchat",
-    statemachine: "statemachine"
+    statemachine: "statemachine",
+    marked: "//cdnjs.cloudflare.com/ajax/libs/marked/0.2.9/marked.min"
   },
   shim: {
     "ember": {
@@ -31,8 +32,8 @@ require.config(
 });
 
 require(
-["jquery","ember","foundation","ngchat"],
-function( $, Em, Foundation, Chat )
+["jquery","ember","foundation","ngchat","marked"],
+function( $, Em, Foundation, Chat, marked )
 {
   App = Em.Application.create(
   {
@@ -49,9 +50,53 @@ function( $, Em, Foundation, Chat )
       {
         $( document ).foundation();
       });
-      clientClient.initialize( App.MemberListController, App.ChatBoxView );
+      clientClient.initialize( App, App.MemberListController, App.ChatBoxView );
     }
   });
+
+  App.LoginDialogController = Em.Controller.create(
+  {
+    loginClick: function()
+    {
+      var cb = this.get( "callback" );
+      cb[1].call( cb[0], true, this.get( "account" ), this.get( "password" ) );
+    },
+    cancelClick: function()
+    {
+      var cb = this.get( "callback" );
+      if ( cb[1].call( cb[0], false, null, null ) )
+        App.LoginDialogView.$().foundation( "reveal", "close" );
+    }
+  });
+
+  App.LoginDialogView = Em.View.create(
+  {
+    tagName: "div",
+    classNames: ["reveal-modal", "ngc-modal-login"],
+    templateName: "login-dialog",
+    controller: App.LoginDialogController
+  });
+
+  App.chatRequestAuth = function( context, callback )
+  {
+    App.LoginDialogView.$().foundation( "reveal", "open",
+    {
+      animation: "fade",
+      animationSpeed: 100,
+      closeOnBackgroundClick: false
+    });
+    App.LoginDialogController.set( "callback", [ context, callback ] );
+  };
+
+  App.chatAuthed = function()
+  {
+    App.LoginDialogView.$().foundation( "reveal", "close" );
+  };
+
+  App.chatDisconnected = function()
+  {
+    App.LoginDialogView.$().foundation( "reveal", "close" );
+  };
 
   App.Router.map(function(){});
 
@@ -81,6 +126,11 @@ function( $, Em, Foundation, Chat )
     }
   });
 
+  App.ApplicationView = Em.View.extend(
+  {
+    classNames: ["ngc-view-main"]
+  });
+
   //-- Chat Box ---------------------------------------------------------------
 
   App.ChatBoxView = Em.ContainerView.create(
@@ -97,7 +147,7 @@ function( $, Em, Foundation, Chat )
       childViews.pushObject( component );
       component.rerender();
       var height = this.$()[0].scrollHeight;
-      this.$().animate({scrollTop: height}, 1000);
+      this.$().animate( { scrollTop: height }, 1000 );
     },
     addEvent: function( message )
     {
@@ -108,8 +158,28 @@ function( $, Em, Foundation, Chat )
       childViews.pushObject( component );
       component.rerender();
       var height = this.$()[0].scrollHeight;
-      this.$().animate({scrollTop: height}, 400);
+      this.$().animate( { scrollTop: height }, 1000 );
+    },
+    addData: function( data )
+    {
+      var childViews = this.get( "childViews" );
+      var component = App.ChatDataComponent.create({
+        content: marked( data )
+      });
+      childViews.pushObject( component );
+      component.rerender();
+      var height = this.$()[0].scrollHeight;
+      this.$().animate( { scrollTop: height }, 1000 );
     }
+  });
+
+  App.ChatMessageComponent = Em.Component.extend(
+  {
+    tagName: "li",
+    classNames: ["ngc-chat-message"],
+    templateName: "components/chat-message",
+    name: "unknown",
+    content: "unknown"
   });
 
   App.ChatEventComponent = Em.Component.extend(
@@ -120,13 +190,12 @@ function( $, Em, Foundation, Chat )
     content: ""
   });
 
-  App.ChatMessageComponent = Em.Component.extend(
+  App.ChatDataComponent = Em.Component.extend(
   {
     tagName: "li",
-    classNames: ["ngc-chat-message"],
-    templateName: "components/chat-message",
-    name: "unknown",
-    content: "unknown"
+    classNames: ["ngc-chat-data"],
+    templateName: "components/chat-data",
+    content: ""
   });
 
   //-- Member List ------------------------------------------------------------
