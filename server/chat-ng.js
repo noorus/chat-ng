@@ -37,20 +37,27 @@ var backend = chatbackend.create(
   db: argv.db
 }, log );
 
-var app = express();
-var server = app.listen( argv.p );
-
-var settings = {
-  origin: argv.origin,
-  debug: argv.debug
-};
-
-var ng = chatserver.create( app, server, "", settings, backend, log );
-app.get( "/", function( request, response )
+backend.init( function()
 {
-  ng.getIndex.call( ng, request, response );
-});
-app.get( "/status", function( request, response )
-{
-  ng.getStatus.call( ng, request, response );
+  var app = express();
+  var server = app.listen( argv.p );
+
+  var settings = {
+    origin: argv.origin,
+    debug: argv.debug
+  };
+
+  var ng = chatserver.create( app, server, "", settings, backend, log );
+  app.get( "/", function( request, response )
+  {
+    ng.getIndex.call( ng, request, response );
+  });
+  app.get( "/status", function( request, response )
+  {
+    ng.getStatus.call( ng, request, response );
+  });
+  app.get( "/avatar/:id", function( request, response )
+  {
+    ng.getAvatar.call( ng, request, response );
+  });
 });

@@ -126,6 +126,19 @@ Server.prototype.getStatus = function( request, response )
   response.json( body );
 };
 
+Server.prototype.getAvatar = function( request, response )
+{
+  this.backend.userAvatarQuery( this, request.params.id, function( error, avatar )
+  {
+    if ( !avatar )
+      return response.send( 404, "No avatar" );
+    if ( avatar.remote )
+      return response.redirect( 302, avatar.path );
+    response.header( "Content-Type", avatar.mime );
+    return response.sendfile( avatar.path );
+  });
+};
+
 Server.prototype.heartbeat = function()
 {
   // Stubb

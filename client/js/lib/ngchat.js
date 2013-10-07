@@ -102,11 +102,6 @@ define(
       console.log( "iO: Connected" );
       this.chatBox.addEvent( "Connected" );
     };
-    Chat.prototype.onMessage = function( data )
-    {
-      console.log( "iO: Message" );
-      console.log( data );
-    };
     Chat.prototype.onWelcome = function( data )
     {
       console.log( "iO: Packet NGC_Welcome" );
@@ -189,7 +184,7 @@ define(
     Chat.prototype.onMsg = function( data )
     {
       console.log( "iO: Packet NGC_Msg" );
-      this.messageList.addMessage( data.user, data.message );
+      this.chatBox.addMessage( data.user, data.message );
     };
     Chat.prototype.onJoin = function( data )
     {

@@ -141,10 +141,13 @@ Client.prototype.onAuth = function( data )
     hash = hash.digest( "hex" );
     if ( data.hash === hash ) {
       this.log( "Authenticated as \"" + data.user + "\"" );
-      this.user = chatuser.create( user.id, user.name );
-      this.changeState( ClientState.idle );
-      this.sendAuth( AuthResult.ok, this.user );
-      this._owner.onClientAuthed( this );
+      this._owner.backend.userAvatarQuery( this, user.id, function( error, avatar )
+      {
+        this.user = chatuser.create( user.id, user.name, ( !error && avatar ) ? true : false );
+        this.changeState( ClientState.idle );
+        this.sendAuth( AuthResult.ok, this.user );
+        this._owner.onClientAuthed( this );
+      });
     } else {
       this.log( "Authentication as \"" + data.user + "\" failed, bad password" );
       this.sendAuth( AuthResult.badPassword, null );

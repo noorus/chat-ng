@@ -134,7 +134,8 @@ function( $, Em, Foundation, Chat )
   App.Member = Em.Object.extend(
   {
     id: null,
-    name: null
+    name: null,
+    hasAvatar: false
   });
 
   App.MemberView = Em.View.extend(
@@ -150,6 +151,12 @@ function( $, Em, Foundation, Chat )
 
   App.MemberController = Em.ObjectController.extend(
   {
+    avatar: function()
+    {
+      if ( !this.get( "hasAvatar" ) )
+        return "http://placehold.it/30x30";
+      return "http://chat.synkea.net:3000/avatar/" + this.get( "id" );
+    }.property( "id" ),
     actions:
     {
       memberClick: function()
@@ -169,7 +176,8 @@ function( $, Em, Foundation, Chat )
       var component = App.Member.create(
       {
         id: user.id,
-        name: user.name
+        name: user.name,
+        hasAvatar: user.avatar
       });
       this.pushObject( component );
     },

@@ -21,7 +21,7 @@
       <div class="content">{{ content }}</div>
     </script>
     <script type="text/x-handlebars" data-template-name="member">
-      <img src="http://placehold.it/30x30">
+      <img {{bind-attr src=avatar}} {{bind-attr alt=name}}>
       <div>
         <span class="name">{{ name }}</span><br>
         <span class="status">Käyttäjä</span>
