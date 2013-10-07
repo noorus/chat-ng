@@ -31,13 +31,26 @@ require.config(
 });
 
 require(
-["jquery","ember","socketio","hashes","modernizr","foundation"],
-function( $, Em, io, hashes, Modernizr, Foundation )
+["jquery","ember","foundation","ngchat"],
+function( $, Em, Foundation, Chat )
 {
   App = Em.Application.create(
   {
     rootElement: "#chat",
-    LOG_TRANSITIONS: true
+    LOG_TRANSITIONS: true,
+    ready: function()
+    {
+      var clientClient = Chat.create(
+      {
+        endpoint: "http://chat.synkea.net:3000/"
+      });
+      this.set( "chat", clientClient );
+      require( ["domReady!"], function( document )
+      {
+        $( document ).foundation();
+      });
+      clientClient.initialize( App.MemberListController, App.ChatBoxView );
+    }
   });
 
   App.Router.map(function(){});
@@ -172,18 +185,4 @@ function( $, Em, io, hashes, Modernizr, Foundation )
       });
     }
   });
-
-  require(
-    ["domReady!","jquery","modernizr","foundation","ngchat"],
-    function( document, $, Modernizr, Foundation, Chat )
-    {
-      var c = Chat.create(
-      {
-        endpoint: "http://chat.synkea.net:3000/"
-      });
-      App.set( "chat", c );
-      $( document ).foundation();
-      c.initialize( App.MemberListController, App.ChatBoxView );
-    }
-  );
 });
