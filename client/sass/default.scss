@@ -1,7 +1,9 @@
+@import "emsucks";
 @import "settings";
 @import "normalize";
 
 @import "foundation/components/global";
+@import "emsucks";
 @import "foundation/components/grid";
 @import "foundation/components/visibility";
 @import "foundation/components/block-grid";
@@ -52,7 +54,7 @@ html, body, .ngc-view-main {
 }
 
 .ngc-grid-row {
-  @include grid-row(false);
+  @include grid-row(collapse);
   max-width: none;
 }
 
@@ -61,6 +63,7 @@ html, body, .ngc-view-main {
   @include single-box-shadow(rgba(0,0,0,0.4),0,2px,4px,0,true);
   overflow: auto;
   height: 100%;
+  margin: 0;
   list-style-type: none;
   > *:nth-child(odd) {
     background: rgba(255,255,255,0.1);
@@ -71,7 +74,7 @@ html, body, .ngc-view-main {
 }
 
 .ngc-chat {
-  height: calc(100% - 4em);
+  height: calc(100% - 27pt);
 }
 
 .ngc-chat-message {
@@ -88,6 +91,13 @@ html, body, .ngc-view-main {
   }
   .content {
     text-align: justify;
+  }
+}
+
+.ngc-chat-tools {
+  margin-top: $column-gutter / 2;
+  input, button, textarea {
+    margin-bottom: 0;
   }
 }
 
@@ -130,7 +140,7 @@ html, body, .ngc-view-main {
 }
 
 .ngc-modal-login {
-  @include reveal-modal-base(true, 22em);
+  @include reveal-modal-base(true, 200pt);
   @include reveal-modal-style($reveal-modal-bg, $reveal-modal-padding, true, $reveal-border-style, $reveal-border-width, $reveal-border-color, true, $reveal-position-top);
   fieldset {
     margin-top: 0;

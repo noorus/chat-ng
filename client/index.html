@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <!--[if IE 8]><html class="no-js lt-ie9" lang="en"><![endif]-->
 <!--[if gt IE 8]><!--><html class="no-js" lang="en"><!--<![endif]-->
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <title>Chat-NG</title>
     <meta name="robots" content="noindex">
     <meta name="viewport" content="width=device-width">
     <meta name="format-detection" content="telephone=no">
-    <link rel="stylesheet" href="css/chat-ng.css">
+    <link rel="stylesheet" href="theme/default.css">
     <script data-main="js/application.js" src="js/lib/require.js"></script>
   </head>
   <body id="chat">
@@ -64,26 +64,10 @@
               <a href="#">Main Item 1</a>
               <ul class="dropdown">
                 <li><label>Section Name</label></li>
-                <li class="has-dropdown">
-                  <a href="#" class="">Has Dropdown, Level 1</a>
-                  <ul class="dropdown">
-                    <li><a href="#">Dropdown Options</a></li>
-                    <li><a href="#">Dropdown Options</a></li>
-                    <li><a href="#">Level 2</a></li>
-                    <li><a href="#">Subdropdown Option</a></li>
-                    <li><a href="#">Subdropdown Option</a></li>
-                    <li><a href="#">Subdropdown Option</a></li>
-                  </ul>
-                </li>
-                <li><a href="#">Dropdown Option</a></li>
                 <li><a href="#">Dropdown Option</a></li>
                 <li class="divider"></li>
                 <li><label>Section Name</label></li>
                 <li><a href="#">Dropdown Option</a></li>
-                <li><a href="#">Dropdown Option</a></li>
-                <li><a href="#">Dropdown Option</a></li>
-                <li class="divider"></li>
-                <li><a href="#">See all &rarr;</a></li>
               </ul>
             </li>
             <li class="divider"></li>
@@ -94,20 +78,15 @@
       {{ outlet }}
     </script>
     <script type="text/x-handlebars" data-template-name="index">
-      <div class="ngc-grid-row" style="padding-bottom: 10px;">
+      <div class="ngc-grid-row">
         <div class="large-12 columns">
           <h4>{{ controller.title }}</h4>
-          <nav class="breadcrumbs">
-            <a href="#">Sijainti</a>
-            <a href="#">Jossa</a>
-            <a class="current" href="#">Ollaan?</a>
-          </nav>
         </div>
       </div>
       <div class="ngc-grid-row ngc-midsection">
         <div class="large-9 columns fullheight">
           {{ view "App.ChatBoxView" }}
-          <div class="row collapse">
+          <div class="row collapse ngc-chat-tools">
             <div class="small-10 columns">
               {{ input type="text" value=commandLine action="execute" }}
             </div>
