@@ -87,7 +87,7 @@ SMFBackend.prototype.userQuery = function( context, username, callback )
     else
     {
       connection.query(
-      "SELECT id_member,member_name,passwd,avatar FROM smf_members WHERE member_name = ?",
+      "SELECT id_member,member_name,passwd FROM smf_members WHERE member_name = ?",
       [ username ],
       function( error, rows )
       {
