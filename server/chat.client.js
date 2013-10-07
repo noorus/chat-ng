@@ -143,6 +143,7 @@ Client.prototype.onAuth = function( data )
       this.log( "Authenticated as \"" + data.user + "\"" );
       this._owner.backend.userAvatarQuery( this, user.id, function( error, avatar )
       {
+        this._owner.preClientAuthed( user.id );
         this.user = chatuser.create( user.id, user.name, ( !error && avatar ) ? true : false );
         this.changeState( ClientState.idle );
         this.sendAuth( AuthResult.ok, this.user );
@@ -185,6 +186,15 @@ Client.prototype.sendLeave = function( user )
   {
     "user": user.toJSON()
   });
+};
+
+Client.prototype.kickOut = function( message )
+{
+  this.socket.emit( "ngc_close",
+  {
+    "message": message
+  });
+  this.socket.disconnect();
 };
 
 Client.prototype.onDisconnect = function()

@@ -71,6 +71,7 @@ define(
       this.socket.on( "ngc_join",         function( data ){ this._owner.onJoin.call( this._owner, data ); } );
       this.socket.on( "ngc_leave",        function( data ){ this._owner.onLeave.call( this._owner, data ); } );
       this.socket.on( "ngc_msg",          function( data ){ this._owner.onMsg.call( this._owner, data ); } );
+      this.socket.on( "ngc_close",        function( data ){ this._owner.onClose.call( this._owner, data ); } );
     }
     Chat.prototype.onEnterState = function( state )
     {
@@ -180,6 +181,11 @@ define(
     {
       console.log( "iO: Packet NGC_Msg" );
       this.chatBox.addMessage( data.user, data.message );
+    };
+    Chat.prototype.onClose = function( data )
+    {
+      console.log( "iO: Packet NGC_Close" );
+      this.chatBox.addEvent( "Connection closed by server: " + data.message );
     };
     Chat.prototype.onJoin = function( data )
     {

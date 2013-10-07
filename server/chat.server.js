@@ -45,9 +45,19 @@ function Server( app, server, prefix, settings, backend, log )
   );
 }
 
-Server.prototype.onClientMessage = function( client, message )
+Server.prototype.preClientAuthed = function( userid )
 {
-  this.io.sockets.in( "authed" ).emit( "ngc_msg", { user: client.user.toJSON(), "message": message } );
+  var clients = this.io.sockets.clients();
+  clients.forEach( function( socket )
+  {
+    socket.get( "client", function( dummy, client )
+    {
+      if ( client && client.user && client.user.id == userid )
+      {
+        client.kickOut( "Rejoined from elsewhere" );
+      }
+    });
+  });
 };
 
 Server.prototype.onClientAuthed = function( client )
@@ -55,6 +65,11 @@ Server.prototype.onClientAuthed = function( client )
   this.sendWhoTo( client );
   this.io.sockets.in( "authed" ).emit( "ngc_join", { user: client.user.toJSON() } );
   client.socket.join( "authed" );
+};
+
+Server.prototype.onClientMessage = function( client, message )
+{
+  this.io.sockets.in( "authed" ).emit( "ngc_msg", { user: client.user.toJSON(), "message": message } );
 };
 
 Server.prototype.onClientDisconnected = function( client )

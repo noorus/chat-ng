@@ -79,10 +79,14 @@ function( $, Em, Foundation, Chat, marked )
 
   App.chatRequestAuth = function( context, callback )
   {
+    App.LoginDialogView.$().bind( "opened", function()
+    {
+      Em.run(function(){ App.LoginDialogView.$( "input:first" ).focus(); });
+    });
     App.LoginDialogView.$().foundation( "reveal", "open",
     {
       animation: "fade",
-      animationSpeed: 40,
+      animationSpeed: 30,
       closeOnBackgroundClick: false
     });
     App.LoginDialogController.set( "callback", [ context, callback ] );
@@ -90,12 +94,13 @@ function( $, Em, Foundation, Chat, marked )
 
   App.chatAuthed = function()
   {
-    App.LoginDialogView.$().foundation( "reveal", "close" );
+    App.LoginDialogView.$().foundation( "reveal", "close", { animationSpeed: 30 } );
   };
 
   App.chatDisconnected = function()
   {
-    App.LoginDialogView.$().foundation( "reveal", "close" );
+    App.LoginDialogView.$().foundation( "reveal", "close", { animationSpeed: 30 } );
+    App.MemberListController.clearMembers();
   };
 
   App.Router.map(function(){});
@@ -139,34 +144,31 @@ function( $, Em, Foundation, Chat, marked )
     classNames: ["ngc-listbox", "ngc-chat"],
     addMessage: function( user, message )
     {
-      var childViews = this.get( "childViews" );
       var component = App.ChatMessageComponent.create({
         name: user.name,
         content: message
       });
-      childViews.pushObject( component );
+      this.pushObject( component );
       component.rerender();
       var height = this.$()[0].scrollHeight;
       this.$().animate( { scrollTop: height }, 1000 );
     },
     addEvent: function( message )
     {
-      var childViews = this.get( "childViews" );
       var component = App.ChatEventComponent.create({
         content: message
       });
-      childViews.pushObject( component );
+      this.pushObject( component );
       component.rerender();
       var height = this.$()[0].scrollHeight;
       this.$().animate( { scrollTop: height }, 1000 );
     },
     addData: function( data )
     {
-      var childViews = this.get( "childViews" );
       var component = App.ChatDataComponent.create({
         content: marked( data )
       });
-      childViews.pushObject( component );
+      this.pushObject( component );
       component.rerender();
       var height = this.$()[0].scrollHeight;
       this.$().animate( { scrollTop: height }, 1000 );
@@ -240,6 +242,10 @@ function( $, Em, Foundation, Chat, marked )
     content: [],
     sortProperties: ["name"],
     sortAscending: true,
+    clearMembers: function()
+    {
+      this.set( "content", [] );
+    },
     addMember: function( user )
     {
       var component = App.Member.create(

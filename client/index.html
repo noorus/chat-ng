@@ -34,15 +34,15 @@
       <form>
         <fieldset>
           <label>Account</label>
-          {{ input type="text" value=account }}
+          {{ input type="text" value=account tabindex="1" }}
           <label>Password</label>
-          {{ input type="password" value=password }}
+          {{ input type="password" value=password tabindex="2" }}
           <div class="row collapse">
             <div class="small-6 columns">
-              <button {{ action "loginClick" }} class="button prefix">Login</button>
+              <button {{ action "loginClick" }} tabindex="3" class="button prefix">Login</button>
             </div>
             <div class="small-6 columns">
-              <button {{ action "cancelClick" }} class="button postfix">Cancel</button>
+              <button {{ action "cancelClick" }} tabindex="4" class="button postfix">Cancel</button>
             </div>
           </div>
         </fieldset>
