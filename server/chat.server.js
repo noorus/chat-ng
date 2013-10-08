@@ -18,7 +18,7 @@ function Server( app, server, prefix, settings, backend, log )
   this.io.set( "origins", settings.origin + ":*" );
   this.io.set( "log level", settings.debug ? 3 : 2 );
   this.io.set( "logger", this.log );
-  this.io.set( "transports", ["websocket"] );
+  this.io.set( "transports", ["websocket", "htmlfile", "xhr-polling", "jsonp-polling"] );
   this.io.set( "heartbeats", true );
   this.io.set( "destroy upgrade", true );
   this.io.set( "browser client", true );

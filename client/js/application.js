@@ -11,7 +11,9 @@ require.config(
     foundation: "foundation.min",
     ngchat: "ngchat",
     statemachine: "statemachine",
-    marked: "//cdnjs.cloudflare.com/ajax/libs/marked/0.2.9/marked.min"
+    marked: "//cdnjs.cloudflare.com/ajax/libs/marked/0.2.9/marked.min",
+    text: "text",
+    json: "json"
   },
   shim: {
     "ember": {
@@ -41,10 +43,19 @@ function( document, Modernizr, $, Em, Foundation, Chat, marked )
     LOG_TRANSITIONS: true,
     ready: function()
     {
-      var canvas = document.createElement( "canvas" );
-      canvas.width = 32;
-      canvas.height = 32;
-      this.set( "faviconCanvas", canvas );
+      Em.run(function()
+      {
+        var canvas = document.createElement( "canvas" );
+        canvas.width = 32;
+        canvas.height = 32;
+        App.set( "faviconCanvas", canvas );
+        var base = new Image();
+        base.src = $( "#favicon" ).attr( "href" );
+        base.onload = function(){
+          App.set( "faviconBase", base );
+          App.updateFavicon();
+        };
+      });
       var clientClient = Chat.create(
       {
         endpoint: "http://chat.synkea.net:3000/"
@@ -52,21 +63,20 @@ function( document, Modernizr, $, Em, Foundation, Chat, marked )
       this.set( "chat", clientClient );
       $( document ).foundation();
       clientClient.initialize( App, App.MemberListController, App.ChatBoxView );
-      this.updateFavicon();
     }
   });
 
   App.updateFavicon = function()
   {
     var canvas = this.get( "faviconCanvas" );
+    var base = this.get( "faviconBase" );
     var ctx = canvas.getContext( "2d" );
-    ctx.fillStyle = "#000000";
-    ctx.fillRect( 0, 0, 32, 32 );
+    ctx.drawImage( base, 0, 0 );
     ctx.fillStyle = "#ffffff";
     ctx.textAlign = "left";
     ctx.textBaseline = "top";
-    ctx.font = "bold 16px sans-serif";
-    ctx.fillText( "42", 0, 0 );
+    ctx.font = "bold 18px sans-serif";
+    ctx.fillText( "5!", 8, 4 );
     $( "#favicon" ).attr( "href", canvas.toDataURL( "image/x-icon" ) );
   }; 
 
