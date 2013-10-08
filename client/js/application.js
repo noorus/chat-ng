@@ -7,7 +7,7 @@ require.config(
     ember: "ember-1.0.0", //cdnjs.cloudflare.com/ajax/libs/ember.js/1.0.0/ember.min",
     socketio: "socket.io", //"//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min",
     hashes: "hashes", // "hashes.min"
-    modernizr: "custom.modernizr", // "//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min",
+    modernizr: "modernizr.custom.81026", // "//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min",
     foundation: "foundation.min",
     ngchat: "ngchat",
     statemachine: "statemachine",
@@ -32,8 +32,8 @@ require.config(
 });
 
 require(
-["jquery","ember","foundation","ngchat","marked"],
-function( $, Em, Foundation, Chat, marked )
+["modernizr", "jquery","ember","foundation","ngchat","marked"],
+function( Modernizr, $, Em, Foundation, Chat, marked )
 {
   App = Em.Application.create(
   {
