@@ -58,6 +58,12 @@ function( Modernizr, $, Em, Foundation, Chat, marked )
   {
     loginClick: function()
     {
+      if ( Modernizr.localstorage )
+      {
+        // Let's not save the password for now
+        localStorage["ngc.account"] = this.get( "account" );
+        //localStorage["ngc.password"] = this.get( "password" );
+      }
       var cb = this.get( "callback" );
       cb[1].call( cb[0], true, this.get( "account" ), this.get( "password" ) );
     },
@@ -81,7 +87,18 @@ function( Modernizr, $, Em, Foundation, Chat, marked )
   {
     App.LoginDialogView.$().bind( "opened", function()
     {
-      Em.run(function(){ App.LoginDialogView.$( "input:first" ).focus(); });
+      Em.run(function()
+      {
+        if ( Modernizr.localstorage )
+        {
+          // Let's not save the password for now
+          var u = localStorage["ngc.account"];
+          App.LoginDialogController.set( "account", u ? u : "" );
+          //var p = localStorage["ngc.password"];
+          //App.LoginDialogController.set( "password", p ? p : "" );
+        }
+        App.LoginDialogView.$( "input:first" ).focus();
+      });
     });
     App.LoginDialogView.$().foundation( "reveal", "open",
     {

@@ -34,9 +34,9 @@
       <form>
         <fieldset>
           <label>Account</label>
-          {{ input type="text" value=account tabindex="1" }}
+          {{ input type="text" value=account name="account" placeholder="Account" tabindex="1" }}
           <label>Password</label>
-          {{ input type="password" value=password tabindex="2" }}
+          {{ input type="password" value=password name="password" placeholder="Password" tabindex="2" }}
           <div class="row collapse">
             <div class="small-6 columns">
               <button {{ action "loginClick" }} tabindex="3" class="button prefix">Login</button>
