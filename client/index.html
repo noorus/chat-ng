@@ -13,7 +13,7 @@
   <body id="chat">
     <script type="text/x-handlebars" data-template-name="components/chat-message">
       <div class="author"><a href="#">{{ name }}</a></div>
-      <div class="content">{{ content }}</div>
+      <div class="content">{{{ contentParsed }}}</div>
     </script>
     <script type="text/x-handlebars" data-template-name="components/chat-event">
       <div class="author">&nbsp;</div>

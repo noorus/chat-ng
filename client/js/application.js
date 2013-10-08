@@ -37,12 +37,34 @@ require(
 ["domReady!","modernizr", "jquery","ember","foundation","ngchat","marked"],
 function( document, Modernizr, $, Em, Foundation, Chat, marked )
 {
+  var htmlEscapes = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#x27;',
+    '/': '&#x2F;'
+  };
+
+  var htmlEscaper = /[&<>"'\/]/g;
+
+  function escapeHTML( string )
+  {
+    return ('' + string).replace(htmlEscaper, function(match) {
+      return htmlEscapes[match];
+    });
+  };
+
   App = Em.Application.create(
   {
     rootElement: "#chat",
     LOG_TRANSITIONS: true,
     ready: function()
     {
+      require( ["json!../../smileys/default.json"], function( data )
+      {
+        App.set( "smileys", data );
+      });
       Em.run(function()
       {
         var canvas = document.createElement( "canvas" );
@@ -224,7 +246,21 @@ function( document, Modernizr, $, Em, Foundation, Chat, marked )
     classNames: ["ngc-chat-message"],
     templateName: "components/chat-message",
     name: "unknown",
-    content: "unknown"
+    content: "unknown",
+    contentParsed: function()
+    {
+      var data = App.get( "smileys" );
+      var parsed = escapeHTML( this.get( "content" ) );
+      for ( var i = 0; i < data.smileys.length; i++ )
+      {
+        for ( var j = 0; j < data.smileys[i].tags.length; j++ )
+        {
+          var elem = "<img class=\"emote\" src=\"smileys/default/" + data.smileys[i].file + "\" alt=\"" + data.smileys[i].tags[j] + "\">";
+          parsed = parsed.replace( data.smileys[i].tags[j], elem );
+        }
+      }
+      return parsed;
+    }.property( "content" )
   });
 
   App.ChatEventComponent = Em.Component.extend(
