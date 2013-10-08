@@ -32,8 +32,8 @@ require.config(
 });
 
 require(
-["modernizr", "jquery","ember","foundation","ngchat","marked"],
-function( Modernizr, $, Em, Foundation, Chat, marked )
+["domReady!","modernizr", "jquery","ember","foundation","ngchat","marked"],
+function( document, Modernizr, $, Em, Foundation, Chat, marked )
 {
   App = Em.Application.create(
   {
@@ -41,18 +41,34 @@ function( Modernizr, $, Em, Foundation, Chat, marked )
     LOG_TRANSITIONS: true,
     ready: function()
     {
+      var canvas = document.createElement( "canvas" );
+      canvas.width = 32;
+      canvas.height = 32;
+      this.set( "faviconCanvas", canvas );
       var clientClient = Chat.create(
       {
         endpoint: "http://chat.synkea.net:3000/"
       });
       this.set( "chat", clientClient );
-      require( ["domReady!"], function( document )
-      {
-        $( document ).foundation();
-      });
+      $( document ).foundation();
       clientClient.initialize( App, App.MemberListController, App.ChatBoxView );
+      this.updateFavicon();
     }
   });
+
+  App.updateFavicon = function()
+  {
+    var canvas = this.get( "faviconCanvas" );
+    var ctx = canvas.getContext( "2d" );
+    ctx.fillStyle = "#000000";
+    ctx.fillRect( 0, 0, 32, 32 );
+    ctx.fillStyle = "#ffffff";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "top";
+    ctx.font = "bold 16px sans-serif";
+    ctx.fillText( "42", 0, 0 );
+    $( "#favicon" ).attr( "href", canvas.toDataURL( "image/x-icon" ) );
+  }; 
 
   App.LoginDialogController = Em.Controller.create(
   {
