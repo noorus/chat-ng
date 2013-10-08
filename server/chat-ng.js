@@ -8,7 +8,6 @@ var express     = require( "express" );
 var logger      = require( "./chat.logger" );
 var log         = logger.create();
 
-var chatbackend = require( "./chat.backend.smf" );
 var chatserver  = require( "./chat.server" );
 
 var argv = optimist
@@ -21,7 +20,10 @@ var argv = optimist
 .options( "origin", { default: "*" } )
 .options( "debug", { boolean: true, default: false } )
 .options( "nosock", { boolean: true, default: false } )
+.options( "backend", { default: "smf" } )
 .argv;
+
+var chatbackend = require( "./chat.backend." + argv.backend );
 
 if ( ( typeof argv.sock != "string"
   && !( argv.sock instanceof String ) )
