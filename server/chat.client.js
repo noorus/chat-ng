@@ -75,7 +75,7 @@ Client.prototype.toJSON = function()
     id: this.id,
     state: this.state,
     address: this.address,
-    user: this.user.toJSON()
+    user: this.user ? this.user.toJSON() : null
   };
 };
 

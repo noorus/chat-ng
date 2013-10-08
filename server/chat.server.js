@@ -1,3 +1,4 @@
+var util        = require( "util" );
 var socketio    = require( "socket.io" );
 var crypto      = require( "crypto" );
 var chatclient  = require( "./chat.client" );
@@ -8,6 +9,7 @@ function Server( app, server, prefix, settings, backend, log )
   this.backend = backend;
   this.version = [ 0, 0, 1 ];
   this.protocolVersion = 0;
+  this.debug = settings.debug;
   this.options = {
     tokenBytes: 16
   };
@@ -129,15 +131,25 @@ Server.prototype.getIndex = function( request, response )
 
 Server.prototype.getStatus = function( request, response )
 {
-  var body = [];
-  this.io.sockets.clients().forEach( function( socket )
+  var clients = [];
+  if ( this.debug )
   {
-    socket.get( "client", function( dummy, client )
+    this.io.sockets.clients().forEach( function( socket )
     {
-      if ( client )
-        body.push( client.toJSON() );
+      socket.get( "client", function( dummy, client )
+      {
+        if ( client )
+          clients.push( client.toJSON() );
+      });
     });
-  });
+  }
+  var body = {
+    "platform": process.platform,
+    "architechture": process.arch,
+    "memory": util.inspect( process.memoryUsage() ),
+    "uptime": process.uptime(),
+    "clients": clients
+  };
   response.json( body );
 };
 
