@@ -128,6 +128,7 @@ define(
         throw new ChatException( ChatExceptionCode.applicationError, "Auth call out of state" );
       if ( !this.sm.changeState( ChatState.authing ) )
         return false;
+      if (typeof password === "undefined") { password = "" }
       var sha1 = new Hashes.SHA1();
       var userHash = sha1.hex( username + password );
       var authHash = sha1.hex( userHash + this.session.token );
