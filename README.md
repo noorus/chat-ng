@@ -24,3 +24,6 @@ License
 
 Chat-NG is licensed under the MIT license.  
 For full license text, see the LICENSE file.
+
+*Emoticons in the "default" smiley set are free for non-commercial use only, with artist attribution.*  
+*Artists are listed in the default.json emoticon package file in connection to each emoticon.*
