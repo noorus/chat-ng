@@ -86,11 +86,14 @@
         <div class="large-9 columns fullheight">
           {{ view "App.ChatBoxView" }}
           <div class="row collapse ngc-chat-tools">
-            <div class="small-10 columns">
+            <div class="small-2 columns">
+              {{ view "App.ChatTargetSelect" contentBinding="App.ChatTargetController" selectionBinding="App.ChatTargetController.target" optionLabelPath="content.name" optionValuePath="content.id"}}
+            </div>
+            <div class="small-8 columns">
               {{ input type="text" value=commandLine action="execute" }}
             </div>
             <div class="small-2 columns">
-              <button {{ action "execute" }} class="button prefix">Lähetä</button>
+              <button {{ action "execute" }} class="button prefix">Send</button>
             </div>
           </div>
         </div>

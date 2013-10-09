@@ -83,8 +83,8 @@ function( document, Modernizr, $, Em, Foundation, Chat, marked )
         endpoint: "http://chat.synkea.net:3000/"
       });
       this.set( "chat", clientClient );
-      $( document ).foundation();
       clientClient.initialize( App, App.MemberListController, App.ChatBoxView );
+      $( document ).foundation();
     }
   });
 
@@ -100,7 +100,7 @@ function( document, Modernizr, $, Em, Foundation, Chat, marked )
     ctx.font = "bold 18px sans-serif";
     ctx.fillText( "5!", 8, 4 );
     $( "#favicon" ).attr( "href", canvas.toDataURL( "image/x-icon" ) );
-  }; 
+  };
 
   App.LoginDialogController = Em.Controller.create(
   {
@@ -174,7 +174,7 @@ function( document, Modernizr, $, Em, Foundation, Chat, marked )
   {
     setupController: function( controller )
     {
-      controller.set( "title", "Tsättihomman otsikko" );
+      controller.set( "title", "Title" );
     }
   });
 
@@ -182,7 +182,7 @@ function( document, Modernizr, $, Em, Foundation, Chat, marked )
   {
     setupController: function( controller )
     {
-      controller.set( "title", "Keskustelun aihe (topic?)" );
+      controller.set( "title", "Topic" );
     }
   });
 
@@ -199,6 +199,31 @@ function( document, Modernizr, $, Em, Foundation, Chat, marked )
   App.ApplicationView = Em.View.extend(
   {
     classNames: ["ngc-view-main"]
+  });
+
+  /*App.IndexView = Em.View.extend(
+  {
+    didInsertElement: function()
+    {
+      Em.run.scheduleOnce( "afterRender", this, "initFoundation" );
+    },
+    initFoundation: function()
+    {
+      //console.log( "Initing Foundation forms" );
+      //$( document ).foundation( "forms" );
+    }
+  });*/
+
+  //-- Chat Tools -------------------------------------------------------------
+
+  App.ChatTargetSelect = Em.Select.extend({ classNames: ["prefix"] });
+
+  App.ChatTargetController = Em.ArrayController.create(
+  {
+    content: [
+      { id: 0, name: "Public" }
+    ],
+    target: null
   });
 
   //-- Chat Box ---------------------------------------------------------------
