@@ -11,7 +11,6 @@ require.config(
     foundation: "foundation.min",
     ngchat: "ngchat",
     statemachine: "statemachine",
-    marked: "//cdnjs.cloudflare.com/ajax/libs/marked/0.2.9/marked.min",
     text: "text",
     json: "json"
   },
@@ -34,25 +33,23 @@ require.config(
 });
 
 require(
-["domReady!","modernizr", "jquery","ember","foundation","ngchat","marked"],
-function( document, Modernizr, $, Em, Foundation, Chat, marked )
+["domReady!","modernizr","jquery","ember","foundation","ngchat"],
+function( document, Modernizr, $, Em, Foundation, Chat )
 {
-  var htmlEscapes = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#x27;',
-    '/': '&#x2F;'
-  };
-
-  var htmlEscaper = /[&<>"'\/]/g;
-
   function escapeHTML( string )
   {
-    return ('' + string).replace(htmlEscaper, function(match) {
-      return htmlEscapes[match];
-    });
+    var htmlEscapes = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#x27;',
+      '/': '&#x2F;'
+    };
+
+    var htmlEscaper = /[&<>"'\/]/g;
+
+    return ( '' + string ).replace( htmlEscaper, function( match ){ return htmlEscapes[match]; } );
   };
 
   App = Em.Application.create(
@@ -83,8 +80,8 @@ function( document, Modernizr, $, Em, Foundation, Chat, marked )
         endpoint: "http://chat.synkea.net:3000/"
       });
       this.set( "chat", clientClient );
-      clientClient.initialize( App, App.MemberListController, App.ChatBoxView );
       $( document ).foundation();
+      clientClient.initialize( App, App.MemberListController, App.ChatBoxView );
     }
   });
 
