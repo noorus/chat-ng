@@ -2,106 +2,123 @@
   "smileys":
   [
     {
-      "tags": [":excited:"],
-      "file": "excited.gif",
-      "credit": "CookiemagiK",
-      "url": "http://cookiemagik.deviantart.com"
-    },
-    {
-      "tags": [":nuu:"],
-      "file": "nuu.gif",
-      "credit": "CookiemagiK",
-      "url": "http://cookiemagik.deviantart.com"
-    },
-    {
-      "tags": [":kiss:"],
-      "file": "kiss.gif",
-      "credit": "CookiemagiK",
-      "url": "http://cookiemagik.deviantart.com"
-    },
-    {
-      "tags": [":sexy:"],
-      "file": "sexy.gif",
-      "credit": "Web5teR",
-      "url": "http://web5ter.deviantart.com"
-    },
-    {
-      "tags": [":what:"],
-      "file": "what.gif",
-      "credit": "Web5teR",
-      "url": "http://web5ter.deviantart.com"
-    },
-    {
-      "tags": [":argh:"],
-      "file": "argh.gif",
-      "credit": "blunaowl",
-      "url": "http://blunaowl.deviantart.com"
-    },
-    {
-      "tags": ["XD"],
-      "file": "xd.png",
-      "credit": "EastSideSunsets",
-      "url": "http://eastsidesunsets.deviantart.com"
-    },
-    {
-      "tags": [":fear:"],
-      "file": "fear.gif",
-      "credit": "blunaowl",
-      "url": "http://blunaowl.deviantart.com"
-    },
-    {
-      "tags": [":D"],
-      "file": "d.gif",
-      "credit": "Snowshi",
-      "url": "http://snowshi.deviantart.com"
-    },
-    {
-      "tags": [":("],
-      "file": "sad.png",
-      "credit": "Snowshi",
-      "url": "http://snowshi.deviantart.com"
-    },
-    {
-      "tags": ["8)","B)"],
-      "file": "glasses.png",
-      "credit": "Snowshi",
-      "url": "http://snowshi.deviantart.com"
-    },
-    {
-      "tags": ["._.",".__.",".___.",":|"],
-      "file": "speechless.png",
-      "credit": "Snowshi",
-      "url": "http://snowshi.deviantart.com"
-    },
-    {
-      "tags": [":squee:"],
-      "file": "squee.gif",
-      "credit": "stuck-in-suburbia",
-      "url": "http://stuck-in-suburbia.deviantart.com"
-    },
-    {
-      "tags": [":groove:"],
-      "file": "groove.gif",
-      "credit": "CubicInsanity",
-      "url": "http://cubicinsanity.deviantart.com"
+      "tags": [":)"],
+      "file": "smile.gif",
+      "credit": "nateify",
+      "url": "http://nateify.deviantart.com",
+      "public": true
     },
     {
       "tags": [";)"],
       "file": "wink.png",
       "credit": "sonikkuzuru",
-      "url": "http://sonikkuruzu.deviantart.com"
+      "url": "http://sonikkuruzu.deviantart.com",
+      "public": true
     },
     {
-      "tags": [":)"],
-      "file": "smile.gif",
-      "credit": "nateify",
-      "url": "http://nateify.deviantart.com"
+      "tags": [":D"],
+      "file": "d.gif",
+      "credit": "Snowshi",
+      "url": "http://snowshi.deviantart.com",
+      "public": true
+    },
+    {
+      "tags": ["XD"],
+      "file": "xd.png",
+      "credit": "EastSideSunsets",
+      "url": "http://eastsidesunsets.deviantart.com",
+      "public": true
     },
     {
       "tags": [":P"],
       "file": "tongue.png",
       "credit": "nateify",
-      "url": "http://nateify.deviantart.com"
+      "url": "http://nateify.deviantart.com",
+      "public": true
+    },
+    {
+      "tags": [":("],
+      "file": "sad.png",
+      "credit": "Snowshi",
+      "url": "http://snowshi.deviantart.com",
+      "public": true
+    },
+    {
+      "tags": ["8)","B)"],
+      "file": "glasses.png",
+      "credit": "Snowshi",
+      "url": "http://snowshi.deviantart.com",
+      "public": true
+    },
+    {
+      "tags": ["._.",".__.",".___."],
+      "file": "speechless.png",
+      "credit": "Snowshi",
+      "url": "http://snowshi.deviantart.com",
+      "public": true
+    },
+    {
+      "tags": [":kiss:"],
+      "file": "kiss.gif",
+      "credit": "CookiemagiK",
+      "url": "http://cookiemagik.deviantart.com",
+      "public": true
+    },
+    {
+      "tags": [":excited:"],
+      "file": "excited.gif",
+      "credit": "CookiemagiK",
+      "url": "http://cookiemagik.deviantart.com",
+      "public": false
+    },
+    {
+      "tags": [":nuu:"],
+      "file": "nuu.gif",
+      "credit": "CookiemagiK",
+      "url": "http://cookiemagik.deviantart.com",
+      "public": false
+    },
+    {
+      "tags": [":sexy:"],
+      "file": "sexy.gif",
+      "credit": "Web5teR",
+      "url": "http://web5ter.deviantart.com",
+      "public": false
+    },
+    {
+      "tags": [":what:"],
+      "file": "what.gif",
+      "credit": "Web5teR",
+      "url": "http://web5ter.deviantart.com",
+      "public": false
+    },
+    {
+      "tags": [":argh:"],
+      "file": "argh.gif",
+      "credit": "blunaowl",
+      "url": "http://blunaowl.deviantart.com",
+      "public": false
+    },
+    {
+      "tags": [":fear:"],
+      "file": "fear.gif",
+      "credit": "blunaowl",
+      "url": "http://blunaowl.deviantart.com",
+      "public": false
+    },
+    {
+      "tags": [":squee:"],
+      "file": "squee.gif",
+      "credit": "stuck-in-suburbia",
+      "url": "http://stuck-in-suburbia.deviantart.com",
+      "public": false
+    },
+    {
+      "tags": [":groove:"],
+      "file": "groove.gif",
+      "credit": "CubicInsanity",
+      "url": "http://cubicinsanity.deviantart.com",
+      "public": false
     }
   ]
 }

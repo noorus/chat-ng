@@ -33,8 +33,8 @@ require.config(
 });
 
 require(
-["domReady!","modernizr","jquery","ember","foundation","ngchat"],
-function( document, Modernizr, $, Em, Foundation, Chat )
+["domReady!","modernizr","jquery","ember","foundation","ngchat","json!../../smileys/default.json"],
+function( document, Modernizr, $, Em, Foundation, Chat, smileySet )
 {
   function escapeHTML( string )
   {
@@ -58,10 +58,6 @@ function( document, Modernizr, $, Em, Foundation, Chat )
     LOG_TRANSITIONS: true,
     ready: function()
     {
-      require( ["json!../../smileys/default.json"], function( data )
-      {
-        App.set( "smileys", data );
-      });
       Em.run(function()
       {
         var canvas = document.createElement( "canvas" );
@@ -107,7 +103,7 @@ function( document, Modernizr, $, Em, Foundation, Chat )
       {
         // Let's not save the password for now
         localStorage["ngc.account"] = this.get( "account" );
-        //localStorage["ngc.password"] = this.get( "password" );
+        // localStorage["ngc.password"] = this.get( "password" );
       }
       var cb = this.get( "callback" );
       cb[1].call( cb[0], true, this.get( "account" ), this.get( "password" ) );
@@ -139,8 +135,8 @@ function( document, Modernizr, $, Em, Foundation, Chat )
           // Let's not save the password for now
           var u = localStorage["ngc.account"];
           App.LoginDialogController.set( "account", u ? u : "" );
-          //var p = localStorage["ngc.password"];
-          //App.LoginDialogController.set( "password", p ? p : "" );
+          // var p = localStorage["ngc.password"];
+          // App.LoginDialogController.set( "password", p ? p : "" );
         }
         App.LoginDialogView.$( "input:first" ).focus();
       });
@@ -175,6 +171,11 @@ function( document, Modernizr, $, Em, Foundation, Chat )
     }
   });
 
+  App.ApplicationView = Em.View.extend(
+  {
+    classNames: ["ngc-view-main"]
+  });
+
   App.IndexRoute = Em.Route.extend(
   {
     setupController: function( controller )
@@ -186,16 +187,24 @@ function( document, Modernizr, $, Em, Foundation, Chat )
   App.IndexController = Em.Controller.extend(
   {
     commandLine: "",
-    execute: function() {
-      var chat = App.get( "chat" );
-      chat.execute( this.get( "commandLine" ) );
-      this.set( "commandLine", "" );
+    actions:
+    {
+      execute: function()
+      {
+        var chat = App.get( "chat" );
+        chat.execute( this.get( "commandLine" ) );
+        this.set( "commandLine", "" );
+      },
+      smileyClicked: function( id )
+      {
+        var data = App.get( "smileys" );
+        var cmdline = this.get( "commandLine" );
+        cmdline += " " + data.smileys[id].tags[0];
+        this.set( "commandLine", cmdline );
+        // TODO: find caret, place, update
+        $( "input[name='commandLine']" ).focus();
+      }
     }
-  });
-
-  App.ApplicationView = Em.View.extend(
-  {
-    classNames: ["ngc-view-main"]
   });
 
   /*App.IndexView = Em.View.extend(
@@ -221,6 +230,24 @@ function( document, Modernizr, $, Em, Foundation, Chat )
       { id: 0, name: "Public" }
     ],
     target: null
+  });
+
+  App.ChatSmileysController = Em.ArrayController.create(
+  {
+    content: [],
+    init: function()
+    {
+      // This does not belong here, but I just don't know where else to do it
+      App.set( "smileys", smileySet );
+      var data = App.get( "smileys" );
+      for ( var i = 0; i < data.smileys.length; i++ )
+      {
+        if ( !data.smileys[i].public )
+          continue;
+        var smile = { id: i, file: "smileys/default/" + data.smileys[i].file, name: data.smileys[i].tags[0] };
+        this.pushObject( smile );
+      }
+    }
   });
 
   //-- Chat Box ---------------------------------------------------------------

@@ -57,7 +57,7 @@
         </ul>
         <section class="top-bar-section">
           <ul class="right">
-            <li class="has-form"><a>Tila: Ei yhteyttä</a></li>
+            <li class="has-form"><a>Connected</a></li>
             <li class="divider"></li>
             <li class="has-dropdown">
               <a href="#">Main Item 1</a>
@@ -70,7 +70,7 @@
               </ul>
             </li>
             <li class="divider"></li>
-            <li><a href="#">Kirjaudu ulos</a></li>
+            <li><a href="#">Log Out</a></li>
           </ul>
         </section>
       </nav>
@@ -86,11 +86,18 @@
         <div class="large-9 columns fullheight">
           {{ view "App.ChatBoxView" }}
           <div class="row collapse ngc-chat-tools">
+            <div class="small-12 columns smileys">
+              {{# each App.ChatSmileysController }}
+                <img {{ action "smileyClicked" id }} {{bind-attr src=file}} {{bind-attr alt=name}} {{bind-attr title=name}}>
+              {{/each}}
+            </div>
+          </div>
+          <div class="row collapse ngc-chat-tools">
             <div class="small-2 columns">
               {{ view "App.ChatTargetSelect" contentBinding="App.ChatTargetController" selectionBinding="App.ChatTargetController.target" optionLabelPath="content.name" optionValuePath="content.id"}}
             </div>
             <div class="small-8 columns">
-              {{ input type="text" value=commandLine action="execute" }}
+              {{ input type="text" name="commandLine" value=commandLine action="execute" }}
             </div>
             <div class="small-2 columns">
               <button {{ action "execute" }} class="button prefix">Send</button>
