@@ -15,6 +15,13 @@
       <div class="author"><a href="#">{{ name }}</a></div>
       <div class="content">{{{ contentParsed }}}</div>
     </script>
+    <script type="text/x-handlebars" data-template-name="components/chat-whisper">
+      <div class="author">
+	<a href="#">{{ name }}</a> 
+	<span class="whisper_arrow">-></span> 
+      </div>
+      <div class="content">{{{ contentParsed }}}</div>
+    </script>
     <script type="text/x-handlebars" data-template-name="components/chat-event">
       <div class="author">&nbsp;</div>
       <div class="content"><b>{{ content }}</b></div>

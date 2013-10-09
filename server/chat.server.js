@@ -74,6 +74,29 @@ Server.prototype.onClientMessage = function( client, message )
   this.io.sockets.in( "authed" ).emit( "ngc_msg", { user: client.user.toJSON(), "message": message } );
 };
 
+Server.prototype.onClientWhisper = function( sclient, target, message ) 
+{ 
+  var target_user = null;
+  var that = this;
+  this.io.sockets.in( "authed" ).clients().forEach(function ( socket ) 
+  {
+    socket.get( "client", function( dummy, client ) 
+    {
+      if ( client && client.isVisible && client.user.name === target )
+      {
+	that.log.debug("found recipient, " + client.user.name);
+        target_user = client.user;
+        socket.emit( "ngc_whisper", { user: sclient.user.toJSON(), "message": message });
+      } 
+    });
+  });
+  if (!!target_user) 
+  {
+    // message delivered, echo it back
+    sclient.socket.emit( "ngc_whisper", { user: target_user.toJSON(), "message": message });
+  }
+}
+
 Server.prototype.onClientDisconnected = function( client )
 {
   if ( client.user )

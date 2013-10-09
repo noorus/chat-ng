@@ -54,6 +54,11 @@ function Client( owner, socket )
       client.onMsg.call( client, data );
     });
   });
+  socket.on( "ngc_whisper", function( data ) {
+    this.get( "client", function( dummy, client ) {
+      client.onWhisper.call( client, data )
+    });
+  });
 
   this.id = socket.id;
   this.socket = socket;
@@ -162,6 +167,15 @@ Client.prototype.onMsg = function( data )
     throw new ClientException( ClientExceptionCode.protocolError, "NGC_Msg out of state" );
   this._owner.onClientMessage( this, data.msg );
 };
+
+Client.prototype.onWhisper = function( data ) 
+{
+  if ( this.state != ClientState.idle ) 
+  {
+    throw new ClientException( ClientExceptionCode.protocolError, "NGC_Whisper out  of state" );
+  }
+  this._owner.onClientWhisper( this, data.target, data.msg );
+}
 
 Client.prototype.sendAuth = function( result, data )
 {

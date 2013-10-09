@@ -267,6 +267,16 @@ function( document, Modernizr, $, Em, Foundation, Chat, smileySet )
       var height = this.$()[0].scrollHeight;
       this.$().animate( { scrollTop: height }, 1000 );
     },
+    addWhisper: function( user, message ) 
+    {
+      var component = App.ChatWhisperComponent.create({
+        name: user.name,
+        content: message
+      });
+      this.pushObject( component );
+      var height = this.$()[0].scrollHeight;
+      this.$().animate( { scrollTop: height}, 1000 );
+    },
     addEvent: function( message )
     {
       var component = App.ChatEventComponent.create({
@@ -289,6 +299,21 @@ function( document, Modernizr, $, Em, Foundation, Chat, smileySet )
     }
   });
 
+  App.parseContent = function(that) 
+  {
+    var data = App.get( "smileys" );
+    var parsed = escapeHTML( that.get( "content" ) );
+    for ( var i = 0; i < data.smileys.length; i++ )
+    {
+      for ( var j = 0; j < data.smileys[i].tags.length; j++ )
+      {
+        var elem = "<img class=\"emote\" src=\"smileys/default/" + data.smileys[i].file + "\" alt=\"" + data.smileys[i].tags[j] + "\">";
+        parsed = parsed.replace( data.smileys[i].tags[j], elem );
+      }
+    }
+    return parsed;
+  };
+
   App.ChatMessageComponent = Em.Component.extend(
   {
     tagName: "li",
@@ -296,20 +321,18 @@ function( document, Modernizr, $, Em, Foundation, Chat, smileySet )
     templateName: "components/chat-message",
     name: "unknown",
     content: "unknown",
-    contentParsed: function()
-    {
-      var data = App.get( "smileys" );
-      var parsed = escapeHTML( this.get( "content" ) );
-      for ( var i = 0; i < data.smileys.length; i++ )
-      {
-        for ( var j = 0; j < data.smileys[i].tags.length; j++ )
-        {
-          var elem = "<img class=\"emote\" src=\"smileys/default/" + data.smileys[i].file + "\" alt=\"" + data.smileys[i].tags[j] + "\">";
-          parsed = parsed.replace( data.smileys[i].tags[j], elem );
-        }
-      }
-      return parsed;
-    }.property( "content" )
+    contentParsed: function() { return App.parseContent( this ) }.property( "content" )
+  });
+
+  App.ChatWhisperComponent = Em.Component.extend(
+  {
+    tagName: "li",
+    classNames: ["ngc-chat-whisper"],
+    templateName: "components/chat-whisper",
+    name: "unknown",
+    content: "unknown",
+    self: false,
+    contentParsed: function() { return App.parseContent( this ) }.property( "content" )
   });
 
   App.ChatEventComponent = Em.Component.extend(
