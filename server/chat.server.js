@@ -82,7 +82,7 @@ Server.prototype.onClientWhisper = function( sclient, target, message )
   {
     socket.get( "client", function( dummy, client ) 
     {
-      if ( client && client.isVisible && client.user.name === target )
+      if ( client && client.isVisible() && client.user.name === target )
       {
 	that.log.debug("found recipient, " + client.user.name);
         target_user = client.user;
@@ -110,7 +110,7 @@ Server.prototype.broadcastJoin = function( client )
   {
     socket.get( "client", function( dummy, client )
     {
-      if ( client && client.isVisible && client.user )
+      if ( client && client.isVisible() && client.user )
         who.push( client.user.toJSON() );
     });
   });
@@ -124,7 +124,7 @@ Server.prototype.sendWhoTo = function( sclient )
   {
     socket.get( "client", function( dummy, client )
     {
-      if ( client && client.isVisible && client.user && client.id != sclient.id )
+      if ( client && client.isVisible() && client.user && client.id != sclient.id )
         who.push( client.user.toJSON() );
     });
   });
