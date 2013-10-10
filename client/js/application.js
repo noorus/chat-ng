@@ -308,7 +308,7 @@ function( document, Modernizr, $, Em, Foundation, Chat, smileySet )
       for ( var j = 0; j < data.smileys[i].tags.length; j++ )
       {
         var elem = "<img class=\"emote\" src=\"smileys/default/" + data.smileys[i].file + "\" alt=\"" + data.smileys[i].tags[j] + "\">";
-        parsed = parsed.replace( data.smileys[i].tags[j], elem );
+        parsed = parsed.split( data.smileys[i].tags[j] ).join( elem );
       }
     }
     return parsed;
