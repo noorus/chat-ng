@@ -263,7 +263,6 @@ function( document, Modernizr, $, Em, Foundation, Chat, smileySet )
         content: message
       });
       this.pushObject( component );
-      component.rerender();
       var height = this.$()[0].scrollHeight;
       this.$().animate( { scrollTop: height }, 1000 );
     },
@@ -283,7 +282,6 @@ function( document, Modernizr, $, Em, Foundation, Chat, smileySet )
         content: message
       });
       this.pushObject( component );
-      component.rerender();
       var height = this.$()[0].scrollHeight;
       this.$().animate( { scrollTop: height }, 1000 );
     },
@@ -293,16 +291,15 @@ function( document, Modernizr, $, Em, Foundation, Chat, smileySet )
         content: marked( data )
       });
       this.pushObject( component );
-      component.rerender();
       var height = this.$()[0].scrollHeight;
       this.$().animate( { scrollTop: height }, 1000 );
     }
   });
 
-  App.parseContent = function(that) 
+  App.parseContent = function( content ) 
   {
     var data = App.get( "smileys" );
-    var parsed = escapeHTML( that.get( "content" ) );
+    var parsed = escapeHTML( content );
     for ( var i = 0; i < data.smileys.length; i++ )
     {
       for ( var j = 0; j < data.smileys[i].tags.length; j++ )
@@ -321,7 +318,7 @@ function( document, Modernizr, $, Em, Foundation, Chat, smileySet )
     templateName: "components/chat-message",
     name: "unknown",
     content: "unknown",
-    contentParsed: function() { return App.parseContent( this ) }.property( "content" )
+    contentParsed: function(){ return App.parseContent( this.get( "content" ) ) }.property( "content" )
   });
 
   App.ChatWhisperComponent = Em.Component.extend(
@@ -332,7 +329,7 @@ function( document, Modernizr, $, Em, Foundation, Chat, smileySet )
     name: "unknown",
     content: "unknown",
     self: false,
-    contentParsed: function() { return App.parseContent( this ) }.property( "content" )
+    contentParsed: function(){ return App.parseContent( this.get( "content" ) ) }.property( "content" )
   });
 
   App.ChatEventComponent = Em.Component.extend(
