@@ -37,6 +37,33 @@ require(
 ["domReady!","modernizr","jquery","ember","foundation","ngchat","baybay","json!../../smileys/default.json"],
 function( document, Modernizr, $, Em, Foundation, Chat, Baybay, smileySet )
 {
+  jQuery.fn.getSelection = function()
+  {
+    if ( this.length == 0 )
+      return [0,0];
+    input = this[0];
+    var pos = [input.value.length,input.value.length];
+    if ( input.createTextRange )
+    {
+      pos = [0,0];
+      var r = document.selection.createRange().duplicate();
+      r.moveEnd( "character", input.value.length );
+      if ( r.text == "" )
+        pos[0] = input.value.length;
+      pos[0] = input.value.lastIndexOf( r.text );
+      r = document.selection.createRange().duplicate();
+      r.moveStart( "character", -input.value.length );
+      if ( r.text == "" )
+        pos[1] = input.value.length;
+      pos[1] = input.value.lastIndexOf(r.text);
+    }
+    else if ( typeof( input.selectionStart ) != "undefined" )
+    {
+      pos = [input.selectionStart,input.selectionEnd];
+    }
+    return pos;
+  };
+
   function escapeHTML( string )
   {
     /* Limited escaping
@@ -212,6 +239,18 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, smileySet )
         this.set( "commandLine", cmdline );
         // TODO: find caret, place, update
         $( "input[name='commandLine']" ).focus();
+      },
+      bbcodeClicked: function( code )
+      {
+        var selection = $( "input[name='commandLine']" ).getSelection();
+        var cmdline = this.get( "commandLine" );
+        var newline = cmdline.substr( 0, selection[0] );
+        //newline += "1";
+        newline += cmdline.slice( selection[0], selection[1] );
+        //newline += "2";
+        newline += cmdline.substr( selection[1] );
+        this.set( "commandLine", newline );
+        $( "input[name='commandLine']" ).focus();
       }
     }
   });
@@ -385,7 +424,7 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, smileySet )
     avatar: function()
     {
       if ( !this.get( "hasAvatar" ) )
-        return "http://placehold.it/30x30";
+        return "theme/default/no_avatar.gif";
       return "http://chat.synkea.net:3000/avatar/" + this.get( "id" );
     }.property( "id" ),
     actions:

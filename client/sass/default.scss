@@ -107,6 +107,9 @@ html, body, .ngc-view-main {
   .smileys img {
     cursor: pointer;
   }
+  .bbcode img {
+    cursor: pointer;
+  }
 }
 
 @media only screen and (max-width:"#{$small-screen}") {
