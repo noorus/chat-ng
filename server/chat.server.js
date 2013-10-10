@@ -69,14 +69,18 @@ Server.prototype.onClientAuthed = function( client )
   client.socket.join( "authed" );
 };
 
-Server.prototype.onClientMessage = function( client, message )
+Server.prototype.onClientMessage = function( client, message, timestamp )
 {
-  this.io.sockets.in( "authed" ).emit( "ngc_msg", { user: client.user.toJSON(), "message": message } );
+  this.io.sockets.in( "authed" ).emit( "ngc_msg", { 
+    user: client.user.toJSON(), 
+    "message": message,
+    "timestamp": timestamp.format()
+  });
 };
 
-Server.prototype.onClientWhisper = function( sclient, target, message ) 
+Server.prototype.onClientWhisper = function( sclient, target, message, timestamp ) 
 { 
-  var target_user = null;
+  var packet = null;
   var that = this;
   this.io.sockets.in( "authed" ).clients().forEach(function ( socket ) 
   {
@@ -85,15 +89,20 @@ Server.prototype.onClientWhisper = function( sclient, target, message )
       if ( client && client.isVisible() && client.user.name === target )
       {
 	that.log.debug("found recipient, " + client.user.name);
-        target_user = client.user;
-        socket.emit( "ngc_whisper", { user: sclient.user.toJSON(), "message": message });
+        packet = { 
+          user: sclient.user.toJSON(), 
+          target: client.user.toJSON(), 
+          "message": message,
+          "timestamp": timestamp
+        };
+        socket.emit( "ngc_whisper", packet);
       } 
     });
   });
-  if (!!target_user) 
+  if (!!packet) 
   {
     // message delivered, echo it back
-    sclient.socket.emit( "ngc_whisper", { user: target_user.toJSON(), "message": message });
+    sclient.socket.emit( "ngc_whisper", packet);
   }
 }
 

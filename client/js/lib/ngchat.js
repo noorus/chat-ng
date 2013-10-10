@@ -197,12 +197,12 @@ define(
     Chat.prototype.onMsg = function( data )
     {
       console.log( "iO: Packet NGC_Msg" );
-      this.chatBox.addMessage( data.user, data.message );
+      this.chatBox.addMessage( data.user, data.message);
     };
     Chat.prototype.onWhisper = function( data ) 
     {
       console.log( "iO: Packet NGC_Whisper" );
-      this.chatBox.addWhisper( data.user, data.message );
+      this.chatBox.addWhisper( data.user, data.target, data.message);
     };
 
     Chat.prototype.onClose = function( data )

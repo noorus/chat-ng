@@ -130,7 +130,8 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, smileySet )
     ctx.fillText( "5!", 8, 4 );
     $( "#favicon" ).attr( "href", canvas.toDataURL( "image/x-icon" ) );
   };
-
+  
+  
   App.LoginDialogController = Em.Controller.create(
   {
     loginClick: function()
@@ -314,10 +315,11 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, smileySet )
       var height = this.$()[0].scrollHeight;
       this.$().animate( { scrollTop: height }, 1000 );
     },
-    addWhisper: function( user, message ) 
+    addWhisper: function( user, target, message ) 
     {
       var component = App.ChatWhisperComponent.create({
-        name: user.name,
+        sender: user.name,
+	receiver: target.name,
         content: message
       });
       this.pushObject( component );
@@ -359,7 +361,23 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, smileySet )
       }
     }
     parsed = bbcode.parse( parsed );
+    
+    if ( parsed.indexOf( "/me" ) === 0 )
+    {
+      parsed = parsed.substring(3);
+    }	
+    else if ( parsed.indexOf( "/action" ) === 0 ) 
+    {
+      parsed = parsed.substring(7);
+    }
+    
     return parsed;
+  };
+
+  App.checkAction = function( content )
+  {
+    return ( content.indexOf( "/me" ) === 0 
+             || content.indexOf( "/action" ) === 0 );
   };
 
   App.ChatMessageComponent = Em.Component.extend(
@@ -369,6 +387,9 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, smileySet )
     templateName: "components/chat-message",
     name: "unknown",
     content: "unknown",
+    timestamp: "unknown",
+    isAction: function() { return App.checkAction( this.get( "content" ) ) }.property( "content" ),
+    classNameBindings: ["isAction"],
     contentParsed: function(){ return App.parseContent( this.get( "content" ) ) }.property( "content" )
   });
 
@@ -377,9 +398,12 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, smileySet )
     tagName: "li",
     classNames: ["ngc-chat-whisper"],
     templateName: "components/chat-whisper",
-    name: "unknown",
+    sender: "unknown",
     content: "unknown",
-    self: false,
+    receiver: "unknown",
+    timestamp: "unknown",
+    isAction: function() { return App.checkAction( this.get( "content" ) ) }.property( "content" ),
+    classNameBindings: ["isAction"],
     contentParsed: function(){ return App.parseContent( this.get( "content" ) ) }.property( "content" )
   });
 

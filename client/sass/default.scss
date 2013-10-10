@@ -99,6 +99,10 @@ html, body, .ngc-view-main {
   }
 }
 
+.is-action {
+  font-style: italic;
+}
+
 .ngc-chat-tools {
   margin-top: $column-gutter / 2;
   input, button, textarea {
