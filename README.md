@@ -7,11 +7,10 @@ Client supports pluggable themes and emoticon packages.
 
 ### Technology
 
-The client uses [RequireJS](http://requirejs.org/), [Ember.js](http://emberjs.com/), [Socket.io](https://github.com/LearnBoost/socket.io), [jsHashes](https://github.com/h2non/jsHashes) & [Foundation 4](http://foundation.zurb.com/).  
+The client uses [RequireJS](http://requirejs.org/), [Ember.js](http://emberjs.com/), [Socket.io](https://github.com/LearnBoost/socket.io), [jsHashes](https://github.com/h2non/jsHashes), [Baybay](https://github.com/noorus/baybay) & [Foundation 4](http://foundation.zurb.com/).  
 The server's dependencies are listed in the `package.json` file.
 
-Installation
-------------
+### Installation
 
 Server dependencies are managed using the [Node Package Manager](https://npmjs.org/).  
 To install the server, navigate to the `server` directory and run `npm install`.  
@@ -19,8 +18,7 @@ Run the server using `./chat-ng.js` and pass appropriate arguments to define opt
 
 To install the client, drop everything under the `client` directory on a web server.
 
-License
--------
+### License
 
 Chat-NG is licensed under the MIT license.  
 For full license text, see the LICENSE file.
