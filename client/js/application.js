@@ -12,7 +12,8 @@ require.config(
     ngchat: "ngchat",
     statemachine: "statemachine",
     text: "text",
-    json: "json"
+    json: "json",
+    baybay: "baybay"
   },
   shim: {
     "ember": {
@@ -33,11 +34,12 @@ require.config(
 });
 
 require(
-["domReady!","modernizr","jquery","ember","foundation","ngchat","json!../../smileys/default.json"],
-function( document, Modernizr, $, Em, Foundation, Chat, smileySet )
+["domReady!","modernizr","jquery","ember","foundation","ngchat","baybay","json!../../smileys/default.json"],
+function( document, Modernizr, $, Em, Foundation, Chat, Baybay, smileySet )
 {
   function escapeHTML( string )
   {
+    /* Limited escaping
     var htmlEscapes = {
       '&': '&amp;',
       '<': '&lt;',
@@ -46,8 +48,13 @@ function( document, Modernizr, $, Em, Foundation, Chat, smileySet )
       "'": '&#x27;',
       '/': '&#x2F;'
     };
+    var htmlEscaper = /[&<>"'\/]/g;*/
 
-    var htmlEscaper = /[&<>"'\/]/g;
+    var htmlEscapes = {
+      '<': '&lt;',
+      '>': '&gt;'
+    };
+    var htmlEscaper = /[<>]/g;
 
     return ( '' + string ).replace( htmlEscaper, function( match ){ return htmlEscapes[match]; } );
   };
@@ -58,6 +65,8 @@ function( document, Modernizr, $, Em, Foundation, Chat, smileySet )
     LOG_TRANSITIONS: true,
     ready: function()
     {
+      var bbcode = new Baybay();
+      this.set( "bbcode", bbcode );
       Em.run(function()
       {
         var canvas = document.createElement( "canvas" );
@@ -298,7 +307,9 @@ function( document, Modernizr, $, Em, Foundation, Chat, smileySet )
 
   App.parseContent = function( content ) 
   {
+    // TODO: Make sure Baybay doesn't throw, or catch it and show unparsed content instead
     var data = App.get( "smileys" );
+    var bbcode = App.get( "bbcode" );
     var parsed = escapeHTML( content );
     for ( var i = 0; i < data.smileys.length; i++ )
     {
@@ -308,6 +319,7 @@ function( document, Modernizr, $, Em, Foundation, Chat, smileySet )
         parsed = parsed.split( data.smileys[i].tags[j] ).join( elem );
       }
     }
+    parsed = bbcode.parse( parsed );
     return parsed;
   };
 
