@@ -86,14 +86,14 @@ Server.prototype.onClientWhisper = function( sclient, target, message )
       {
 	that.log.debug("found recipient, " + client.user.name);
         target_user = client.user;
-        socket.emit( "ngc_whisper", { user: sclient.user.toJSON(), "message": message });
+        socket.emit( "ngc_whisper", { user: sclient.user.toJSON(), target: target_user.toJSON(), "message": message });
       } 
     });
   });
   if (!!target_user) 
   {
     // message delivered, echo it back
-    sclient.socket.emit( "ngc_whisper", { user: target_user.toJSON(), "message": message });
+    sclient.socket.emit( "ngc_whisper", { user: sclient.user.toJSON(), target: target_user.toJSON(), "message": message });
   }
 }
 

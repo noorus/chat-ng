@@ -275,10 +275,11 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, smileySet )
       var height = this.$()[0].scrollHeight;
       this.$().animate( { scrollTop: height }, 1000 );
     },
-    addWhisper: function( user, message ) 
+    addWhisper: function( user, target, message ) 
     {
       var component = App.ChatWhisperComponent.create({
-        name: user.name,
+        sender: user.name,
+	receiver: target.name,
         content: message
       });
       this.pushObject( component );
@@ -338,8 +339,9 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, smileySet )
     tagName: "li",
     classNames: ["ngc-chat-whisper"],
     templateName: "components/chat-whisper",
-    name: "unknown",
+    sender: "unknown",
     content: "unknown",
+    receiver: "unknown",
     self: false,
     contentParsed: function(){ return App.parseContent( this.get( "content" ) ) }.property( "content" )
   });
