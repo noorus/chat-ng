@@ -165,7 +165,7 @@ Client.prototype.onMsg = function( data )
 {
   if ( this.state != ClientState.idle )
     throw new ClientException( ClientExceptionCode.protocolError, "NGC_Msg out of state" );
-  this._owner.onClientMessage( this, data.msg );
+  this._owner.onClientMessage( this, data.msg, moment.utc() );
 };
 
 Client.prototype.onWhisper = function( data ) 
@@ -174,7 +174,7 @@ Client.prototype.onWhisper = function( data )
   {
     throw new ClientException( ClientExceptionCode.protocolError, "NGC_Whisper out  of state" );
   }
-  this._owner.onClientWhisper( this, data.target, data.msg );
+  this._owner.onClientWhisper( this, data.target, data.msg, moment.utc() );
 }
 
 Client.prototype.sendAuth = function( result, data )

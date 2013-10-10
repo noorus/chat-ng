@@ -337,7 +337,8 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, smileySet )
 
   App.checkAction = function( content )
   {
-    return (content.indexOf( "/me" ) === 0 || content.indexOf( "/action" ) === 0)
+    return ( content.indexOf( "/me" ) === 0 
+             || content.indexOf( "/action" ) === 0 );
   };
 
   App.ChatMessageComponent = Em.Component.extend(
@@ -347,6 +348,7 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, smileySet )
     templateName: "components/chat-message",
     name: "unknown",
     content: "unknown",
+    timestamp: "unknown",
     isAction: function() { return App.checkAction( this.get( "content" ) ) }.property( "content" ),
     classNameBindings: ["isAction"],
     contentParsed: function(){ return App.parseContent( this.get( "content" ) ) }.property( "content" )
@@ -360,6 +362,7 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, smileySet )
     sender: "unknown",
     content: "unknown",
     receiver: "unknown",
+    timestamp: "unknown",
     isAction: function() { return App.checkAction( this.get( "content" ) ) }.property( "content" ),
     classNameBindings: ["isAction"],
     contentParsed: function(){ return App.parseContent( this.get( "content" ) ) }.property( "content" )
