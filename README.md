@@ -16,7 +16,8 @@ Server dependencies are managed using the [Node Package Manager](https://npmjs.o
 To install the server, navigate to the `server` directory and run `npm install`.  
 Run the server using `./chat-ng.js` and pass appropriate arguments to define options.
 
-To install the client, drop everything under the `client` directory on a web server.
+To install the client, drop everything under the `client` directory on a web server.  
+Have SASS & Compass installed, and run `compass compile` to compile the SASS to CSS.
 
 ### License
 
