@@ -12,11 +12,13 @@
   </head>
   <body id="chat">
     <script type="text/x-handlebars" data-template-name="components/chat-message">
+      <div class="timestamp">({{ timestamp }})</div>
       <div class="author"><a href="#">{{ name }}</a></div>
       <div class="content">{{{ contentParsed }}}</div>
     </script>
     <script type="text/x-handlebars" data-template-name="components/chat-whisper">
       <div class="author">
+        <div class="timestamp">({{ timestamp }})</div>
         <a href="#">{{ sender }}</a>
         <span class="whisper_arrow">-&gt;</span>
         <a href="#">{{ receiver }}</a>

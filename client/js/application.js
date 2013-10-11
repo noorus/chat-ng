@@ -14,7 +14,8 @@ require.config(
     text: "text",
     json: "json",
     baybay: "baybay",
-    rangy: "rangyinputs-jquery"
+    rangy: "rangyinputs-jquery",
+    moment: "moment.min"
   },
   shim: {
     "ember": {
@@ -38,8 +39,8 @@ require.config(
 });
 
 require(
-["domReady!","modernizr","jquery","ember","foundation","ngchat","baybay","rangy","json!../../smileys/default.json"],
-function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, smileySet )
+["domReady!","modernizr","jquery","ember","foundation","ngchat","baybay","rangy","moment","json!../../smileys/default.json"],
+function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, smileySet )
 {
   function escapeHTML( string )
   {
@@ -295,22 +296,24 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, smileySet
   {
     tagName: "ul",
     classNames: ["ngc-listbox", "ngc-chat"],
-    addMessage: function( user, message )
+    addMessage: function( timestamp, user, message )
     {
       var component = App.ChatMessageComponent.create({
         name: user.name,
-        content: message
+        content: message,
+        "timestamp": timestamp.format( "HH:mm:ss" )
       });
       this.pushObject( component );
       var height = this.$()[0].scrollHeight;
       this.$().animate( { scrollTop: height }, 1000 );
     },
-    addWhisper: function( user, target, message ) 
+    addWhisper: function( timestamp, user, target, message ) 
     {
       var component = App.ChatWhisperComponent.create({
         sender: user.name,
         receiver: target.name,
-        content: message
+        content: message,
+        "timestamp": timestamp.format( "HH:mm:ss" )
       });
       this.pushObject( component );
       var height = this.$()[0].scrollHeight;
@@ -352,13 +355,13 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, smileySet
     }
     parsed = bbcode.parse( parsed );
     
-    if ( parsed.indexOf( "/me" ) === 0 )
+    if ( parsed.indexOf( "/me " ) === 0 )
     {
-      parsed = parsed.substring(3);
+      parsed = parsed.substring( 4 );
     }	
-    else if ( parsed.indexOf( "/action" ) === 0 ) 
+    else if ( parsed.indexOf( "/action " ) === 0 ) 
     {
-      parsed = parsed.substring(7);
+      parsed = parsed.substring( 8 );
     }
     
     return parsed;

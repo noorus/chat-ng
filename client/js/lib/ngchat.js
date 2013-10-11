@@ -1,6 +1,6 @@
 define(
-  ["socketio","hashes","statemachine"],
-  function( sIO, Hashes, StateMachine )
+  ["socketio","hashes","statemachine","moment"],
+  function( sIO, Hashes, StateMachine, moment )
   {
     var ChatExceptionCode =
     {
@@ -166,19 +166,18 @@ define(
         commandLine = commandLine.replace( /^\s+|\s+$/g, "" );
       if ( this.sm.getState() != ChatState.idle || !commandLine || !commandLine.length )
         return;
-      if ( commandLine.indexOf("/msg") == 0 )
+      if ( commandLine.indexOf( "/msg" ) == 0 )
       {
         var parts = commandLine.split( " " );
-        if (parts.length < 3) return;
+        if ( parts.length < 3 )
+          return;
         parts.shift(); // "/msg"
-	var target = parts.shift();
-	var message = parts.join( " " );
-
-	this.socket.emit( "ngc_whisper", 
-          {
-	    target: target,
-            msg: message
-	  });
+        var target = parts.shift();
+        var message = parts.join( " " );
+        this.socket.emit( "ngc_whisper", {
+          target: target,
+          msg: message
+        });
         return;
       }
       this.socket.emit( "ngc_msg", {
@@ -197,12 +196,14 @@ define(
     Chat.prototype.onMsg = function( data )
     {
       console.log( "iO: Packet NGC_Msg" );
-      this.chatBox.addMessage( data.user, data.message);
+      var timestamp = moment( data.timestamp );
+      this.chatBox.addMessage( timestamp, data.user, data.message );
     };
     Chat.prototype.onWhisper = function( data ) 
     {
       console.log( "iO: Packet NGC_Whisper" );
-      this.chatBox.addWhisper( data.user, data.target, data.message);
+      var timestamp = moment( data.timestamp );
+      this.chatBox.addWhisper( timestamp, data.user, data.target, data.message );
     };
 
     Chat.prototype.onClose = function( data )

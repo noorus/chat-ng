@@ -85,6 +85,9 @@ html, body, .ngc-view-main {
 .ngc-chat-message {
   color: #333333;
   padding: 0.7em 3em 0.7em 3em;
+  &.is-action {
+    font-style: italic;
+  }
   .author {
     float: left;
     font-weight: 600;
@@ -97,10 +100,6 @@ html, body, .ngc-view-main {
   .content {
     text-align: justify;
   }
-}
-
-.is-action {
-  font-style: italic;
 }
 
 .ngc-chat-tools {
