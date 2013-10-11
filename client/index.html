@@ -17,9 +17,9 @@
     </script>
     <script type="text/x-handlebars" data-template-name="components/chat-whisper">
       <div class="author">
-	<a href="#">{{ sender }}</a> 
-	<span class="whisper_arrow">-></span> 
-	<a href="#">{{ receiver }}</a>
+        <a href="#">{{ sender }}</a>
+        <span class="whisper_arrow">-&gt;</span>
+        <a href="#">{{ receiver }}</a>
       </div>
       <div class="content">{{{ contentParsed }}}</div>
     </script>
@@ -94,13 +94,12 @@
         <div class="large-9 columns fullheight">
           {{ view "App.ChatBoxView" }}
           <div class="row collapse ngc-chat-tools">
-            <div class="small-6 columns smileys">
+            <div class="small-12 columns">
               {{# each App.ChatSmileysController }}
                 <img {{ action "smileyClicked" id }} {{bind-attr src=file}} {{bind-attr alt=name}} {{bind-attr title=name}}>
               {{/each}}
-            </div>
-            <div class="small-6 columns bbcode">
-              <img {{ action "bbcodeClicked" "bold" }} src="theme/default/text_bold.png" alt="Bold" title="Bold">
+              <div class="separator"></div>
+              <img class="separated" {{ action "bbcodeClicked" "bold" }} src="theme/default/text_bold.png" alt="Bold" title="Bold">
               <img {{ action "bbcodeClicked" "italic" }} src="theme/default/text_italic.png" alt="Italic" title="Italic">
               <img {{ action "bbcodeClicked" "underline" }} src="theme/default/text_underline.png" alt="Underline" title="Underline">
             </div>

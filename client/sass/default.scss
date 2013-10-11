@@ -108,11 +108,19 @@ html, body, .ngc-view-main {
   input, button, textarea {
     margin-bottom: 0;
   }
-  .smileys img {
+  img {
     cursor: pointer;
   }
-  .bbcode img {
-    cursor: pointer;
+  .separator {
+    background: #b6b6b6;
+    margin: 0 2pt;
+    height: 100%;
+    width: 1px;
+    display: inline-block;
+    position: absolute;
+  }
+  .separated {
+    margin-left: 4pt;
   }
 }
 
