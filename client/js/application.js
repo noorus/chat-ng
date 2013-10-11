@@ -13,7 +13,8 @@ require.config(
     statemachine: "statemachine",
     text: "text",
     json: "json",
-    baybay: "baybay"
+    baybay: "baybay",
+    rangy: "rangyinputs-jquery"
   },
   shim: {
     "ember": {
@@ -29,41 +30,17 @@ require.config(
     "foundation": {
       exports: "Foundation",
       deps: ["jquery","modernizr"]
+    },
+    "rangy": {
+      deps: ["jquery"]
     }
   }
 });
 
 require(
-["domReady!","modernizr","jquery","ember","foundation","ngchat","baybay","json!../../smileys/default.json"],
-function( document, Modernizr, $, Em, Foundation, Chat, Baybay, smileySet )
+["domReady!","modernizr","jquery","ember","foundation","ngchat","baybay","rangy","json!../../smileys/default.json"],
+function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, smileySet )
 {
-  jQuery.fn.getSelection = function()
-  {
-    if ( this.length == 0 )
-      return [0,0];
-    input = this[0];
-    var pos = [input.value.length,input.value.length];
-    if ( input.createTextRange )
-    {
-      pos = [0,0];
-      var r = document.selection.createRange().duplicate();
-      r.moveEnd( "character", input.value.length );
-      if ( r.text == "" )
-        pos[0] = input.value.length;
-      pos[0] = input.value.lastIndexOf( r.text );
-      r = document.selection.createRange().duplicate();
-      r.moveStart( "character", -input.value.length );
-      if ( r.text == "" )
-        pos[1] = input.value.length;
-      pos[1] = input.value.lastIndexOf(r.text);
-    }
-    else if ( typeof( input.selectionStart ) != "undefined" )
-    {
-      pos = [input.selectionStart,input.selectionEnd];
-    }
-    return pos;
-  };
-
   function escapeHTML( string )
   {
     /* Limited escaping
@@ -130,7 +107,6 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, smileySet )
     ctx.fillText( "5!", 8, 4 );
     $( "#favicon" ).attr( "href", canvas.toDataURL( "image/x-icon" ) );
   };
-  
   
   App.LoginDialogController = Em.Controller.create(
   {
@@ -224,6 +200,20 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, smileySet )
   App.IndexController = Em.Controller.extend(
   {
     commandLine: "",
+    insertSmiley: function( smiley )
+    {
+      Em.run(function()
+      {
+        $( "input[name='commandLine']" ).focus().surroundSelectedText( " " + smiley, "", "collapsetostart" );
+      });
+    },
+    insertBBCode: function( before, after )
+    {
+      Em.run(function()
+      {
+        $( "input[name='commandLine']" ).focus().surroundSelectedText( before, after );
+      });
+    },
     actions:
     {
       execute: function()
@@ -235,23 +225,22 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, smileySet )
       smileyClicked: function( id )
       {
         var data = App.get( "smileys" );
-        var cmdline = this.get( "commandLine" );
-        cmdline += " " + data.smileys[id].tags[0];
-        this.set( "commandLine", cmdline );
-        // TODO: find caret, place, update
-        $( "input[name='commandLine']" ).focus();
+        this.insertSmiley( data.smileys[id].tags[0] );
       },
       bbcodeClicked: function( code )
       {
-        var selection = $( "input[name='commandLine']" ).getSelection();
-        var cmdline = this.get( "commandLine" );
-        var newline = cmdline.substr( 0, selection[0] );
-        //newline += "1";
-        newline += cmdline.slice( selection[0], selection[1] );
-        //newline += "2";
-        newline += cmdline.substr( selection[1] );
-        this.set( "commandLine", newline );
-        $( "input[name='commandLine']" ).focus();
+        switch ( code )
+        {
+          case "bold":
+            this.insertBBCode( "[b]", "[/b]" );
+          break;
+          case "italic":
+            this.insertBBCode( "[i]", "[/i]" );
+          break;
+          case "underline":
+            this.insertBBCode( "[u]", "[/u]" );
+          break;
+        }
       }
     }
   });
@@ -286,7 +275,8 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, smileySet )
     content: [],
     init: function()
     {
-      // This does not belong here, but I just don't know where else to do it
+      // This does not belong here, but I just don't know where else to do it -
+      // App constructor can't set things, and App init is called too late
       App.set( "smileys", smileySet );
       var data = App.get( "smileys" );
       for ( var i = 0; i < data.smileys.length; i++ )
@@ -319,7 +309,7 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, smileySet )
     {
       var component = App.ChatWhisperComponent.create({
         sender: user.name,
-	receiver: target.name,
+        receiver: target.name,
         content: message
       });
       this.pushObject( component );
@@ -377,7 +367,7 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, smileySet )
   App.checkAction = function( content )
   {
     return ( content.indexOf( "/me" ) === 0 
-             || content.indexOf( "/action" ) === 0 );
+      || content.indexOf( "/action" ) === 0 );
   };
 
   App.ChatMessageComponent = Em.Component.extend(

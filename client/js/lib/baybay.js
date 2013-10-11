@@ -13,30 +13,21 @@ define(function()
   {
     return this.tag.render( this.close );
   };
-  function BBTag_Bold()
+  function BBSimpleTag( tag )
   {
-    this.name = "Bold";
-    this.tag = "b";
+    this.tag = tag;
     this.render = function( close )
     {
-      return "<" + ( close ? "/" : "" ) + "b>";
-    };
-  }
-  function BBTag_Italic()
-  {
-    this.name = "Italic";
-    this.tag = "i";
-    this.render = function( close )
-    {
-      return "<" + ( close ? "/" : "" ) + "i>";
+      return "<" + ( close ? "/" : "" ) + this.tag + ">";
     };
   }
   function BBCode()
   {
     this._stack = [];
     this._tags = [
-      new BBTag_Bold(),
-      new BBTag_Italic()
+      new BBSimpleTag( "b" ),
+      new BBSimpleTag( "i" ),
+      new BBSimpleTag( "u" )
     ];
   }
   BBCode.prototype.parseTag = function( content )
@@ -64,22 +55,29 @@ define(function()
     var len = content.length;
     while ( i < len )
     {
-      if ( content[i] == "[" ) {
-        var close = content.indexOf( "]", i + 1);
-        var dbl = content.indexOf( "[", i + 1 );
-        if ( close < 0 || ( dbl >= 0 && dbl < close ) ) {
+      if ( content[i] == "[" )
+      {
+        var close = content.indexOf( "]", i + 1 );
+        var next  = content.indexOf( "[", i + 1 );
+        if ( close < 0 || ( next >= 0 && next < close ) )
+        {
+          // You don't often wish for goto in a language, but I guess this is one of those times
           parsed += content[i];
           i++;
           continue;
         }
-        if ( close > 0 ) {
+        if ( close > 0 )
+        {
           var sub = content.substr( i + 1, close - i - 1 );
           var instance = this.parseTag( sub );
-          if ( instance !== null ) {
-            if ( !instance.close ) {
+          if ( instance !== null )
+          {
+            if ( !instance.close )
               this._stack.push( instance );
-            } else {
-              if ( this._stack.length < 1 ) {
+            else
+            {
+              if ( this._stack.length < 1 )
+              {
                 parsed += content[i];
                 i++;
                 continue;
@@ -97,7 +95,8 @@ define(function()
       parsed += content[i];
       i++;
     }
-    if ( this._stack.length > 0 ) {
+    if ( this._stack.length > 0 )
+    {
       for ( i = this._stack.length - 1; i >= 0; i-- )
       {
         var instance = this._stack[i];
