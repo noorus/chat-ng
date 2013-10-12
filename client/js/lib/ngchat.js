@@ -15,7 +15,8 @@ define(
       connected: 2,
       authing: 3,
       idle: 4,
-      who: 5
+      who: 5,
+      backlog: 6
     };
     var ChatStateName =
     [
@@ -24,7 +25,8 @@ define(
       "connected",
       "authing",
       "idle",
-      "who"
+      "who",
+      "backlog"
     ];
     function ChatException( code, message )
     {
@@ -158,6 +160,7 @@ define(
       } else {
         this.sm.changeState( ChatState.idle );
         this.sm.pushState( ChatState.who );
+        this.sm.pushState( ChatState.backlog );
         this.application.chatAuthed();
       }
     };
@@ -188,8 +191,14 @@ define(
     Chat.prototype.onWho = function( data )
     {
       console.log( "iO: Packet NGC_Who" );
+      if ( this.sm.getState() == ChatState.backlog ) 
+      {
+        this.sm.popState();
+      }
       if ( this.sm.getState() != ChatState.who )
+      {
         throw new ChatException( ChatExceptionCode.protocolError, "NGC_Who out of state" );
+      }
       this.memberList.clearMembers();
       for ( var i = 0; i < data.users.length; i++ ) 
       {
@@ -218,13 +227,19 @@ define(
     Chat.prototype.onJoin = function( data )
     {
       console.log( "iO: Packet NGC_Join" );
-      this.memberList.addMember( data.user );
+      if ( this.sm.getState() != ChatState.backlog ) 
+      {
+        this.memberList.addMember( data.user );
+      }
       this.chatBox.addEvent( data.user.name + " joined the chat" );
     };
     Chat.prototype.onLeave = function( data )
     {
       console.log( "iO: Packet NGC_Leave" );
-      this.memberList.removeMember( data.user );
+      if ( this.sm.getState() != ChatState.backlog ) 
+      {
+        this.memberList.removeMember( data.user );
+      }
       this.chatBox.addEvent( data.user.name + " left the chat" );
     };
     Chat.prototype.onDisconnected = function()
