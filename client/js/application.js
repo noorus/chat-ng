@@ -219,9 +219,12 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, s
     {
       execute: function()
       {
-        var chat = App.get( "chat" );
-        chat.execute( this.get( "commandLine" ) );
-        this.set( "commandLine", "" );
+        Em.run.next( this, function()
+        {
+          var chat = App.get( "chat" );
+          chat.execute( this.get( "commandLine" ) );
+          this.set( "commandLine", "" );
+        });
       },
       smileyClicked: function( id )
       {
