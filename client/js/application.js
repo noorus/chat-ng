@@ -117,7 +117,7 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, s
       {
         // Let's not save the password for now
         localStorage["ngc.account"] = this.get( "account" );
-        // localStorage["ngc.password"] = this.get( "password" );
+        localStorage["ngc.password"] = this.get( "password" );
       }
       var cb = this.get( "callback" );
       cb[1].call( cb[0], true, this.get( "account" ), this.get( "password" ) );
@@ -149,8 +149,8 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, s
           // Let's not save the password for now
           var u = localStorage["ngc.account"];
           App.LoginDialogController.set( "account", u ? u : "" );
-          // var p = localStorage["ngc.password"];
-          // App.LoginDialogController.set( "password", p ? p : "" );
+          var p = localStorage["ngc.password"];
+          App.LoginDialogController.set( "password", p ? p : "" );
         }
         App.LoginDialogView.$( "input:first" ).focus();
       });
@@ -296,6 +296,17 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, s
   {
     tagName: "ul",
     classNames: ["ngc-listbox", "ngc-chat"],
+    doScroll: function()
+    {
+      Em.run(function()
+      {
+        var inner = function()
+        {
+          this.$().clearQueue().animate( { scrollTop: this.$()[0].scrollHeight * 2 }, 250 );
+        };
+        Em.run.scheduleOnce( "afterRender", App.ChatBoxView, inner );
+      });
+    },
     addMessage: function( timestamp, user, message )
     {
       var component = App.ChatMessageComponent.create({
@@ -304,8 +315,7 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, s
         "timestamp": timestamp.format( "HH:mm:ss" )
       });
       this.pushObject( component );
-      var height = this.$()[0].scrollHeight;
-      this.$().animate( { scrollTop: height }, 1000 );
+      this.doScroll();
     },
     addWhisper: function( timestamp, user, target, message ) 
     {
@@ -316,8 +326,7 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, s
         "timestamp": timestamp.format( "HH:mm:ss" )
       });
       this.pushObject( component );
-      var height = this.$()[0].scrollHeight;
-      this.$().animate( { scrollTop: height}, 1000 );
+      this.doScroll();
     },
     addEvent: function( message )
     {
@@ -325,8 +334,7 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, s
         content: message
       });
       this.pushObject( component );
-      var height = this.$()[0].scrollHeight;
-      this.$().animate( { scrollTop: height }, 1000 );
+      this.doScroll();
     },
     addData: function( data )
     {
@@ -334,8 +342,7 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, s
         content: marked( data )
       });
       this.pushObject( component );
-      var height = this.$()[0].scrollHeight;
-      this.$().animate( { scrollTop: height }, 1000 );
+      this.doScroll();
     }
   });
 
