@@ -129,7 +129,9 @@ define(
         throw new ChatException( ChatExceptionCode.applicationError, "Auth call out of state" );
       if ( !this.sm.changeState( ChatState.authing ) )
         return false;
-      if (typeof password === "undefined") { password = "" }
+      if (typeof password === "undefined") {
+        password = ""; 
+      }
       var sha1 = new Hashes.SHA1();
       var userHash = sha1.hex( username + password );
       var authHash = sha1.hex( userHash + this.session.token );
@@ -157,7 +159,6 @@ define(
         this.sm.changeState( ChatState.idle );
         this.sm.pushState( ChatState.who );
         this.application.chatAuthed();
-        this.memberList.addMember( data.user );
       }
     };
     Chat.prototype.execute = function( commandLine )

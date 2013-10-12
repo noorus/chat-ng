@@ -2,11 +2,13 @@ var util        = require( "util" );
 var socketio    = require( "socket.io" );
 var crypto      = require( "crypto" );
 var chatclient  = require( "./chat.client" );
+var backlog     = require( "./backlog" );
 
 function Server( app, server, prefix, settings, backend, log )
 {
   this.log = log;
   this.backend = backend;
+  this.backlog = backlog.create( 20 );
   this.version = [ 0, 0, 1 ];
   this.protocolVersion = 0;
   this.debug = settings.debug;
@@ -62,16 +64,24 @@ Server.prototype.preClientAuthed = function( userid )
   });
 };
 
+Server.prototype.sendPublicPacket = function ( packet_id, packet_data ) 
+{
+  this.log.debug("sending a backlogged packet");
+  this.io.sockets.in( "authed" ).emit( packet_id, packet_data );
+  this.backlog.push( {"id": packet_id, "data": packet_data} );
+};
+
 Server.prototype.onClientAuthed = function( client )
 {
   this.sendWhoTo( client );
-  this.io.sockets.in( "authed" ).emit( "ngc_join", { user: client.user.toJSON() } );
+  this.sendBacklog( client );
   client.socket.join( "authed" );
+  this.sendPublicPacket( "ngc_join", { user: client.user.toJSON() } );
 };
 
 Server.prototype.onClientMessage = function( client, message, timestamp )
 {
-  this.io.sockets.in( "authed" ).emit( "ngc_msg", { 
+  this.sendPublicPacket( "ngc_msg", { 
     user: client.user.toJSON(), 
     "message": message,
     "timestamp": timestamp.format()
@@ -109,7 +119,7 @@ Server.prototype.onClientWhisper = function( sclient, target, message, timestamp
 Server.prototype.onClientDisconnected = function( client )
 {
   if ( client.user )
-    this.io.sockets.in( "authed" ).emit( "ngc_leave", { user: client.user.toJSON() } );
+    this.sendPublicPacket( "ngc_leave", { user: client.user.toJSON() } );
 };
 
 Server.prototype.broadcastJoin = function( client )
@@ -141,6 +151,15 @@ Server.prototype.sendWhoTo = function( sclient )
   {
     users: who
   });
+};
+
+Server.prototype.sendBacklog = function( sclient )
+{
+  var packets = this.backlog.read();
+  for ( var i=0; i < packets.length; i++ ) {
+    var packet = packets[i];
+    sclient.socket.emit(packet.id, packet.data);
+  }
 };
 
 Server.prototype.onAuthorization = function( handshake, callback )
