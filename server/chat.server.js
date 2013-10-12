@@ -73,8 +73,8 @@ Server.prototype.sendPublicPacket = function ( packet_id, packet_data )
 
 Server.prototype.onClientAuthed = function( client )
 {
-  this.sendWhoTo( client );
   this.sendBacklog( client );
+  this.sendWhoTo( client );
   client.socket.join( "authed" );
   this.sendPublicPacket( "ngc_join", { user: client.user.toJSON() } );
 };

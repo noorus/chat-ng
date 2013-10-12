@@ -190,8 +190,11 @@ define(
       console.log( "iO: Packet NGC_Who" );
       if ( this.sm.getState() != ChatState.who )
         throw new ChatException( ChatExceptionCode.protocolError, "NGC_Who out of state" );
-      for ( var i = 0; i < data.users.length; i++ )
+      this.memberList.clearMembers();
+      for ( var i = 0; i < data.users.length; i++ ) 
+      {
         this.memberList.addMember( data.users[i] );
+      }
       this.sm.popState();
     };
     Chat.prototype.onMsg = function( data )
