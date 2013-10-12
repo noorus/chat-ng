@@ -182,6 +182,37 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, s
     setupController: function( controller )
     {
       controller.set( "title", "Title" );
+
+      var chat = App.get( "chat" );      
+
+      var cb = function( state ) 
+      {
+        controller.set( "status", chat.ChatStateName[state] );
+        if (state >= chat.ChatState.idle) 
+        {
+          controller.set( "authenticated", true );
+        } 
+        else 
+        {
+          controller.set( "authenticated", false );
+        }
+      };
+
+      chat.onEnterStateEmber = cb;
+    }
+  });
+
+  App.ApplicationController = Em.Controller.extend({
+    status: "Loading...",
+    authenticated: false,
+    
+    actions: {
+      connect: function() {
+        App.get( "chat" ).connect();
+      },
+      disconnect: function() {
+        App.get( "chat" ).disconnect();
+      }
     }
   });
 

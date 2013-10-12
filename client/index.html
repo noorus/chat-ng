@@ -67,20 +67,13 @@
         </ul>
         <section class="top-bar-section">
           <ul class="right">
-            <li class="has-form"><a>Connected</a></li>
+            <li class="has-form"><a>{{ status }}</a></li>
             <li class="divider"></li>
-            <li class="has-dropdown">
-              <a href="#">Main Item 1</a>
-              <ul class="dropdown">
-                <li><label>Section Name</label></li>
-                <li><a href="#">Dropdown Option</a></li>
-                <li class="divider"></li>
-                <li><label>Section Name</label></li>
-                <li><a href="#">Dropdown Option</a></li>
-              </ul>
-            </li>
-            <li class="divider"></li>
-            <li><a href="#">Log Out</a></li>
+	    {{#if authenticated }}
+            <li><a href="#" {{ action 'disconnect' }}>Log Out</a></li>
+	    {{else}}
+	    <li><a href="#" {{ action 'connect' }}>Connect</a></li>
+	    {{/if }}
           </ul>
         </section>
       </nav>

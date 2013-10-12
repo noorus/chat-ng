@@ -20,13 +20,13 @@ define(
     };
     var ChatStateName =
     [
-      "disconnected",
-      "connecting",
-      "connected",
-      "authing",
-      "idle",
-      "who",
-      "backlog"
+      "Disconnected",
+      "Connecting",
+      "Handshaking",
+      "Authenticating",
+      "Logged In",
+      "Getting Members",
+      "Catching Up"
     ];
     function ChatException( code, message )
     {
@@ -39,8 +39,11 @@ define(
     }
     function Chat( settings )
     {
+      var that = this;
+      this.ChatState = ChatState;
+      this.ChatStateName = ChatStateName;
       this.sm = StateMachine.create();
-      this.sm.onEnterState = this.onEnterState;
+      this.sm.onEnterState = function( state ) { that.onEnterState( state ) };
       this.sm.onLeaveState = this.onLeaveState;
       this.sm.changeState( ChatState.disconnected );
       this.application = null;
@@ -79,6 +82,11 @@ define(
     Chat.prototype.onEnterState = function( state )
     {
       console.log( "Chat: Entering state " + ChatStateName[state] );
+      this.onEnterStateEmber( state );
+    };
+    Chat.prototype.onEnterStateEmber = function( state )
+    {
+      // stubb for ember's replacement
     };
     Chat.prototype.onLeaveState = function( state )
     {
