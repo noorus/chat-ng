@@ -3,13 +3,14 @@ define(function()
   var StateMachine = function()
   {
     this._states = [];
-  }
+  };
   StateMachine.prototype.changeState = function( newState )
   {
     if ( this._states.length > 0 ) {
-      state = this._states.pop();
+      state = this.getState();
       if ( state == newState )
         return false;
+      this._states.pop();
       this.onLeaveState( state );
     }
     this._states.push( newState );
