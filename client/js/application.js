@@ -362,18 +362,11 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, s
       this.pushObject( component );
       this.doScroll();
     },
-    addEvent: function( message )
+    addEvent: function( timestamp, message )
     {
       var component = App.ChatEventComponent.create({
-        content: message
-      });
-      this.pushObject( component );
-      this.doScroll();
-    },
-    addData: function( data )
-    {
-      var component = App.ChatDataComponent.create({
-        content: marked( data )
+        content: message,
+        "timestamp": timestamp.format( "HH:mm:ss" )
       });
       this.pushObject( component );
       this.doScroll();
@@ -446,15 +439,8 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, s
     tagName: "li",
     classNames: ["ngc-chat-message"],
     templateName: "components/chat-event",
-    content: ""
-  });
-
-  App.ChatDataComponent = Em.Component.extend(
-  {
-    tagName: "li",
-    classNames: ["ngc-chat-data"],
-    templateName: "components/chat-data",
-    content: ""
+    content: "",
+    timestamp: "unknown"
   });
 
   //-- Member List ------------------------------------------------------------

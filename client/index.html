@@ -26,11 +26,8 @@
       <div class="content">{{{ contentParsed }}}</div>
     </script>
     <script type="text/x-handlebars" data-template-name="components/chat-event">
-      <div class="author">&nbsp;</div>
+      <div class="timestamp">({{ timestamp }})</div>
       <div class="content"><b>{{ content }}</b></div>
-    </script>
-    <script type="text/x-handlebars" data-template-name="components/chat-data">
-      <div class="content">{{unbound content }}</div>
     </script>
     <script type="text/x-handlebars" data-template-name="member">
       <img {{bind-attr src=avatar}} {{bind-attr alt=name}}>

@@ -84,18 +84,22 @@ html, body, .ngc-view-main {
 
 .ngc-chat-message {
   color: #333333;
-  padding: 0.7em 3em 0.7em 3em;
+  padding: 5pt 8pt;
   &.is-action {
     font-style: italic;
   }
-  .author {
+  .timestamp, .author {
     float: left;
-    font-weight: 600;
-    margin-right: 1em;
+    clear: none;
+    margin-right: 8pt;
+    margin-bottom: 4pt;
     overflow: hidden;
-    text-align: right;
+    text-align: left;
     white-space: nowrap;
-    width: 6em;
+  }
+  .author {
+    font-weight: bold;
+    text-align: right;
   }
   .content {
     text-align: justify;

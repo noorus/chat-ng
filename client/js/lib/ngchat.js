@@ -106,14 +106,14 @@ define(
       if ( !this.sm.changeState( ChatState.connecting ) )
         return;
       console.log( "iO: Connecting" );
-      this.chatBox.addEvent( "Connecting..." );
+      this.chatBox.addEvent( moment(), "Connecting..." );
     };
     Chat.prototype.onConnected = function()
     {
       if ( !this.sm.changeState( ChatState.connected ) )
         return;
       console.log( "iO: Connected" );
-      this.chatBox.addEvent( "Connected" );
+      this.chatBox.addEvent( moment(), "Connected" );
     };
     Chat.prototype.onWelcome = function( data )
     {
@@ -230,7 +230,7 @@ define(
     Chat.prototype.onClose = function( data )
     {
       console.log( "iO: Packet NGC_Close" );
-      this.chatBox.addEvent( "Connection closed by server: " + data.message );
+      this.chatBox.addEvent( moment(), "Connection closed by server: " + data.message );
     };
     Chat.prototype.onJoin = function( data )
     {
@@ -239,7 +239,8 @@ define(
       {
         this.memberList.addMember( data.user );
       }
-      this.chatBox.addEvent( data.user.name + " joined the chat" );
+      var timestamp = moment( data.timestamp );
+      this.chatBox.addEvent( timestamp, data.user.name + " joined the chat" );
     };
     Chat.prototype.onLeave = function( data )
     {
@@ -248,14 +249,15 @@ define(
       {
         this.memberList.removeMember( data.user );
       }
-      this.chatBox.addEvent( data.user.name + " left the chat" );
+      var timestamp = moment( data.timestamp );
+      this.chatBox.addEvent( timestamp, data.user.name + " left the chat" );
     };
     Chat.prototype.onDisconnected = function()
     {
       if ( !this.sm.changeState( ChatState.disconnected ) )
         return;
       console.log( "iO: Disconnected" );
-      this.chatBox.addEvent( "Disconnected" );
+      this.chatBox.addEvent( moment(), "Disconnected" );
       this.application.chatDisconnected();
     };
     Chat.prototype.onConnectFailed = function()
@@ -263,7 +265,7 @@ define(
       if ( !this.sm.changeState( ChatState.disconnected ) )
         return;
       console.log( "iO: Connection failed" );
-      this.chatBox.addEvent( "Connectiong failed" );
+      this.chatBox.addEvent( moment(), "Connectiong failed" );
     };
     Chat.prototype.connect = function()
     {
