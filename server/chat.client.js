@@ -56,7 +56,7 @@ function Client( owner, socket )
   });
   socket.on( "ngc_whisper", function( data ) {
     this.get( "client", function( dummy, client ) {
-      client.onWhisper.call( client, data )
+      client.onWhisper.call( client, data );
     });
   });
 
@@ -126,7 +126,11 @@ Client.prototype.sendWelcome = function()
 Client.prototype.onAuth = function( data )
 {
   if ( this.state != ClientState.connected )
-    throw new ClientException( ClientExceptionCode.protocolError, "NGC_Auth out of state" );
+  {
+    this.onError( new ClientException( ClientExceptionCode.protocolError, "NGC_Auth out of state" ));
+    return;
+  }
+
   this.loginAttempts++;
   this.lastLoginTime = moment().utc();
   this._owner.backend.userQuery( this, data.user, function( error, user )
@@ -164,7 +168,10 @@ Client.prototype.onAuth = function( data )
 Client.prototype.onMsg = function( data )
 {
   if ( this.state != ClientState.idle )
-    throw new ClientException( ClientExceptionCode.protocolError, "NGC_Msg out of state" );
+  {
+    this.onError( new ClientException( ClientExceptionCode.protocolError, "NGC_Msg out of state" ));
+    return;
+  }
   this._owner.onClientMessage( this, data.msg, moment.utc() );
 };
 
@@ -172,7 +179,8 @@ Client.prototype.onWhisper = function( data )
 {
   if ( this.state != ClientState.idle ) 
   {
-    throw new ClientException( ClientExceptionCode.protocolError, "NGC_Whisper out  of state" );
+    this.onError( new ClientException( ClientExceptionCode.protocolError, "NGC_Whisper out of state" ));
+    return;
   }
   this._owner.onClientWhisper( this, data.target, data.msg, moment.utc() );
 }
@@ -211,10 +219,18 @@ Client.prototype.kickOut = function( message )
   this.socket.disconnect();
 };
 
+Client.prototype.onError = function( e ) 
+{
+  this.socket.disconnect();
+  this.log( "An error occurred: " + e.toString() );
+};
+
 Client.prototype.onDisconnect = function()
 {
   if ( !this.changeState( ClientState.disconnected ) )
+  {
     return;
+  }
   this.log( "Disconnected" );
   this._owner.onClientDisconnected( this );
   this.user = null;
