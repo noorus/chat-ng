@@ -397,6 +397,28 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, s
     {
       parsed = parsed.substring( 8 );
     }
+
+    words = parsed.split( " " );
+    for ( var k = 0; k < words.length; k++ )
+    {
+      var word = words[k];
+      var url_word = word;
+      if ( word.indexOf( "www." ) === 0 ) {
+        url_word = "http://" + word;
+      }
+      if ( url_word.indexOf( "http://" ) === 0
+           || url_word.indexOf( "https://" ) === 0 )
+      {
+        var a = $("<a></a>");
+        a.attr("href", url_word);
+        a.text(word);
+        var b = $("<span></span>");
+        b.append(a);
+        words[k] = b.html();
+      }
+    }
+    
+    parsed = words.join(" ");
     
     return parsed;
   };
