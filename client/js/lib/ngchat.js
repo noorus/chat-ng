@@ -143,7 +143,7 @@ define(
         password = ""; 
       }
       var sha1 = new Hashes.SHA1();
-      var userHash = sha1.hex( username + password );
+      var userHash = sha1.hex( username.toLowerCase() + password );
       var authHash = sha1.hex( userHash + this.session.token );
       this.socket.emit( "ngc_auth",
       {
