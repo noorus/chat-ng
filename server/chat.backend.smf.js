@@ -38,6 +38,7 @@ function SMFBackend( settings, log )
     bigNumberStrings:  true
   });
   this.values = {
+    tablePrefix: settings.prefix,
     attachmentDir: null,
     avatarDir: null
   };
@@ -54,7 +55,7 @@ SMFBackend.prototype.init = function( doneCallback )
     var variables = [["avatar_directory","attachmentUploadDir"]];
 
     connection.query(
-    "SELECT variable,`value` FROM smf_settings WHERE variable IN (?)",
+    "SELECT variable,`value` FROM " + backend.values.tablePrefix + "_settings WHERE variable IN (?)",
     variables,
     function( error, rows )
     {
@@ -77,22 +78,23 @@ SMFBackend.prototype.init = function( doneCallback )
 
 SMFBackend.prototype.userQuery = function( context, username, callback )
 {
+  var backend = this;
   this.databasePool.getConnection( function( error, connection )
   {
     if ( error )
     {
-      this.log.error( "SMFBackend: Database error(1) on userQuery: " + error );
+      backend.log.error( "SMFBackend: Database error(1) on userQuery: " + error );
       callback.call( context, error, null );
     }
     else
     {
       connection.query(
-      "SELECT id_member,member_name,passwd FROM smf_members WHERE member_name = ?",
+      "SELECT id_member,member_name,passwd FROM " + backend.values.tablePrefix + "_members WHERE member_name = ?",
       [ username ],
       function( error, rows )
       {
         if ( error ) {
-          this.log.error( "SMFBackend: Database error(2) on userQuery: " + error );
+          backend.log.error( "SMFBackend: Database error(2) on userQuery: " + error );
           callback.call( context, error, null );
           return;
         }
@@ -119,18 +121,18 @@ SMFBackend.prototype.userAvatarQuery = function( context, userID, callback )
   {
     if ( error )
     {
-      this.log.error( "SMFBackend: Database error(1) on userAvatarQuery: " + error );
+      backend.log.error( "SMFBackend: Database error(1) on userAvatarQuery: " + error );
       callback.call( context, error, null );
     }
     else
     {
       connection.query(
-      "SELECT m.id_member,m.avatar,a.id_attach,a.file_hash,a.mime_type FROM smf_members m LEFT JOIN smf_attachments a ON a.id_member = m.id_member AND a.attachment_type = 0 WHERE m.id_member = ?",
+      "SELECT m.id_member,m.avatar,a.id_attach,a.file_hash,a.mime_type FROM " + backend.values.tablePrefix + "_members m LEFT JOIN " + backend.values.tablePrefix + "_attachments a ON a.id_member = m.id_member AND a.attachment_type = 0 WHERE m.id_member = ?",
       [ userID ],
       function( error, rows )
       {
         if ( error ) {
-          this.log.error( "SMFBackend: Database error(2) on userQuery: " + error );
+          backend.log.error( "SMFBackend: Database error(2) on userAvatarQuery: " + error );
           callback.call( context, error, null );
           return;
         }

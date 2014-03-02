@@ -21,6 +21,7 @@ var argv = optimist
 .options( "debug", { boolean: true, default: false } )
 .options( "nosock", { boolean: true, default: false } )
 .options( "backend", { default: "smf" } )
+.options( "tableprefix", { default: "smf" } )
 .argv;
 
 var chatbackend = require( "./chat.backend." + argv.backend );
@@ -36,7 +37,8 @@ var backend = chatbackend.create(
   user: argv.user,
   password: argv.pass,
   socket: argv.sock,
-  db: argv.db
+  db: argv.db,
+  prefix: argv.tableprefix
 }, log );
 
 backend.init( function()

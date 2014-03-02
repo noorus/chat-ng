@@ -149,7 +149,7 @@ Client.prototype.onAuth = function( data )
     hash.update( user.hash + this.token );
     hash = hash.digest( "hex" );
     if ( data.hash === hash ) {
-      this.log( "Authenticated as \"" + data.user + "\"" );
+      this.log( "Authenticated as \"" + user.name + "\"" );
       this._owner.backend.userAvatarQuery( this, user.id, function( error, avatar )
       {
         this._owner.preClientAuthed( user.id );
@@ -159,7 +159,7 @@ Client.prototype.onAuth = function( data )
         this._owner.onClientAuthed( this );
       });
     } else {
-      this.log( "Authentication as \"" + data.user + "\" failed, bad password" );
+      this.log( "Authentication as \"" + user.name + "\" failed, bad password" );
       this.sendAuth( AuthResult.badPassword, null );
     }
   });
