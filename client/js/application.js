@@ -11,11 +11,12 @@ require.config(
     foundation: "foundation.min",
     ngchat: "ngchat",
     statemachine: "statemachine",
-    text: "text",
+    domReady: "//cdnjs.cloudflare.com/ajax/libs/require-domReady/2.0.1/domReady.min",
+    text: "//cdnjs.cloudflare.com/ajax/libs/require-text/2.0.10/text.min",
     json: "json",
     baybay: "baybay",
     rangy: "rangyinputs-jquery",
-    moment: "moment.min"
+    moment: "//cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.1/moment.min"
   },
   shim: {
     "ember": {
@@ -146,7 +147,6 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, s
       {
         if ( Modernizr.localstorage )
         {
-          // Let's not save the password for now
           var u = localStorage["ngc.account"];
           App.LoginDialogController.set( "account", u ? u : "" );
           var p = localStorage["ngc.password"];
@@ -407,7 +407,7 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, s
         url_word = "http://" + word;
       }
       if ( url_word.indexOf( "http://" ) === 0
-           || url_word.indexOf( "https://" ) === 0 )
+        || url_word.indexOf( "https://" ) === 0 )
       {
         var a = $("<a></a>");
         a.attr("href", url_word);

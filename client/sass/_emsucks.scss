@@ -1,3 +1,6 @@
+/* This hack is here to distance our stuff from the total reliance on EM units by the Foundation framework. */
+/* Overrides some Foundation-specific stuff to use PTs instead of EMs. */
+
 $em-base: 9pt;
 
 @function strip-unit($num) { @return $num / ($num * 0 + 1); }
