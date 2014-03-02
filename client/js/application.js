@@ -3,10 +3,10 @@ require.config(
   baseUrl: "js/lib",
   paths: {
     jquery: "//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min",
-    handlebars: "handlebars-1.0.0", // "//cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.0.0/handlebars.min",
-    ember: "ember-1.0.0", //cdnjs.cloudflare.com/ajax/libs/ember.js/1.0.0/ember.min",
-    socketio: "socket.io", //"//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min",
-    hashes: "hashes", // "hashes.min"
+    handlebars: "//cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.0.0/handlebars.min",
+    ember: "//cdnjs.cloudflare.com/ajax/libs/ember.js/1.0.0/ember.min",
+    socketio: "//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min",
+    hashes: "hashes.min",
     modernizr: "modernizr.custom.81026", // "//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min",
     foundation: "foundation.min",
     ngchat: "ngchat",
