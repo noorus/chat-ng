@@ -42,22 +42,22 @@
       <img {{bind-attr src=avatar}} {{bind-attr alt=name}}>
       <div>
         <span class="name">{{ name }}</span><br>
-        <span class="status">Käyttäjä</span>
+        <span class="status">{{t user.classRegular}}</span>
       </div>
     </script>
     <script type="text/x-handlebars" data-template-name="login-dialog">
       <form>
         <fieldset>
-          <label>Account</label>
-          {{ input type="text" value=account name="account" placeholder="Account" tabindex="1" }}
-          <label>Password</label>
-          {{ input type="password" value=password name="password" placeholder="Password" tabindex="2" }}
+          {{t loginDialog.accountLabel tagName="label"}}
+          {{ input type="text" value=account name="account" placeholderTranslation="loginDialog.accountLabel" tabindex="1" }}
+          {{t loginDialog.passwordLabel tagName="label"}}
+          {{ input type="password" value=password name="password" placeholderTranslation="loginDialog.passwordLabel" tabindex="2" }}
           <div class="row collapse">
             <div class="small-6 columns">
-              <button {{ action "loginClick" }} tabindex="3" class="button prefix">Login</button>
+              <button {{ action "loginClick" }} tabindex="3" class="button prefix">{{t loginDialog.loginButton}}</button>
             </div>
             <div class="small-6 columns">
-              <button {{ action "cancelClick" }} tabindex="4" class="button postfix">Cancel</button>
+              <button {{ action "cancelClick" }} tabindex="4" class="button postfix">{{t loginDialog.cancelButton}}</button>
             </div>
           </div>
         </fieldset>
@@ -76,9 +76,9 @@
             <li class="has-form"><a>{{ status }}</a></li>
             <li class="divider"></li>
             {{#if authenticated }}
-              <li><a href="#" {{ action 'disconnect' }}>Log Out</a></li>
+              <li><a href="#" {{ action "disconnect" }}>{{t menu.logOut}}</a></li>
             {{else}}
-              <li><a href="#" {{ action 'connect' }}>Connect</a></li>
+              <li><a href="#" {{ action "connect" }}>{{t menu.connect}}</a></li>
             {{/if}}
           </ul>
         </section>
@@ -86,7 +86,6 @@
       {{ outlet }}
     </script>
     <script type="text/x-handlebars" data-template-name="index">
-      {{t test tagName="h1"}}
       <div class="ngc-grid-row">
         <div class="large-12 columns">
           <h4>{{ controller.title }}</h4>
@@ -114,7 +113,7 @@
               {{ input type="text" name="commandLine" value=commandLine action="execute" }}
             </div>
             <div class="small-2 columns">
-              <button {{ action "execute" }} class="button prefix">Send</button>
+              <button {{ action "execute" }} class="button prefix">{{t tools.sendButton}}</button>
             </div>
           </div>
         </div>

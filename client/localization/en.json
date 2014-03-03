@@ -1,6 +1,25 @@
 {
   "localization":
   {
-    "test": "Test string"
+    "tools":
+    {
+      "sendButton": "Send"
+    },
+    "loginDialog":
+    {
+      "accountLabel": "Account",
+      "passwordLabel": "Password",
+      "loginButton": "Login",
+      "cancelButton": "Cancel"
+    },
+    "menu":
+    {
+      "logOut": "Logout",
+      "connect": "Connect"
+    },
+    "user":
+    {
+      "classRegular": "Regular"
+    }
   }
 }
