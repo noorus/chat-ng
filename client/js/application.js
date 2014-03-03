@@ -41,7 +41,7 @@ require.config(
 });
 
 require(
-["domReady!","modernizr","jquery","ember","foundation","ngchat","baybay","rangy","moment",
+["domReady!","modernizr","jquery","ember","foundation","ngchat","baybay","rangy","moment","i18n",
  "json!../../smileys/" + g_ngcSettings.smileySet + ".json",
  "json!../../localization/" + g_ngcSettings.localization + ".json"],
 function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, smileySet, localeSet )
