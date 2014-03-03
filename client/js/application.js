@@ -255,8 +255,18 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, s
       {
         Em.run.next( this, function()
         {
+          var cmdline = this.get( "commandLine" );
+
+          try {
+            var bbcode = App.get( "bbcode" );
+            bbcode.parse( cmdline );
+          } catch ( e ) {
+            alert( "Your message contains erroneus BBCode: " + e.message );
+            return;
+          }
+
           var chat = App.get( "chat" );
-          chat.execute( this.get( "commandLine" ) );
+          chat.execute( cmdline );
           this.set( "commandLine", "" );
         });
       },
@@ -393,7 +403,8 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, s
     try {
       parsed = bbcode.parse( parsed );
     } catch ( e ) {
-      console.log( "BBCode parsing error thrown: " + e );
+      console.log( "Chat: BBCode parse error in App.parseContent:" );
+      console.log( e );
     }
     
     if ( parsed.indexOf( "/me " ) === 0 )
