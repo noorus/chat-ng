@@ -1,6 +1,10 @@
 AddDefaultCharset utf-8
 DirectoryIndex index.html
 
+<Files .*>
+  Require all denied
+</Files>
+
 <Files *.rb>
   Require all denied
 </Files>
