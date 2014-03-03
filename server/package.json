@@ -1,12 +1,24 @@
 {
   "name": "chat-ng",
-  "description": "chat next-generation",
   "version": "0.0.1",
+  "description": "Next-generation webchat server",
+  "homepage": "https://github.com/noorus/chat-ng",
+  "author":
+  {
+    "name": "Noorus",
+    "url": "https://github.com/noorus"
+  },
   "repository":
   {
     "type": "git",
     "url": "https://github.com/noorus/chat-ng.git"
   },
+  "licenses":
+  [
+    {
+      "type": "MIT"
+    }
+  ],
   "dependencies":
   {
     "optimist": "0.6.0",
