@@ -1,0 +1,12 @@
+AddDefaultCharset utf-8
+DirectoryIndex index.html
+
+<Files *.rb>
+  Require all denied
+</Files>
+
+<IfModule mod_headers.c>
+  <Files *.html>
+    Header set X-UA-Compatible "IE=Edge,chrome=1"
+  </Files>
+</IfModule>
