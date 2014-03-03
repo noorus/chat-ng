@@ -1,18 +1,37 @@
+# Everything we do is in utf-8
 AddDefaultCharset utf-8
+
+# Explicitly set the index
 DirectoryIndex index.html
 
+# Don't serve dotfiles
 <Files .*>
   Order deny,allow
   Deny from all
 </Files>
 
+# Don't serve ruby files
 <Files *.rb>
   Order deny,allow
   Deny from all
 </Files>
 
+# Aggressive caching for static resources
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault A1
+  ExpiresByType text/html A1
+  ExpiresByType image/gif A31536000
+  ExpiresByType image/jpeg A31536000
+  ExpiresByType image/png A31536000
+  ExpiresByType text/css A604800
+  ExpiresByType text/javascript A216000
+  ExpiresByType application/x-javascript A216000
+</IfModule>
+
+# Make sure IE users render with the best engine,
+# Mark every resource as public to maximize cacheability
 <IfModule mod_headers.c>
-  <Files *.html>
-    Header set X-UA-Compatible "IE=Edge,chrome=1"
-  </Files>
+  Header set X-UA-Compatible "IE=Edge,chrome=1"
+  Header set Cache-Control "public"
 </IfModule>
