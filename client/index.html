@@ -13,7 +13,8 @@
         smileySet:    "default",
         endPoint:     "http://localhost:3000/",
         title:        "Chat-NG",
-        autoConnect:  true
+        autoConnect:  true,
+        localization: "en"
       };
     </script>
     <script data-main="js/application.js" src="js/lib/require.js"></script>
@@ -85,6 +86,7 @@
       {{ outlet }}
     </script>
     <script type="text/x-handlebars" data-template-name="index">
+      {{t test tagName="h1"}}
       <div class="ngc-grid-row">
         <div class="large-12 columns">
           <h4>{{ controller.title }}</h4>

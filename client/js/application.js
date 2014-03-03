@@ -16,7 +16,8 @@ require.config(
     json:         "json",
     baybay:       "baybay",
     rangy:        "rangyinputs-jquery",
-    moment:       "//cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.1/moment.min"
+    moment:       "//cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.1/moment.min",
+    i18n:         "i18n"
   },
   shim: {
     "ember": {
@@ -41,8 +42,9 @@ require.config(
 
 require(
 ["domReady!","modernizr","jquery","ember","foundation","ngchat","baybay","rangy","moment",
- "json!../../smileys/" + g_ngcSettings.smileySet + ".json"],
-function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, smileySet )
+ "json!../../smileys/" + g_ngcSettings.smileySet + ".json",
+ "json!../../localization/" + g_ngcSettings.localization + ".json"],
+function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, smileySet, localeSet )
 {
   function escapeHTML( string )
   {
@@ -65,6 +67,8 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, s
 
     return ( '' + string ).replace( htmlEscaper, function( match ){ return htmlEscapes[match]; } );
   };
+
+  Em.I18n.translations = localeSet.localization;
 
   App = Em.Application.create(
   {
