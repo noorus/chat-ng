@@ -2,11 +2,13 @@ AddDefaultCharset utf-8
 DirectoryIndex index.html
 
 <Files .*>
-  Require all denied
+  Order deny,allow
+  Deny from all
 </Files>
 
 <Files *.rb>
-  Require all denied
+  Order deny,allow
+  Deny from all
 </Files>
 
 <IfModule mod_headers.c>
