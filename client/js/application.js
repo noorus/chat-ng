@@ -1,22 +1,22 @@
 require.config(
 {
-  baseUrl: "js/lib",
+  baseUrl:        "js/lib",
   paths: {
-    jquery: "//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min",
-    handlebars: "//cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.3.0/handlebars.min",
-    ember: "//cdnjs.cloudflare.com/ajax/libs/ember.js/1.4.0/ember.min",
-    socketio: "//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min",
-    hashes: "hashes.min",
-    modernizr: "modernizr.custom.81026", // "//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min",
-    foundation: "foundation.min",
-    ngchat: "ngchat",
+    jquery:       "//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min",
+    handlebars:   "//cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.3.0/handlebars.min",
+    ember:        "//cdnjs.cloudflare.com/ajax/libs/ember.js/1.4.0/ember.min",
+    socketio:     "//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min",
+    hashes:       "hashes.min",
+    modernizr:    "modernizr.custom.81026",
+    foundation:   "foundation.min",
+    ngchat:       "ngchat",
     statemachine: "statemachine",
-    domReady: "//cdnjs.cloudflare.com/ajax/libs/require-domReady/2.0.1/domReady.min",
-    text: "//cdnjs.cloudflare.com/ajax/libs/require-text/2.0.10/text.min",
-    json: "json",
-    baybay: "baybay",
-    rangy: "rangyinputs-jquery",
-    moment: "//cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.1/moment.min"
+    domReady:     "//cdnjs.cloudflare.com/ajax/libs/require-domReady/2.0.1/domReady.min",
+    text:         "//cdnjs.cloudflare.com/ajax/libs/require-text/2.0.10/text.min",
+    json:         "json",
+    baybay:       "baybay",
+    rangy:        "rangyinputs-jquery",
+    moment:       "//cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.1/moment.min"
   },
   shim: {
     "ember": {
@@ -40,7 +40,8 @@ require.config(
 });
 
 require(
-["domReady!","modernizr","jquery","ember","foundation","ngchat","baybay","rangy","moment","json!../../smileys/default.json"],
+["domReady!","modernizr","jquery","ember","foundation","ngchat","baybay","rangy","moment",
+ "json!../../smileys/" + g_ngcSettings.smileySet + ".json"],
 function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, smileySet )
 {
   function escapeHTML( string )
@@ -88,7 +89,7 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, s
       });
       var clientClient = Chat.create(
       {
-        endpoint: "http://chat.synkea.net:3000/"
+        endpoint: g_ngcSettings.endPoint
       });
       this.set( "chat", clientClient );
       $( document ).foundation();
@@ -181,7 +182,7 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, s
   {
     setupController: function( controller )
     {
-      controller.set( "title", "Title" );
+      controller.set( "title", g_ngcSettings.title );
 
       var chat = App.get( "chat" );      
 
@@ -318,7 +319,7 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, s
       {
         if ( !data.smileys[i].public )
           continue;
-        var smile = { id: i, file: "smileys/default/" + data.smileys[i].file, name: data.smileys[i].tags[0] };
+        var smile = { id: i, file: "smileys/" + g_ngcSettings.smileySet + "/" + data.smileys[i].file, name: data.smileys[i].tags[0] };
         this.pushObject( smile );
       }
     }
@@ -383,7 +384,7 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, s
     {
       for ( var j = 0; j < data.smileys[i].tags.length; j++ )
       {
-        var elem = "<img class=\"emote\" src=\"smileys/default/" + data.smileys[i].file + "\" alt=\"" + data.smileys[i].tags[j] + "\">";
+        var elem = "<img class=\"emote\" src=\"smileys/" + g_ngcSettings.smileySet + "/" + data.smileys[i].file + "\" alt=\"" + data.smileys[i].tags[j] + "\">";
         parsed = parsed.split( data.smileys[i].tags[j] ).join( elem );
       }
     }
@@ -490,8 +491,8 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, s
     avatar: function()
     {
       if ( !this.get( "hasAvatar" ) )
-        return "theme/default/no_avatar.gif";
-      return "http://chat.synkea.net:3000/avatar/" + this.get( "id" );
+        return "theme/" + g_ngcSettings.smileySet + "/no_avatar.gif";
+      return g_ngcSettings.endPoint + "avatar/" + this.get( "id" );
     }.property( "id" ),
     actions:
     {

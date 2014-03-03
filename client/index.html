@@ -5,9 +5,15 @@
     <title>Chat-NG</title>
     <meta name="robots" content="noindex">
     <meta name="viewport" content="width=device-width">
-    <meta name="format-detection" content="telephone=no">
     <link rel="stylesheet" href="theme/default.css">
     <link id="favicon" rel="shortcut icon" type="image/x-icon" href="theme/default/favicon.ico">
+    <script>
+      var g_ngcSettings = {
+        smileySet: "default",
+        endPoint: "http://localhost:3000/",
+        title: "Chat-NG"
+      };
+    </script>
     <script data-main="js/application.js" src="js/lib/require.js"></script>
   </head>
   <body id="chat">
@@ -66,11 +72,11 @@
           <ul class="right">
             <li class="has-form"><a>{{ status }}</a></li>
             <li class="divider"></li>
-	    {{#if authenticated }}
-            <li><a href="#" {{ action 'disconnect' }}>Log Out</a></li>
-	    {{else}}
-	    <li><a href="#" {{ action 'connect' }}>Connect</a></li>
-	    {{/if }}
+            {{#if authenticated }}
+              <li><a href="#" {{ action 'disconnect' }}>Log Out</a></li>
+            {{else}}
+              <li><a href="#" {{ action 'connect' }}>Connect</a></li>
+            {{/if}}
           </ul>
         </section>
       </nav>
