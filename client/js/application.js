@@ -2,9 +2,9 @@ require.config(
 {
   baseUrl: "js/lib",
   paths: {
-    jquery: "//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min",
-    handlebars: "//cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.0.0/handlebars.min",
-    ember: "//cdnjs.cloudflare.com/ajax/libs/ember.js/1.0.0/ember.min",
+    jquery: "//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min",
+    handlebars: "//cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.3.0/handlebars.min",
+    ember: "//cdnjs.cloudflare.com/ajax/libs/ember.js/1.4.0/ember.min",
     socketio: "//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min",
     hashes: "hashes.min",
     modernizr: "modernizr.custom.81026", // "//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min",
