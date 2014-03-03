@@ -119,7 +119,6 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, s
     {
       if ( Modernizr.localstorage )
       {
-        // Let's not save the password for now
         localStorage["ngc.account"] = this.get( "account" );
         localStorage["ngc.password"] = this.get( "password" );
       }
@@ -379,7 +378,6 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, s
 
   App.parseContent = function( content ) 
   {
-    // TODO: Make sure Baybay doesn't throw, or catch it and show unparsed content instead
     var data = App.get( "smileys" );
     var bbcode = App.get( "bbcode" );
     var parsed = escapeHTML( content );
@@ -391,7 +389,12 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, s
         parsed = parsed.split( data.smileys[i].tags[j] ).join( elem );
       }
     }
-    parsed = bbcode.parse( parsed );
+
+    try {
+      parsed = bbcode.parse( parsed );
+    } catch ( e ) {
+      console.log( "BBCode parsing error thrown: " + e );
+    }
     
     if ( parsed.indexOf( "/me " ) === 0 )
     {
