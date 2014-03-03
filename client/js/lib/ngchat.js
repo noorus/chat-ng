@@ -282,7 +282,6 @@ define(
       this.application = application;
       this.memberList = memberList;
       this.chatBox = chatBox;
-      this.connect();
     };
     function ChatModule()
     {

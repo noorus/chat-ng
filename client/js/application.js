@@ -94,6 +94,8 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, s
       this.set( "chat", clientClient );
       $( document ).foundation();
       clientClient.initialize( App, App.MemberListController, App.ChatBoxView );
+      if ( g_ngcSettings.autoConnect )
+        clientClient.connect();
     }
   });
 
@@ -203,7 +205,8 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, s
     }
   });
 
-  App.ApplicationController = Em.Controller.extend({
+  App.ApplicationController = Em.Controller.extend(
+  {
     status: "Loading...",
     authenticated: false,
     
