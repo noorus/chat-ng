@@ -4,17 +4,48 @@ AddDefaultCharset utf-8
 # Explicitly set the index
 DirectoryIndex index.html
 
-# Don't serve dotfiles
-<Files .*>
-  Order deny,allow
-  Deny from all
-</Files>
+# No autoindexing
+<IfModule mod_autoindex.c>
+  Options -Indexes
+</IfModule>
 
-# Don't serve ruby files
-<Files *.rb>
-  Order deny,allow
-  Deny from all
-</Files>
+# Don't serve dot-stuff
+<IfModule mod_rewrite.c>
+  RewriteCond %{SCRIPT_FILENAME} -d [OR]
+  RewriteCond %{SCRIPT_FILENAME} -f
+  RewriteRule "(^|/)\." - [F]
+</IfModule>
+
+# Compression (from h5bp)
+<IfModule mod_deflate.c>
+  # Force compression for mangled headers
+  <IfModule mod_setenvif.c>
+    <IfModule mod_headers.c>
+      SetEnvIfNoCase ^(Accept-EncodXng|X-cept-Encoding|X{15}|~{15}|-{15})$ ^((gzip|deflate)\s*,?\s*)+|[X~-]{4,13}$ HAVE_Accept-Encoding
+      RequestHeader append Accept-Encoding "gzip,deflate" env=HAVE_Accept-Encoding
+    </IfModule>
+  </IfModule>
+  <IfModule mod_filter.c>
+    AddOutputFilterByType DEFLATE application/atom+xml \
+      application/javascript \
+      application/json \
+      application/ld+json \
+      application/rss+xml \
+      application/vnd.ms-fontobject \
+      application/x-font-ttf \
+      application/x-web-app-manifest+json \
+      application/xhtml+xml \
+      application/xml \
+      font/opentype \
+      image/svg+xml \
+      image/x-icon \
+      text/css \
+      text/html \
+      text/plain \
+      text/x-component \
+      text/xml
+    </IfModule>
+</IfModule>
 
 # Aggressive caching for static resources
 <IfModule mod_expires.c>
@@ -29,9 +60,14 @@ DirectoryIndex index.html
   ExpiresByType application/x-javascript A216000
 </IfModule>
 
-# Make sure IE users render with the best engine,
+# Make sure IE users render with the best engine
 # Mark every resource as public to maximize cacheability
+# Prevent mobile network providers from modifying the website's content
+# Remove ETags since we're using expiry headers
 <IfModule mod_headers.c>
   Header set X-UA-Compatible "IE=Edge,chrome=1"
-  Header set Cache-Control "public"
+  Header set Cache-Control "public,no-transform"
+  Header unset ETag
 </IfModule>
+
+FileETag None
