@@ -371,6 +371,8 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, i
     var data = App.get( "smileys" );
     var bbcode = App.get( "bbcode" );
     var parsed = escapeHTML( content );
+
+    // smiley parsing
     for ( var i = 0; i < data.smileys.length; i++ )
     {
       for ( var j = 0; j < data.smileys[i].tags.length; j++ )
@@ -380,6 +382,7 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, i
       }
     }
 
+    // bbcode parsing
     try {
       parsed = bbcode.parse( parsed );
     } catch ( e ) {
@@ -387,6 +390,7 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, i
       console.log( e );
     }
     
+    // remove action prefixes if any
     if ( parsed.indexOf( "/me " ) === 0 )
     {
       parsed = parsed.substring( 4 );
@@ -396,6 +400,7 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, i
       parsed = parsed.substring( 8 );
     }
 
+    // link parsing
     words = parsed.split( " " );
     for ( var k = 0; k < words.length; k++ )
     {
@@ -407,16 +412,17 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, i
       if ( url_word.indexOf( "http://" ) === 0
         || url_word.indexOf( "https://" ) === 0 )
       {
-        var a = $("<a></a>");
-        a.attr("href", url_word);
-        a.text(word);
-        var b = $("<span></span>");
-        b.append(a);
+        var a = $( "<a></a>" );
+        a.attr( "href", url_word );
+        a.attr( "target", "_blank" );
+        a.text( word );
+        var b = $( "<span></span>" );
+        b.append( a );
         words[k] = b.html();
       }
     }
     
-    parsed = words.join(" ");
+    parsed = words.join( " " );
     
     return parsed;
   };
