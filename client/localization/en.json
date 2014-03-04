@@ -19,7 +19,9 @@
     },
     "user":
     {
-      "classRegular": "Regular"
+      "classRegular": "Regular",
+      "classModerator": "Moderator",
+      "classAdministrator": "Administrator"
     }
   }
 }

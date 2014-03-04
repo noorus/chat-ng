@@ -465,11 +465,13 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, i
 
   //-- Member List ------------------------------------------------------------
 
-  App.Member = Em.Object.extend(
+  App.Member = Em.Object.extend(Em.I18n.TranslateableProperties,
   {
     id: null,
     name: null,
-    hasAvatar: false
+    hasAvatar: false,
+    level: 0,
+    statusTranslation: "user.classRegular"
   });
 
   App.MemberView = Em.View.extend(
@@ -511,11 +513,18 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, i
     },
     addMember: function( user )
     {
+      var statusStrings = [
+        "user.classRegular",
+        "user.classModerator",
+        "user.classAdministrator"
+      ];
       var component = App.Member.create(
       {
         id: user.id,
         name: user.name,
-        hasAvatar: user.avatar
+        hasAvatar: user.avatar,
+        level: user.level,
+        statusTranslation: statusStrings[user.level]
       });
       this.pushObject( component );
     },
