@@ -89,7 +89,7 @@ SMFBackend.prototype.userQuery = function( context, username, callback )
     else
     {
       connection.query(
-      "SELECT id_member,member_name,passwd FROM " + backend.values.tablePrefix + "_members WHERE member_name = ?",
+      "SELECT id_member,member_name,passwd FROM " + backend.values.tablePrefix + "_members WHERE member_name = ? AND is_activated = 1",
       [ username ],
       function( error, rows )
       {
