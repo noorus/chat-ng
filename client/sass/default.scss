@@ -101,6 +101,15 @@ html, body, .ngc-view-main {
     font-weight: bold;
     text-align: right;
   }
+  .author[data-level="0"] > a {
+    color: $ngc-regular-color;
+  }
+  .author[data-level="1"] > a {
+    color: $ngc-moderator-color;
+  }
+  .author[data-level="2"] > a {
+    color: $ngc-administrator-color;
+  }
   .content {
     text-align: justify;
   }
@@ -160,8 +169,14 @@ html, body, .ngc-view-main {
   > div > .name {
     font-weight: bold;
   }
-  > div > .status {
-    color: inherit;
+  > div > .status[data-level="0"] {
+    color: $ngc-regular-color;
+  }
+  > div > .status[data-level="1"] {
+    color: $ngc-moderator-color;
+  }
+  > div > .status[data-level="2"] {
+    color: $ngc-administrator-color;
   }
 }
 
