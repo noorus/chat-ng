@@ -11,7 +11,6 @@ function User( id, name, avatar, level )
   this.name = name;
   this.avatar = avatar;
   this.level = level;
-  console.log( "Created user with id " + id + " name " + name + " level " + level );
 }
 
 User.prototype.toJSON = function()
