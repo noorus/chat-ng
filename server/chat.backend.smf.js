@@ -1,4 +1,5 @@
 var mysql = require( "mysql" );
+var chatuser = require( "./chat.user" );
 
 function isUrl( s )
 {
@@ -114,12 +115,16 @@ SMFBackend.prototype.userQuery = function( context, username, callback )
         if ( rows[0].additional_groups )
           groups = groups.concat( rows[0].additional_groups.split( "," ) );
 
-        backend.log.info( "User groups: " + groups.join( " " ) );
+        var level = chatuser.userLevel.regular;
+        if ( groups.indexOf( SMFHardcodedGroups.administrator ) != -1 )
+          level = chatuser.userLevel.administrator;
 
         var user = {
           id: rows[0].id_member,
           name: rows[0].member_name,
-          hash: rows[0].passwd
+          hash: rows[0].passwd,
+          "groups": groups,
+          "level": level
         };
         callback.call( context, null, user );
       });
