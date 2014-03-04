@@ -1,0 +1,27 @@
+{
+  "localization":
+  {
+    "tools":
+    {
+      "sendButton": "Lähetä"
+    },
+    "loginDialog":
+    {
+      "accountLabel": "Käyttäjätunnus",
+      "passwordLabel": "Salasana",
+      "loginButton": "Kirjaudu",
+      "cancelButton": "Peruuta"
+    },
+    "menu":
+    {
+      "logOut": "Poistu",
+      "connect": "Yhdistä"
+    },
+    "user":
+    {
+      "classRegular": "Käyttäjä",
+      "classModerator": "Moderaattori",
+      "classAdministrator": "Ylläpitäjä"
+    }
+  }
+}
