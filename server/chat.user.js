@@ -25,6 +25,7 @@ User.prototype.toJSON = function()
 
 module.exports =
 {
+  userLevel: UserLevel,
   create: function( id, name, avatar, level )
   {
     return new User( id, name, avatar, level );
