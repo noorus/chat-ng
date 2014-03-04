@@ -81,19 +81,6 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, i
     {
       var bbcode = new Baybay();
       this.set( "bbcode", bbcode );
-      Em.run(function()
-      {
-        var canvas = document.createElement( "canvas" );
-        canvas.width = 32;
-        canvas.height = 32;
-        App.set( "faviconCanvas", canvas );
-        var base = new Image();
-        base.src = $( "#favicon" ).attr( "href" );
-        base.onload = function(){
-          App.set( "faviconBase", base );
-          App.updateFavicon();
-        };
-      });
       var clientClient = Chat.create(
       {
         endpoint: g_ngcSettings.endPoint
@@ -106,20 +93,6 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, i
     }
   });
 
-  App.updateFavicon = function()
-  {
-    var canvas = this.get( "faviconCanvas" );
-    var base = this.get( "faviconBase" );
-    var ctx = canvas.getContext( "2d" );
-    ctx.drawImage( base, 0, 0 );
-    ctx.fillStyle = "#ffffff";
-    ctx.textAlign = "left";
-    ctx.textBaseline = "top";
-    ctx.font = "bold 18px sans-serif";
-    ctx.fillText( "5!", 8, 4 );
-    $( "#favicon" ).attr( "href", canvas.toDataURL( "image/x-icon" ) );
-  };
-  
   App.LoginDialogController = Em.Controller.create(
   {
     loginClick: function()
