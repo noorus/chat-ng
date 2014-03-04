@@ -153,7 +153,7 @@ Client.prototype.onAuth = function( data )
       this._owner.backend.userAvatarQuery( this, user.id, function( error, avatar )
       {
         this._owner.preClientAuthed( user.id );
-        this.user = chatuser.create( user.id, user.name, ( !error && avatar ) ? true : false );
+        this.user = chatuser.create( user.id, user.name, ( !error && avatar ) ? true : false, UserLevel.regular );
         this.changeState( ClientState.idle );
         this.sendAuth( AuthResult.ok, this.user );
         this._owner.onClientAuthed( this );

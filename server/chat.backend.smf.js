@@ -12,6 +12,11 @@ var SMFBackendExceptionCode =
   query: 1
 };
 
+var SMFHardcodedGroups =
+{
+  administrator: 1
+};
+
 function SMFBackendException( code, message )
 {
   this.code     = code;
@@ -89,7 +94,7 @@ SMFBackend.prototype.userQuery = function( context, username, callback )
     else
     {
       connection.query(
-      "SELECT id_member,member_name,passwd FROM " + backend.values.tablePrefix + "_members WHERE member_name = ? AND is_activated = 1",
+      "SELECT id_member,member_name,passwd,id_group,additional_groups FROM " + backend.values.tablePrefix + "_members WHERE member_name = ? AND is_activated = 1",
       [ username ],
       function( error, rows )
       {
@@ -102,6 +107,15 @@ SMFBackend.prototype.userQuery = function( context, username, callback )
           callback.call( context, null, null );
           return;
         }
+
+        var groups = [];
+        if ( rows[0].id_group && !isNaN( rows[0].id_group ) )
+          groups.push( rows[0].id_group );
+        if ( rows[0].additional_groups )
+          groups = groups.concat( rows[0].additional_groups.split( "," ) );
+
+        backend.log.info( "User groups: " + groups.join( " " ) );
+
         var user = {
           id: rows[0].id_member,
           name: rows[0].member_name,
