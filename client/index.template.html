@@ -44,9 +44,9 @@
     </script>
     <script type="text/x-handlebars" data-template-name="member">
       <img {{bind-attr src=avatar}} {{bind-attr alt=name}}>
-      <div>
+      <div {{bind-attr data-level="level"}}>
         <span class="name">{{ name }}</span><br>
-        <span class="status" {{bind-attr data-level="level"}}>{{ status }}</span>
+        <span class="status">{{ status }}</span>
       </div>
     </script>
     <script type="text/x-handlebars" data-template-name="login-dialog">

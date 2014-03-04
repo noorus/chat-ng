@@ -169,13 +169,13 @@ html, body, .ngc-view-main {
   > div > .name {
     font-weight: bold;
   }
-  > div > .status[data-level="0"] {
+  > div[data-level="0"] > .name {
     color: $ngc-regular-color;
   }
-  > div > .status[data-level="1"] {
+  > div[data-level="1"] > .name {
     color: $ngc-moderator-color;
   }
-  > div > .status[data-level="2"] {
+  > div[data-level="2"] > .name {
     color: $ngc-administrator-color;
   }
 }
