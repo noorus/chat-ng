@@ -2,27 +2,23 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Chat-NG</title>
+    <title><!-- @echo title --></title>
     <meta name="robots" content="noindex">
     <meta name="viewport" content="width=device-width">
-    <link rel="stylesheet" href="theme/default.css">
-    <!-- Name for web application pinning -->
-    <meta name="application-name" content="Chat-NG">
-    <!-- Icon for desktop browsers -->
-    <link rel="shortcut icon" href="theme/default/favicon.ico">
-    <!-- Icon for Apple iOS pinning -->
-    <link rel="apple-touch-icon" href="theme/default/appleicon.png">
-    <!-- Icon for Windows 8 pinning -->
+    <link rel="stylesheet" href="theme/<!-- @echo theme -->.css">
+    <meta name="application-name" content="<!-- @echo title -->">
+    <link rel="shortcut icon" href="theme/<!-- @echo theme -->/favicon.ico">
+    <link rel="apple-touch-icon" href="theme/<!-- @echo theme -->/appleicon.png">
     <meta name="msapplication-tilecolor" content="#FFFFFF">
-    <meta name="msapplication-tileimage" content="theme/default/msicon.png">
+    <meta name="msapplication-tileimage" content="theme/<!-- @echo theme -->/msicon.png">
     <script>
       var g_ngcSettings =
       {
-        smileySet:    "default",
-        endPoint:     "http://localhost:3000/",
-        title:        "Chat-NG",
-        autoConnect:  true,
-        localization: "en"
+        smileySet:    "<!-- @echo smileyset -->",
+        endPoint:     "<!-- @echo endpoint -->",
+        title:        "<!-- @echo title -->",
+        autoConnect:  <!-- @echo autoconnect -->,
+        localization: "<!-- @echo language -->"
       };
     </script>
     <script data-main="js/application.js" src="js/lib/require.js"></script>
