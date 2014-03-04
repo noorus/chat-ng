@@ -15,7 +15,8 @@ var SMFBackendExceptionCode =
 
 var SMFHardcodedGroups =
 {
-  administrator: 1
+  administrator: 1,
+  globalModerator: 2
 };
 
 function SMFBackendException( code, message )
@@ -46,7 +47,8 @@ function SMFBackend( settings, log )
   this.values = {
     tablePrefix: settings.prefix,
     attachmentDir: null,
-    avatarDir: null
+    avatarDir: null,
+    moderatorGroups: settings.moderatorGroups
   };
 }
 
@@ -118,6 +120,15 @@ SMFBackend.prototype.userQuery = function( context, username, callback )
         var level = chatuser.userLevel.regular;
         if ( groups.indexOf( SMFHardcodedGroups.administrator ) != -1 )
           level = chatuser.userLevel.administrator;
+        else if ( groups.indexOf( SMFHardcodedGroups.globalModerator ) != -1 )
+          level = chatuser.userLevel.moderator;
+        else if ( Array.isArray( backend.values.moderatorGroups ) )
+        {
+          if ( groups.some( function( e, i, a ) {
+            return ( backend.values.moderatorGroups.indexOf( e ) != -1 );
+          }))
+            level = chatuser.userLevel.moderator;
+        }
 
         var user = {
           id: rows[0].id_member,
