@@ -1,0 +1,8 @@
+{
+  "name": "chat-ng.client",
+  "version": "0.1.0",
+  "dependencies": {
+    "grunt": "^0.4.2",
+    "grunt-contrib-compass": "^0.7.2"
+  }
+}
