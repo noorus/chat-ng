@@ -3,7 +3,8 @@ module.exports = function( grunt )
   grunt.initConfig(
   {
     pkg: grunt.file.readJSON( "package.json" ),
-    ngc_languages: [],
+    ngc_localizations: [],
+    ngc_smileysets: [],
     prompt: {
       dist: {
         options: {
@@ -33,16 +34,14 @@ module.exports = function( grunt )
               config: "preprocess.options.context.smileyset",
               type: "list",
               message: "Which smiley set do you want to use?",
-              choices: [
-                { name: "default" }
-              ],
+              choices: function(){ return grunt.config.getRaw( "ngc_smileysets" ); },
               default: "default"
             },
             {
               config: "preprocess.options.context.language",
               type: "list",
               message: "Which localization do you want to use?",
-              choices: function(){ return grunt.config.getRaw( "ngc_languages" ); },
+              choices: function(){ return grunt.config.getRaw( "ngc_localizations" ); },
               default: "en"
             }
           ]
@@ -80,25 +79,40 @@ module.exports = function( grunt )
   grunt.loadNpmTasks( "grunt-prompt" );
   grunt.loadNpmTasks( "grunt-contrib-compass" );
   grunt.loadNpmTasks( "grunt-preprocess" );
-  grunt.registerTask( "loadlanguages", "Load internal list of laanguages.", function()
+  grunt.registerTask( "loadlocalizations", "Load internal list of localizations.", function()
   {
     var fs = require( "fs" );
     var dir = fs.readdirSync( "localization" );
     dir.forEach(function(filename)
     {
-      var file = fs.readFileSync( "localization/" + filename, { encoding: "utf8" } );
-      if ( file )
-        file = JSON.parse( file );
+      var file = grunt.file.readJSON( "localization/" + filename, { encoding: "utf8" } );
       if ( file )
       {
         var lang = {
           name: file.language,
           value: file.code
         };
-        grunt.config.getRaw( "ngc_languages" ).push( lang );
+        grunt.config.getRaw( "ngc_localizations" ).push( lang );
       }
     });
   });
-  grunt.registerTask( "default", ["loadlanguages","prompt","compass","preprocess"] );
+  grunt.registerTask( "loadsmileys", "Load internal list of smiley sets.", function()
+  {
+    var fs = require( "fs" );
+    var dir = fs.readdirSync( "smileys" );
+    dir.forEach(function(filename)
+    {
+      var file = grunt.file.readJSON( "smileys/" + filename, { encoding: "utf8" } );
+      if ( file )
+      {
+        var set = {
+          name: file.name,
+          value: file.code
+        };
+        grunt.config.getRaw( "ngc_smileysets" ).push( set );
+      }
+    });
+  });
+  grunt.registerTask( "default", ["loadlocalizations","loadsmileys","prompt","compass","preprocess"] );
   grunt.registerTask( "theme", ["compass:dist"] );
 };
