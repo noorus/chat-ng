@@ -60,6 +60,13 @@
       "public": true
     },
     {
+      "tags": ["x_x","x__x","x___x",":dead:"],
+      "file": "dead.png",
+      "credit": "@-t-o-m-i-c",
+      "url": "http://a-t-o-m-i-c.deviantart.com",
+      "public": true
+    },
+    {
       "tags": ["<3","&lt;3"],
       "file": "heart.gif",
       "credit": "Bad-Blood",
@@ -67,10 +74,17 @@
       "public": true
     },
     {
-      "tags": [":kiss:"],
+      "tags": [":kiss:",":*",":-*"],
       "file": "kiss.gif",
       "credit": "CookiemagiK",
       "url": "http://cookiemagik.deviantart.com",
+      "public": true
+    },
+    {
+      "tags": [":fp:",":facepalm:","*facepalm*"],
+      "file": "facepalm.gif",
+      "credit": "Rolzor",
+      "url": "http://rolzor.deviantart.com",
       "public": true
     },
     {
@@ -78,35 +92,35 @@
       "file": "excited.gif",
       "credit": "CookiemagiK",
       "url": "http://cookiemagik.deviantart.com",
-      "public": true
+      "public": false
     },
     {
       "tags": [":nuu:"],
       "file": "nuu.gif",
       "credit": "CookiemagiK",
       "url": "http://cookiemagik.deviantart.com",
-      "public": true
+      "public": false
     },
     {
       "tags": [":sexy:"],
       "file": "sexy.gif",
       "credit": "Web5teR",
       "url": "http://web5ter.deviantart.com",
-      "public": true
+      "public": false
     },
     {
       "tags": [":what:"],
       "file": "what.gif",
       "credit": "Web5teR",
       "url": "http://web5ter.deviantart.com",
-      "public": true
+      "public": false
     },
     {
       "tags": [":argh:"],
       "file": "argh.gif",
       "credit": "blunaowl",
       "url": "http://blunaowl.deviantart.com",
-      "public": true
+      "public": false
     },
     {
       "tags": [":fear:"],
@@ -120,21 +134,14 @@
       "file": "squee.gif",
       "credit": "stuck-in-suburbia",
       "url": "http://stuck-in-suburbia.deviantart.com",
-      "public": true
+      "public": false
     },
     {
       "tags": [":groove:"],
       "file": "groove.gif",
       "credit": "CubicInsanity",
       "url": "http://cubicinsanity.deviantart.com",
-      "public": true
-    },
-    {
-      "tags": [":fp:",":facepalm:","*facepalm*"],
-      "file": "facepalm.gif",
-      "credit": "Rolzor",
-      "url": "http://rolzor.deviantart.com",
-      "public": true
+      "public": false
     }
   ]
 }
