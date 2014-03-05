@@ -78,56 +78,63 @@
       "file": "excited.gif",
       "credit": "CookiemagiK",
       "url": "http://cookiemagik.deviantart.com",
-      "public": false
+      "public": true
     },
     {
       "tags": [":nuu:"],
       "file": "nuu.gif",
       "credit": "CookiemagiK",
       "url": "http://cookiemagik.deviantart.com",
-      "public": false
+      "public": true
     },
     {
       "tags": [":sexy:"],
       "file": "sexy.gif",
       "credit": "Web5teR",
       "url": "http://web5ter.deviantart.com",
-      "public": false
+      "public": true
     },
     {
       "tags": [":what:"],
       "file": "what.gif",
       "credit": "Web5teR",
       "url": "http://web5ter.deviantart.com",
-      "public": false
+      "public": true
     },
     {
       "tags": [":argh:"],
       "file": "argh.gif",
       "credit": "blunaowl",
       "url": "http://blunaowl.deviantart.com",
-      "public": false
+      "public": true
     },
     {
       "tags": [":fear:"],
       "file": "fear.gif",
       "credit": "blunaowl",
       "url": "http://blunaowl.deviantart.com",
-      "public": false
+      "public": true
     },
     {
       "tags": [":squee:"],
       "file": "squee.gif",
       "credit": "stuck-in-suburbia",
       "url": "http://stuck-in-suburbia.deviantart.com",
-      "public": false
+      "public": true
     },
     {
       "tags": [":groove:"],
       "file": "groove.gif",
       "credit": "CubicInsanity",
       "url": "http://cubicinsanity.deviantart.com",
-      "public": false
+      "public": true
+    },
+    {
+      "tags": [":fp:",":facepalm:","*facepalm*"],
+      "file": "facepalm.gif",
+      "credit": "Rolzor",
+      "url": "http://rolzor.deviantart.com",
+      "public": true
     }
   ]
 }
