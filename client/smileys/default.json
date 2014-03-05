@@ -46,13 +46,6 @@
       "public": true
     },
     {
-      "tags": [":naive:"],
-      "file": "naive.gif",
-      "credit": "Emotikonz",
-      "url": "http://emotikonz.deviantart.com",
-      "public": true
-    },
-    {
       "tags": ["._.",".__.",".___."],
       "file": "down.png",
       "credit": "Snowshi",
@@ -88,10 +81,10 @@
       "public": true
     },
     {
-      "tags": ["<3","&lt;3"],
-      "file": "heart.gif",
-      "credit": "Bad-Blood",
-      "url": "http://bad-blood.deviantart.com",
+      "tags": [":naive:"],
+      "file": "naive.gif",
+      "credit": "Emotikonz",
+      "url": "http://emotikonz.deviantart.com",
       "public": true
     },
     {
@@ -99,6 +92,20 @@
       "file": "kiss.gif",
       "credit": "CookiemagiK",
       "url": "http://cookiemagik.deviantart.com",
+      "public": true
+    },
+    {
+      "tags": ["O:)","O:-)","O:D","O:-D"],
+      "file": "innocent.gif",
+      "credit": "Asmodiel",
+      "url": "http://asmodiel.deviantart.com",
+      "public": true
+    },
+    {
+      "tags": ["<3","&lt;3"],
+      "file": "heart.gif",
+      "credit": "Bad-Blood",
+      "url": "http://bad-blood.deviantart.com",
       "public": true
     },
     {
