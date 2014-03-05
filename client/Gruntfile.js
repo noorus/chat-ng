@@ -85,6 +85,8 @@ module.exports = function( grunt )
     var dir = fs.readdirSync( "localization" );
     dir.forEach(function(filename)
     {
+      if ( !grunt.file.isFile( "localization/" + filename ) )
+        return;
       var file = grunt.file.readJSON( "localization/" + filename, { encoding: "utf8" } );
       if ( file )
       {
@@ -95,6 +97,7 @@ module.exports = function( grunt )
         grunt.config.getRaw( "ngc_localizations" ).push( lang );
       }
     });
+    grunt.log.ok( "Found %d available localizations.", grunt.config.getRaw( "ngc_localizations" ).length );
   });
   grunt.registerTask( "loadsmileys", "Load internal list of smiley sets.", function()
   {
@@ -102,16 +105,19 @@ module.exports = function( grunt )
     var dir = fs.readdirSync( "smileys" );
     dir.forEach(function(filename)
     {
+      if ( !grunt.file.isFile( "smileys/" + filename ) )
+        return;
       var file = grunt.file.readJSON( "smileys/" + filename, { encoding: "utf8" } );
       if ( file )
       {
-        var set = {
+        var smileyset = {
           name: file.name,
           value: file.code
         };
-        grunt.config.getRaw( "ngc_smileysets" ).push( set );
+        grunt.config.getRaw( "ngc_smileysets" ).push( smileyset );
       }
     });
+    grunt.log.ok( "Found %d available smiley sets.", grunt.config.getRaw( "ngc_smileysets" ).length );
   });
   grunt.registerTask( "default", ["loadlocalizations","loadsmileys","prompt","compass","preprocess"] );
   grunt.registerTask( "theme", ["compass:dist"] );
