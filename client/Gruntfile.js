@@ -53,18 +53,18 @@ module.exports = function( grunt )
     },
     compass: {
       dist: {
-        options: {
-          require: "zurb-foundation",
-          environment: "production",
-          app: "stand_alone",
-          cssDir: "theme",
-          sassDir: "sass",
-          imagesDir: "img",
-          javascriptsDir: "js/lib",
-          outputStyle: "compressed",
-          relativeAssets: true,
-          noLineComments: true
-        }
+      options: {
+        require: "zurb-foundation",
+        environment: "production",
+        app: "stand_alone",
+        cssDir: "theme",
+        sassDir: "sass",
+        imagesDir: "img",
+        javascriptsDir: "js/lib",
+        outputStyle: "compressed",
+        relativeAssets: true,
+        noLineComments: true
+      }
       }
     },
     preprocess: {
@@ -83,4 +83,5 @@ module.exports = function( grunt )
   grunt.loadNpmTasks( "grunt-contrib-compass" );
   grunt.loadNpmTasks( "grunt-preprocess" );
   grunt.registerTask( "default", ["prompt","compass","preprocess"] );
+  grunt.registerTask( "theme", ["compass:dist"] );
 };

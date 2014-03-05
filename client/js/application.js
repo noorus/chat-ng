@@ -338,6 +338,7 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, i
     {
       var component = App.ChatMessageComponent.create({
         name: user.name,
+        level: user.level,
         content: message,
         "timestamp": timestamp.format( "HH:mm:ss" )
       });
