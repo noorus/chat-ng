@@ -39,17 +39,24 @@
       "public": true
     },
     {
-      "tags": ["XD"],
-      "file": "xd.png",
-      "credit": "EastSideSunsets",
-      "url": "http://eastsidesunsets.deviantart.com",
-      "public": true
-    },
-    {
       "tags": [":|"],
       "file": "speechless.png",
       "credit": "Emotikonz",
       "url": "http://emotikonz.deviantart.com",
+      "public": true
+    },
+    {
+      "tags": [":naive:"],
+      "file": "naive.gif",
+      "credit": "Emotikonz",
+      "url": "http://emotikonz.deviantart.com",
+      "public": true
+    },
+    {
+      "tags": ["._.",".__.",".___."],
+      "file": "down.png",
+      "credit": "Snowshi",
+      "url": "http://snowshi.deviantart.com",
       "public": true
     },
     {
@@ -60,10 +67,10 @@
       "public": true
     },
     {
-      "tags": ["._.",".__.",".___."],
-      "file": "down.png",
-      "credit": "Snowshi",
-      "url": "http://snowshi.deviantart.com",
+      "tags": ["XD"],
+      "file": "xd.png",
+      "credit": "EastSideSunsets",
+      "url": "http://eastsidesunsets.deviantart.com",
       "public": true
     },
     {
@@ -95,7 +102,7 @@
       "public": true
     },
     {
-      "tags": [":fp:",":facepalm:","*facepalm*"],
+      "tags": [":fp:","*fp*",":facepalm:","*facepalm*"],
       "file": "facepalm.gif",
       "credit": "Rolzor",
       "url": "http://rolzor.deviantart.com",
