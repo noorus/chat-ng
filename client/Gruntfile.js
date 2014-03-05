@@ -3,6 +3,7 @@ module.exports = function( grunt )
   grunt.initConfig(
   {
     pkg: grunt.file.readJSON( "package.json" ),
+    ngc_languages: [],
     prompt: {
       dist: {
         options: {
@@ -41,10 +42,7 @@ module.exports = function( grunt )
               config: "preprocess.options.context.language",
               type: "list",
               message: "Which localization do you want to use?",
-              choices: [
-                { name: "English", value: "en" },
-                { name: "Finnish", value: "fi" }
-              ],
+              choices: function(){ return grunt.config.getRaw( "ngc_languages" ); },
               default: "en"
             }
           ]
@@ -82,6 +80,25 @@ module.exports = function( grunt )
   grunt.loadNpmTasks( "grunt-prompt" );
   grunt.loadNpmTasks( "grunt-contrib-compass" );
   grunt.loadNpmTasks( "grunt-preprocess" );
-  grunt.registerTask( "default", ["prompt","compass","preprocess"] );
+  grunt.registerTask( "loadlanguages", "Load internal list of laanguages.", function()
+  {
+    var fs = require( "fs" );
+    var dir = fs.readdirSync( "localization" );
+    dir.forEach(function(filename)
+    {
+      var file = fs.readFileSync( "localization/" + filename, { encoding: "utf8" } );
+      if ( file )
+        file = JSON.parse( file );
+      if ( file )
+      {
+        var lang = {
+          name: file.language,
+          value: file.code
+        };
+        grunt.config.getRaw( "ngc_languages" ).push( lang );
+      }
+    });
+  });
+  grunt.registerTask( "default", ["loadlanguages","prompt","compass","preprocess"] );
   grunt.registerTask( "theme", ["compass:dist"] );
 };
