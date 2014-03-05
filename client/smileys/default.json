@@ -11,10 +11,24 @@
       "public": true
     },
     {
+      "tags": [":("],
+      "file": "sad.png",
+      "credit": "Snowshi",
+      "url": "http://snowshi.deviantart.com",
+      "public": true
+    },
+    {
       "tags": [";)"],
       "file": "wink.png",
       "credit": "sonikkuzuru",
       "url": "http://sonikkuruzu.deviantart.com",
+      "public": true
+    },
+    {
+      "tags": [":P"],
+      "file": "tongue.png",
+      "credit": "nateify",
+      "url": "http://nateify.deviantart.com",
       "public": true
     },
     {
@@ -32,17 +46,10 @@
       "public": true
     },
     {
-      "tags": [":P"],
-      "file": "tongue.png",
-      "credit": "nateify",
-      "url": "http://nateify.deviantart.com",
-      "public": true
-    },
-    {
-      "tags": [":("],
-      "file": "sad.png",
-      "credit": "Snowshi",
-      "url": "http://snowshi.deviantart.com",
+      "tags": [":|"],
+      "file": "speechless.png",
+      "credit": "Emotikonz",
+      "url": "http://emotikonz.deviantart.com",
       "public": true
     },
     {
@@ -54,7 +61,7 @@
     },
     {
       "tags": ["._.",".__.",".___."],
-      "file": "speechless.png",
+      "file": "down.png",
       "credit": "Snowshi",
       "url": "http://snowshi.deviantart.com",
       "public": true
