@@ -60,6 +60,13 @@
       "public": true
     },
     {
+      "tags": ["^^","^_^","^__^","^___^"],
+      "file": "aww.gif",
+      "credit": "fraxyl",
+      "url": "http://fraxyl.deviantart.com",
+      "public": true
+    },
+    {
       "tags": ["x_x","x__x","x___x",":dead:"],
       "file": "dead.gif",
       "credit": "@-t-o-m-i-c",
@@ -127,7 +134,7 @@
       "file": "fear.gif",
       "credit": "blunaowl",
       "url": "http://blunaowl.deviantart.com",
-      "public": true
+      "public": false
     },
     {
       "tags": [":squee:"],
