@@ -512,7 +512,7 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, i
   App.MemberListController = Em.ArrayController.create(
   {
     content: [],
-    sortProperties: ["name"],
+    sortProperties: ["sortie"],
     sortAscending: true,
     clearMembers: function()
     {
@@ -531,7 +531,8 @@ function( document, Modernizr, $, Em, Foundation, Chat, Baybay, Rangy, moment, i
         name: user.name,
         hasAvatar: user.avatar,
         level: user.level,
-        statusTranslation: statusStrings[user.level]
+        statusTranslation: statusStrings[user.level],
+        sortie: ( 2 - user.level ) + user.name
       });
       this.pushObject( component );
     },
